@@ -302,7 +302,11 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		return this.metadataReaderFactory;
 	}
 
-
+	/*
+	 * 扫描类路径以查找候选组件。
+	 * @param basePackage 用于检查带注释的类的包
+	 * @return 相应的自动检测到的 bean 定义集
+	 */
 	/**
 	 * Scan the class path for candidate components.
 	 * @param basePackage the package to check for annotated classes
@@ -417,7 +421,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		Set<BeanDefinition> candidates = new LinkedHashSet<>();
 		try {
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
-					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
+					resolveBasePackage(basePackage) + '/' + this.resourcePattern;  // classpath*:org/example/**/*.class
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();

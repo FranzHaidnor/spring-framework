@@ -41,6 +41,9 @@ import org.springframework.core.io.Resource;
  */
 public class GenericXmlApplicationContext extends GenericApplicationContext {
 
+	/**
+	 * 创建 XmlBeanDefinitionReader. 其中的 BeanDefinitionRegistry 就是自己
+	 */
 	private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
 
 

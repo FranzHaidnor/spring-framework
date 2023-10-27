@@ -20,6 +20,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.lang.Nullable;
 
 /**
+ * 沿着 bean 定义读取过程传递的上下文，封装所有相关配置和状态
  * Context that gets passed along a bean definition reading process,
  * encapsulating all relevant configuration as well as state.
  *
@@ -152,6 +153,7 @@ public class ReaderContext {
 	// Explicit parse events
 
 	/**
+	 * 触发默认注册的事件。
 	 * Fire a defaults-registered event.
 	 */
 	public void fireDefaultsRegistered(DefaultsDefinition defaultsDefinition) {

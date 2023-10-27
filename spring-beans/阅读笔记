@@ -1,0 +1,6 @@
+beans 包中的各个源码包的功能如下
+src/main/java 用于展现 Spring 的主要逻辑
+src/main/resources 用于存放系统的配置文件
+src/test/java 用于对主要逻辑进行单元测试
+src/test/resources 用于存放测试用的配直文件
+

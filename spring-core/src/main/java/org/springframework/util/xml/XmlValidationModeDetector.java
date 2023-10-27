@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 /**
+ * 检测 XML 流是否使用基于 DTD 或 XSD 的验证
  * Detects whether an XML stream is using DTD- or XSD-based validation.
  *
  * @author Rob Harrop
