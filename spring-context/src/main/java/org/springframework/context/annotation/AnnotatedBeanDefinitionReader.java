@@ -33,6 +33,12 @@ import org.springframework.core.env.StandardEnvironment;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+/*
+ * 用于以编程方式注册 bean 类的便捷适配器。
+ *
+ * <p>这是 {@link ClassPathBeanDefinitionScanner} 的替代方案，
+ * 应用相同的注释解析，但仅适用于显式注册的类。
+ */
 /**
  * Convenient adapter for programmatic registration of bean classes.
  *
@@ -124,7 +130,13 @@ public class AnnotatedBeanDefinitionReader {
 				(scopeMetadataResolver != null ? scopeMetadataResolver : new AnnotationScopeMetadataResolver());
 	}
 
-
+	/*
+	 * 注册一个或多个要处理的组件类。
+	 * <p>对{@code register}的调用是幂等的；添加相同的
+	 * 多次使用组件类没有额外的效果。
+	 * @param componentClasses 一个或多个组件类，
+	 * 例如{@link 配置@Configuration} 类
+	 */
 	/**
 	 * Register one or more component classes to be processed.
 	 * <p>Calls to {@code register} are idempotent; adding the same
@@ -133,6 +145,7 @@ public class AnnotatedBeanDefinitionReader {
 	 * e.g. {@link Configuration @Configuration} classes
 	 */
 	public void register(Class<?>... componentClasses) {
+		// 遍历配置的包路径
 		for (Class<?> componentClass : componentClasses) {
 			registerBean(componentClass);
 		}
