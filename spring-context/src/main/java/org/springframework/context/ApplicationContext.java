@@ -55,8 +55,13 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.BeanFactory
  * @see org.springframework.core.io.ResourceLoader
  */
-public interface ApplicationContext extends EnvironmentCapable, ListableBeanFactory, HierarchicalBeanFactory,
-		MessageSource, ApplicationEventPublisher, ResourcePatternResolver {
+public interface ApplicationContext extends
+		ListableBeanFactory,
+		EnvironmentCapable,
+		HierarchicalBeanFactory,
+		MessageSource,
+		ApplicationEventPublisher,
+		ResourcePatternResolver {
 
 	/**
 	 * Return the unique id of this application context.
