@@ -1,7 +1,8 @@
 package org.example;
 
-import org.example.bean.Student;
-import org.springframework.context.ApplicationContext;
+import org.example.bean.OrderService;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 /**
@@ -9,8 +10,14 @@ import org.springframework.context.support.GenericXmlApplicationContext;
  */
 public class TestGenericXmlApplicationContext {
 	public static void main(String[] args) {
-		ApplicationContext context = new GenericXmlApplicationContext("beans.xml");
-		Student obj2 = (Student) context.getBean("student");
-		System.out.println(obj2);
+		GenericXmlApplicationContext context = new GenericXmlApplicationContext("beans.xml");
+//		Student obj2 = (Student) context.getBean("student");
+
+		BeanDefinition beanDefinition = new RootBeanDefinition(OrderService.class);
+		context.registerBeanDefinition("orderService", beanDefinition);
+
+
+		OrderService orderService = context.getBean("orderService", OrderService.class);
+		System.out.println(orderService);
 	}
 }

@@ -32,7 +32,19 @@ import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-
+/*
+ * 根 bean 定义表示支持的合并 bean 定义
+ * 运行时 Spring BeanFactory 中的特定 bean。可能已经创建了
+ * 来自相互继承的多个原始bean定义，
+ * 通常注册为 {@link GenericBeanDefinition GenericBeanDefinitions}。
+ * 根 bean 定义本质上是运行时的“统一”bean 定义视图。
+ *
+ * <p>根 bean 定义也可用于注册单个 bean 定义
+ * 在配置阶段。但是，从 Spring 2.5 开始，首选注册方式
+ * 以编程方式定义的 bean 是 {@link GenericBeanDefinition} 类。
+ * GenericBeanDefinition的优点是允许动态定义
+ * 父依赖项，而不是将角色“硬编码”为根 bean 定义。
+ */
 /**
  * A root bean definition represents the merged bean definition that backs
  * a specific bean in a Spring BeanFactory at runtime. It might have been created

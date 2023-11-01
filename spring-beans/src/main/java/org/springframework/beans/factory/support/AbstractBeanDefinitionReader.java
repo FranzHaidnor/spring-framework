@@ -185,7 +185,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 		Assert.notNull(resources, "Resource array must not be null");
 		int count = 0;
 		for (Resource resource : resources) {
-			// 这里
+			// 调用实现类方法. 此方法来自于接口 BeanDefinitionReader
 			count += loadBeanDefinitions(resource);
 		}
 		return count;
@@ -255,7 +255,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 		Assert.notNull(locations, "Location array must not be null");
 		int count = 0;
 		for (String location : locations) {
-			// 这里
+			// 这里调用的是实现类的方法
 			count += loadBeanDefinitions(location);
 		}
 		return count;
