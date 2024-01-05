@@ -24,8 +24,6 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 
 /*
- * 该注释是Spring框架中的ListableBeanFactory接口的说明文档。ListableBeanFactory是BeanFactory接口的子接口，它扩展了BeanFactory的功能，提供了能够列举所有bean实例的能力。
- *
  * ListableBeanFactory的主要作用是允许应用程序以编程方式获取和遍历应用程序上下文中的所有bean实例。它提供了以下功能：
  *
  * 1. 列举所有bean实例：ListableBeanFactory定义了getBeanDefinitionCount()和getBeanDefinitionNames()方法，用于获取应用程序上下文中所有bean定义的数量和名称。通过这些方法可以遍历并获取所有bean实例的信息。
@@ -74,7 +72,7 @@ import java.util.Map;
  * @since 16 April 2001
  */
 public interface ListableBeanFactory extends BeanFactory {
-	/**
+	/*
 	 * 检查这个Bean工厂是否包含给定名称的Bean定义。
 	 * <p>不考虑该工厂可能参与的任何层次结构，
 	 * 并忽略通过其他方式注册的任何单例Bean，而不是Bean定义。
@@ -94,7 +92,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	 */
 	boolean containsBeanDefinition(String beanName);
 
-	/**
+	/*
 	 * 返回工厂中定义的Bean的数量。
 	 * <p>不考虑该工厂可能参与的任何层次结构，
 	 * 并忽略通过其他方式注册的任何单例Bean，而不是Bean定义。
@@ -109,7 +107,8 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * @return the number of beans defined in the factory
 	 */
 	int getBeanDefinitionCount();
-	/**
+
+	/*
 	 * 返回在此工厂中定义的所有Bean的名称。
 	 * <p>不考虑该工厂可能参与的任何层次结构，
 	 * 并忽略通过其他方式注册的任何单例Bean，而不是Bean定义。
@@ -127,7 +126,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	 */
 	String[] getBeanDefinitionNames();
 
-	/**
+	/*
 	 * 返回与给定类型（包括子类）匹配的所有Bean的名称，
 	 * 可以基于Bean定义或者FactoryBeans的getObjectType方法的值进行判断。
 	 * <p><b>注意：此方法仅检查顶级Bean。</b>它不会检查可能与指定类型匹配的嵌套Bean。
@@ -176,7 +175,8 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * @since 4.2
 	 */
 	String[] getBeanNamesForType(ResolvableType type);
-	/**
+
+	/*
 	 返回与给定类型匹配的bean的名称（包括子类），根据bean定义或者FactoryBeans的getObjectType的值来判断。
 	 <p><b>注意：此方法仅审查顶级bean。</b>它不会检查可能与指定类型匹配的嵌套bean。
 	 <p>如果设置了"allowEagerInit"标志，则会考虑由FactoryBeans创建的对象，这意味着FactoryBeans将被初始化。
@@ -373,6 +373,20 @@ public interface ListableBeanFactory extends BeanFactory {
 	 */
 	String[] getBeanNamesForAnnotation(Class<? extends Annotation> annotationType);
 
+	/*
+	 * 查找所有使用提供的 Annotation 类型进行注释的 bean，返回具有相应 bean 实例的 bean 名称的 Map。
+	 * 请注意，此方法考虑由 FactoryBeans 创建的对象，这意味着 FactoryBeans 将被初始化以确定其对象类型。
+	 * 形参:
+	 * annotationType – 要查找的注解类型（在指定 Bean 的类、接口或工厂方法级别）
+	 * 返回值:
+	 * 具有匹配 Bean 的映射，包含作为键的 Bean 名称和作为值的相应 Bean 实例
+	 * 抛出:
+	 * BeansException – 如果无法创建 Bean
+	 * 自:
+	 * 3.0
+	 * 请参阅:
+	 * findAnnotationOnBean
+	 */
 	/**
 	 * Find all beans which are annotated with the supplied {@link Annotation} type,
 	 * returning a Map of bean names with corresponding bean instances.

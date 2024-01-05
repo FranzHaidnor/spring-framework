@@ -21,6 +21,11 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
 
+/*
+ * 替代 Jdk Id 生成器
+ * 一个 IdGenerator 使用 SecureRandom 对于初始种子和 随机 此后，而不是打电话 UUID.randomUUID () 每次我 JdkIdGenerator 所做的事。
+ * 这在安全随机id和性能之间提供了更好的平衡
+ */
 /**
  * An {@link IdGenerator} that uses {@link SecureRandom} for the initial seed and
  * {@link Random} thereafter, instead of calling {@link UUID#randomUUID()} every

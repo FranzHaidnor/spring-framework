@@ -20,6 +20,37 @@ import org.springframework.beans.BeansException;
 import org.springframework.core.ResolvableType;
 import org.springframework.lang.Nullable;
 
+
+/*
+ * 用于访问 Spring Bean 容器的根接口。
+ * 这是 Bean 容器的基本客户端视图;其他接口（如 ListableBeanFactory AND org.springframework.beans.factory.config.ConfigurableBeanFactory ）可用于特定目的。
+ * 此接口由包含多个 Bean 定义的对象实现，每个定义都由 String 名称唯一标识。根据 Bean 定义，工厂将返回包含对象的独立实例（原型设计模式）或单个共享实例（单例设计模式的更好替代方案，其中实例是工厂范围内的单例）。返回哪种类型的实例取决于 Bean 工厂配置：API 是相同的。从 Spring 2.0 开始，根据具体的应用程序上下文（例如，Web 环境中的“请求”和“会话”范围），可以使用更多范围。
+ * 这种方法的要点是 BeanFactory 是应用程序组件的中央注册表，它集中了应用程序组件的配置（例如，单个对象不再需要读取属性文件）。请参阅“Expert One-on-One J2EE Design and Development”的第 4 章和第 11 章，了解这种方法的好处。
+ * 请注意，通常最好依靠依赖注入（“推送”配置）通过 setter 或构造函数来配置应用程序对象，而不是使用任何形式的“拉取”配置，例如 BeanFactory 查找。Spring 的依赖注入功能是使用此 BeanFactory 接口及其子接口实现的。
+ * 通常，BeanFactory 将加载存储在配置源（例如 XML 文档）中的 Bean 定义，并使用包 org.springframework.beans 来配置 Bean。但是，实现可以简单地直接在 Java 代码中返回它根据需要创建的 Java 对象。对定义的存储方式没有限制：LDAP、RDBMS、XML、属性文件等。鼓励实现支持在 Bean 之间引用（依赖注入）。
+ * 与 中 ListableBeanFactory的方法相反，此接口中的所有操作还将检查父工厂是否为 HierarchicalBeanFactory.如果在此工厂实例中找不到 Bean，则将询问直接父工厂。此工厂实例中的 Bean 应该覆盖任何父工厂中同名的 Bean。
+ *
+ * Bean 工厂实现应尽可能支持标准的 Bean 生命周期接口。完整的初始化方法集及其标准顺序为：
+ *     1.BeanNameAware 的 setBeanName
+ *     2.BeanClassLoaderAware 的 setBeanClassLoader
+ *     3.BeanFactoryAware 的 setBeanFactory
+ *     4.EnvironmentAware的 setEnvironment
+ *     5.EmbeddedValueResolverAware 的 setEmbeddedValueResolver
+ *     6.ResourceLoaderAware（ setResourceLoader 仅适用于在应用程序上下文中运行时）
+ *     7.ApplicationEventPublisherAware（ setApplicationEventPublisher 仅适用于在应用程序上下文中运行时）
+ *     8.MessageSourceAware（ setMessageSource 仅在应用程序上下文中运行时适用）
+ *     9.ApplicationContextAware（ setApplicationContext 仅在应用程序上下文中运行时适用）
+ *     10.ServletContextAware setServletContext （仅在 Web 应用程序上下文中运行时适用）
+ *     11.postProcessBeforeInitialization BeanPostProcessors 的方法
+ *     12.初始化Bean的 afterPropertiesSet
+ *     13.自定义 init-method 定义
+ *     14.postProcessAfterInitialization BeanPostProcessors 的方法
+ *
+ * 在关闭 Bean 工厂时，以下生命周期方法适用：
+ *     1.postProcessBeforeDestruction DestructionAwareBeanPostProcessors 的方法
+ *     2.DisposableBean 的 destroy
+ * 	   3.自定义销毁方法定
+ */
 /**
  * The root interface for accessing a Spring bean container.
  *

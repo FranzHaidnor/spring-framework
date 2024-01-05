@@ -27,6 +27,29 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 package org.springframework.asm;
 
+/*
+ * 基本块的输入和输出堆栈映射帧。
+ * 堆栈映射帧分两步计算:
+ * 在访问MethodWriter中的每个指令期间，通过模拟指令对这个所谓的“输出帧”的前一个状态的动作来更新当前基本块末尾的帧的状态。
+ * 在访问完所有指令后，MethodWriter使用一个定点算法来计算每个基本块的“输入帧”(即基本块开头的堆栈映射帧)。看到 MethodWriter.computeAllFrames．
+ * 输出堆栈映射帧是相对于基本块的输入帧计算的，当计算输出帧时还不知道。因此，有必要能够表示抽象类型，例如“输入帧局部变量中位置x的类型”或“输入帧堆栈顶部位置x的类型”，甚至“输入帧中位置x的类型，具有y多个(或更少)数组维度”。这解释了在这个类中使用的相当复杂的类型格式，下面将解释。
+ * 输入和输出帧的局部变量和操作数堆栈包含以下称为“抽象类型”的值。抽象类型由4个字段表示，分别是DIM, KIND, FLAGS和VALUE，它们被封装在一个int值中，以获得更好的性能和内存效率:
+ *     =====================================
+ *     |...DIM|KIND|.F|...............VALUE|
+ *     =====================================
+ *
+ * DIM字段存储在6位最高有效位中，是数组维数的带符号数(包括-32到31)。可以用 DIM_MASK 右移 DIM_SHIFT．
+ * KIND字段表示使用的VALUE类型，存储为4位。这4位可以用 KIND_MASK 在没有移位的情况下，它一定等于 CONSTANT_KIND， REFERENCE_KIND， UNINITIALIZED_KIND， LOCAL_KIND 或 STACK_KIND．
+ * FLAGS字段以2位存储，最多包含2个布尔标志。目前只定义了一个标志，即 TOP_IF_LONG_OR_DOUBLE_FLAG．
+ * VALUE字段存储在剩余的20位中，包含任意一种
+ * 其中一个常数 ITEM_TOP， ITEM_ASM_BOOLEAN， ITEM_ASM_BYTE， ITEM_ASM_CHAR 或 ITEM_ASM_SHORT， ITEM_INTEGER， ITEM_FLOAT， ITEM_LONG， ITEM_DOUBLE， ITEM_NULL 或 ITEM_UNINITIALIZED_THIS，如果KIND等于 CONSTANT_KIND．
+ * a的索引 的象征。TYPE_TAG 象征 的类型表中 SymbolTable，如果KIND等于 REFERENCE_KIND．
+ * 的索引 的象征。UNINITIALIZED_TYPE_TAG 象征 在SymbolTable的类型表中，如果KIND等于 UNINITIALIZED_KIND．
+ * 如果KIND等于，则为输入堆栈帧中局部变量的索引 LOCAL_KIND．
+ * 如果KIND等于，则相对于输入堆栈帧的堆栈顶部的位置 STACK_KIND，
+ * 输出帧可以包含任何类型的抽象类型，并且具有正或负数组维度(甚至包括未分配的类型，用0表示，它不对应于任何有效的抽象类型值)。输入帧只能包含CONSTANT_KIND、REFERENCE_KIND或UNINITIALIZED_KIND数组维数为正或空的抽象类型。在所有情况下，类型表只包含内部类型名称(禁止使用数组类型描述符——数组维度必须通过DIM字段表示)。
+ * 对于本地变量和操作数堆栈，LONG和DOUBLE类型总是使用两个槽(LONG + TOP或DOUBLE + TOP)来表示。这对于能够模拟DUPx_y指令是必要的，DUPx_y指令的效果取决于堆栈中抽象类型所表示的具体类型(这些类型并不总是已知的)
+ */
 /**
  * The input and output stack map frames of a basic block.
  *

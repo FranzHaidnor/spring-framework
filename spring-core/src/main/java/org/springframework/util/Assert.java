@@ -22,6 +22,16 @@ import java.util.function.Supplier;
 
 import org.springframework.lang.Nullable;
 
+/*
+ 帮助验证参数的断言实用程序类。
+ 有助于在运行时及早、清晰地识别程序员错误。
+ 例如，如果公共方法的契约声明它不允许 零 参数, 断言 可以用来验证合同的有效性。这样做可以清楚地指出契约违反，并保护类的不变量。
+ 通常用于验证方法参数而不是配置属性，检查通常是程序员错误而不是配置错误的情况。与配置初始化代码相反，在这些方法中通常没有必要回到默认值。
+ 这个类类似于JUnit的断言库。如果参数值被认为无效，则 IllegalArgumentException 被抛出(通常)。例如:
+ Assert.notNull(clazz, "The class must not be null");
+ Assert.isTrue(i > 0, "The value must be greater than zero");
+ 主要用于框架内部使用;要获得更全面的断言实用程序套件，请考虑 org.apache.commons.lang3.Validate 从Apache Commons Lang, Google Guava的先决条件，或类似的第三方库。
+ */
 /**
  * Assertion utility class that assists in validating arguments.
  *
@@ -61,6 +71,15 @@ import org.springframework.lang.Nullable;
  */
 public abstract class Assert {
 
+	/*
+	 * 断言一个布尔表达式，抛出一个 IllegalStateException 如果表达式的计算结果为 假．
+	 * 呼叫。 isTrue 如果你想扔 IllegalArgumentException 在断言失败时。
+	 * Assert.state(id == null, "The id property must not already be initialized");
+	 * 形参:
+	 * 表达式 -布尔表达式 消息 -断言失败时使用的异常消息
+	 * 抛出:
+	 * IllegalStateException ——如果 表达式 是 假
+	 */
 	/**
 	 * Assert a boolean expression, throwing an {@code IllegalStateException}
 	 * if the expression evaluates to {@code false}.
@@ -73,7 +92,7 @@ public abstract class Assert {
 	 */
 	public static void state(boolean expression, String message) {
 		if (!expression) {
-			throw new IllegalStateException(message);
+			throw new IllegalStateException(message);    // 非法状态异常
 		}
 	}
 
@@ -728,6 +747,9 @@ public abstract class Assert {
 		return msg + (msg.endsWith(" ") ? "" : ": ") + typeName;
 	}
 
+	/**
+	 * null安全获取
+	 */
 	@Nullable
 	private static String nullSafeGet(@Nullable Supplier<String> messageSupplier) {
 		return (messageSupplier != null ? messageSupplier.get() : null);

@@ -20,6 +20,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.ClassMetadata;
 
+/*
+ * 用于访问类元数据的简单外观，由ASM读取 org.springframework.asm.ClassReader．
+ */
 /**
  * Simple facade for accessing class metadata,
  * as read by an ASM {@link org.springframework.asm.ClassReader}.

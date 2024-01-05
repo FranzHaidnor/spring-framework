@@ -19,6 +19,7 @@ package org.springframework.util;
 import java.util.UUID;
 
 /**
+ * JDK id 生成器
  * An {@link IdGenerator} that calls {@link java.util.UUID#randomUUID()}.
  *
  * @author Rossen Stoyanchev

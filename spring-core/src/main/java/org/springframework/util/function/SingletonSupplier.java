@@ -21,6 +21,16 @@ import java.util.function.Supplier;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+/*
+ * 一个 Supplier 装饰器，用于缓存单一实例结果并使其可从 get() （nullable） 和 obtain() （null-safe） 使用。
+ * A SingletonSupplier 可以通过 of 工厂方法或构造函数来构造，这些构造函数提供默认供应商作为回退。这对于方法引用供应商特别有用，可以回退到返回 null 方法的默认供应商并缓存结果。
+ * 自:
+ * 5.1
+ * 作者:
+ * 尤尔根·霍勒
+ * 类型形参:
+ * <T> – 该供应商提供的结果类型
+ */
 /**
  * A {@link java.util.function.Supplier} decorator that caches a singleton result and
  * makes it available from {@link #get()} (nullable) and {@link #obtain()} (null-safe).
@@ -46,6 +56,11 @@ public class SingletonSupplier<T> implements Supplier<T> {
 	private volatile T singletonInstance;
 
 
+	/*
+	 * 使用给定的单例实例和默认供应商构建一个 SingletonSupplier 实例，当实例为 null时。
+	 * 形参:
+	 * instance – 单例实例（可能 null） defaultSupplier – 默认供应商作为后备
+	 */
 	/**
 	 * Build a {@code SingletonSupplier} with the given singleton instance
 	 * and a default supplier for the case when the instance is {@code null}.
@@ -58,6 +73,11 @@ public class SingletonSupplier<T> implements Supplier<T> {
 		this.singletonInstance = instance;
 	}
 
+	/*
+	 * 使用给定的实例供应商和默认供应商构建一个 SingletonSupplier 实例，当实例为 null.
+	 * 形参:
+	 * instanceSupplier – 直接实例供应商 defaultSupplier – 默认供应商作为后备
+	 */
 	/**
 	 * Build a {@code SingletonSupplier} with the given instance supplier
 	 * and a default supplier for the case when the instance is {@code null}.
@@ -106,6 +126,13 @@ public class SingletonSupplier<T> implements Supplier<T> {
 		return instance;
 	}
 
+	/*
+	 * 获取该供应商的共享单例实例。
+	 * 返回值:
+	 * 单例实例（从不 null）
+	 * 抛出:
+	 * IllegalStateException – 在没有实例的情况下
+	 */
 	/**
 	 * Obtain the shared singleton instance for this supplier.
 	 * @return the singleton instance (never {@code null})

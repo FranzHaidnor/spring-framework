@@ -16,6 +16,26 @@
 
 package org.springframework.core.env;
 
+/*
+ * 表示当前应用程序运行环境的接口。对应用程序环境的两个关键方面进行建模： 配置文件 和 属性。与属性访问相关的方法通过 PropertyResolver 超接口公开。
+ *
+ * 概要文件是 Bean 定义的命名逻辑组，仅当给定概要文件处于活动状态时，才会向容器注册。Bean 可以分配给配置文件，无论是在 XML 中定义还是通过注释定义;
+ * 有关语法详细信息，请参阅 spring-beans 3.1 模式或@Profile注释。
+ * 与配置文件相关的对象的作用Environment是确定哪些配置文件（如果有）当前处于活动状态，以及哪些配置文件（如果有）在默认情况下应处于活动状态。
+ *
+ * 属性在几乎所有应用程序中都扮演着重要角色，并且可能来自各种来源：属性文件、JVM 系统属性、系统环境变量、JNDI、servlet 上下文参数、临时属性对象、映射等。
+ * 与属性相关的环境对象的作用是为用户提供一个方便的服务接口，用于配置属性源并从中解析属性。
+ *
+ * 在 an ApplicationContext 中管理的 Bean 可以注册为 或 @Inject EnvironmentAware Environment ，以便直接查询配置文件状态或解析属性。
+ *
+ * 然而，在大多数情况下，应用程序级 bean 不需要直接与 Environment 进行交互，而是可能必须 ${...} 将属性值替换为属性占位符配置器，
+ * 例如 PropertySourcesPlaceholderConfigurer，它本身是 EnvironmentAware ，
+ * 并且从 Spring 3.1 开始，在使用 <context:property-placeholder/>.
+ *
+ * 环境对象的配置必须通过从所有AbstractApplicationContext子类getEnvironment()方法返回的ConfigurableEnvironment接口完成。
+ * 请参阅 ConfigurableEnvironment Javadoc 以获取使用示例，这些示例演示了在应用程序上下文refresh()之前对属性源的操作。
+ */
+
 /**
  * Interface representing the environment in which the current application is running.
  * Models two key aspects of the application environment: <em>profiles</em> and
@@ -70,6 +90,11 @@ package org.springframework.core.env;
  */
 public interface Environment extends PropertyResolver {
 
+	/*
+	 * 返回为此环境显式激活的配置文件集。概要文件用于创建要有条件地注册的 Bean 定义的逻辑分组，例如基于部署环境。
+	 * 可以通过将 “spring.profiles.active” 设置为系统属性或调用 ConfigurableEnvironment.setActiveProfiles(String...)来激活配置文件。
+	 * 如果未将配置文件明确指定为活动配置文件，则将自动激活任何 默认配置文件 。
+	 */
 	/**
 	 * Return the set of profiles explicitly made active for this environment. Profiles
 	 * are used for creating logical groupings of bean definitions to be registered

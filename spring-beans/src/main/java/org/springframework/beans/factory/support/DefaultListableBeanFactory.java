@@ -85,6 +85,15 @@ import org.springframework.util.CompositeIterator;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+/*
+ * Spring 的 and BeanDefinitionRegistry 接口的默认实现ConfigurableListableBeanFactory：一个基于 Bean 定义元数据的成熟 Bean 工厂，可通过后处理器进行扩展。
+ *
+ * 典型的用法是先注册所有 Bean 定义（可能从 Bean 定义文件中读取），然后再访问 Bean。因此，在本地 Bean 定义表中，按名称查找 Bean 是一种成本低廉的操作，它对预先解析的 Bean 定义元数据对象进行操作。
+ *
+ * 请注意，特定 Bean 定义格式的读取器通常是单独实现的，而不是作为 Bean 工厂子类实现的：例如，请参见 org.springframework.beans.factory.xml.XmlBeanDefinitionReader。
+ *
+ * 有关接口的 org.springframework.beans.factory.ListableBeanFactory 替代实现，请查看 StaticListableBeanFactory，它管理现有的 Bean 实例，而不是基于 Bean 定义创建新的实例。
+ */
 /**
  * Spring's default implementation of the {@link ConfigurableListableBeanFactory}
  * and {@link BeanDefinitionRegistry} interfaces: a full-fledged bean factory
@@ -172,12 +181,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** Map of singleton-only bean names, keyed by dependency type. */
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
 
+	// Bean 定义名称列表，按注册顺序排列。
 	/** List of bean definition names, in registration order. */
 	private volatile List<String> beanDefinitionNames = new ArrayList<>(256);
 
 	/** List of names of manually registered singletons, in registration order. */
 	private volatile Set<String> manualSingletonNames = new LinkedHashSet<>(16);
 
+	// 在冻结配置的情况下缓存的 Bean 定义名称数组
 	/** Cached array of bean definition names in case of frozen configuration. */
 	@Nullable
 	private volatile String[] frozenBeanDefinitionNames;
@@ -202,12 +213,17 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 
+	/*
+	 * 指定一个用于序列化的 ID，如果需要，允许将此 BeanFactory 从此 ID 反序列化回 BeanFactory 对象。
+	 */
 	/**
 	 * Specify an id for serialization purposes, allowing this BeanFactory to be
 	 * deserialized from this id back into the BeanFactory object, if needed.
 	 */
 	public void setSerializationId(@Nullable String serializationId) {
+		// 如果序列化 id 不为空
 		if (serializationId != null) {
+			// 向 map 中存入一个弱引用的 DefaultListableBeanFactory
 			serializableFactories.put(serializationId, new WeakReference<>(this));
 		}
 		else if (this.serializationId != null) {
@@ -870,12 +886,17 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		// While this may not be part of the regular factory bootstrap, it does otherwise work fine.
 		List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
 
+		// 触发所有非懒加载单例 Bean 的初始化
 		// Trigger initialization of all non-lazy singleton beans...
 		for (String beanName : beanNames) {
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+			// 不是抽象类 && 单例 && 非懒加载
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+				// 如果是工厂 Bean
 				if (isFactoryBean(beanName)) {
+					// 创建 Bean 对象实例
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
+					// 如果是一个工厂 Bean 对象
 					if (bean instanceof FactoryBean) {
 						FactoryBean<?> factory = (FactoryBean<?>) bean;
 						boolean isEagerInit;
@@ -892,13 +913,14 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							getBean(beanName);
 						}
 					}
-				}
-				else {
+				} else {
+					// 创建 Bean 对象实例
 					getBean(beanName);
 				}
 			}
 		}
 
+		// 触发所有适用 Bean 的初始化后回调
 		// Trigger post-initialization callback for all applicable beans...
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);

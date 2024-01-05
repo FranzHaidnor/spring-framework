@@ -20,6 +20,9 @@ import java.util.function.Supplier;
 
 import org.springframework.lang.Nullable;
 
+/*
+ * 改进生产者接口使用方式
+ */
 /**
  * Convenience utilities for {@link java.util.function.Supplier} handling.
  *

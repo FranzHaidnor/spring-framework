@@ -38,3 +38,5 @@ rootProject.children.each {project ->
 }
 
 include 'haidnor-ioc-test'
+include 'my-spring-test'
+

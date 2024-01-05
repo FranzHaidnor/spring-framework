@@ -54,6 +54,7 @@ import org.springframework.util.Assert;
  */
 public class AnnotatedBeanDefinitionReader {
 
+	// bean 定义注册器
 	private final BeanDefinitionRegistry registry;
 
 	private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
@@ -63,6 +64,14 @@ public class AnnotatedBeanDefinitionReader {
 	private ConditionEvaluator conditionEvaluator;
 
 
+	/*
+	 * 为给定的 registry 创建一个新的 AnnotatedBeanDefinitionReader。
+	 * 如果注册表是 EnvironmentCapable，例如 ApplicationContext是 ，则将继承， Environment 否则将创建并使用新的 StandardEnvironment 。
+	 * 形参:
+	 * registryBeanFactory– 将 Bean 定义加载到中，以BeanDefinitionRegistry
+	 * 请参阅:
+	 * AnnotatedBeanDefinitionReader(BeanDefinitionRegistry, Environment), setEnvironment(Environment)
+	 */
 	/**
 	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry.
 	 * <p>If the registry is {@link EnvironmentCapable}, e.g. is an {@code ApplicationContext},
@@ -77,6 +86,13 @@ public class AnnotatedBeanDefinitionReader {
 		this(registry, getOrCreateEnvironment(registry));
 	}
 
+	/*
+	 * AnnotatedBeanDefinitionReader使用给定Environment的 .
+	 * 形参:
+	 * registryBeanFactory– 将 Bean 定义加载到中，以BeanDefinitionRegistry environmentEnvironment– 在评估 Bean 定义配置文件时使用。
+	 * 自:
+	 * 3.1
+	 */
 	/**
 	 * Create a new {@code AnnotatedBeanDefinitionReader} for the given registry,
 	 * using the given {@link Environment}.
@@ -91,10 +107,14 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
+		// 注册注解配置处理器
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 	}
 
 
+	/**
+	 * 获取此读取器操作的 BeanDefinitionRegistry
+	 */
 	/**
 	 * Get the BeanDefinitionRegistry that this reader operates on.
 	 */
@@ -102,6 +122,7 @@ public class AnnotatedBeanDefinitionReader {
 		return this.registry;
 	}
 
+	// 设置在评估 @Conditional 注解的组件类是否应注册时要使用的{@code Environment}。
 	/**
 	 * Set the {@code Environment} to use when evaluating whether
 	 * {@link Conditional @Conditional}-annotated component classes should be registered.

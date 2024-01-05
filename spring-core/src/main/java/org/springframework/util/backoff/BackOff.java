@@ -16,6 +16,10 @@
 
 package org.springframework.util.backoff;
 
+/*
+ * 提供一个 BackOffExecution 指示应重试操作的速率。
+ * 这个界面的用户应该这样使用它:
+ */
 /**
  * Provide a {@link BackOffExecution} that indicates the rate at which
  * an operation should be retried.

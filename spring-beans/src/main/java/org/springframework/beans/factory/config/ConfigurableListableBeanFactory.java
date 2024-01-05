@@ -23,6 +23,13 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.lang.Nullable;
 
+/*
+ * 配置接口，由大多数可列出的bean工厂实现。除了…之外 ConfigurableBeanFactory，它提供了分析和修改bean定义以及预实例化单例的工具。
+ * 的子接口 org.springframework.beans.factory.BeanFactory 并不意味着在正常的应用程序代码中使用:坚持 org.springframework.beans.factory.BeanFactory 或 ListableBeanFactory 对于典型的用例。
+ * 这个接口只是为了允许框架内部即插即用，即使在需要访问bean工厂配置方法时也是如此。
+ * 请参阅:
+ * org.springframework.context.support.AbstractApplicationContext.getBeanFactory ()
+ */
 /**
  * Configuration interface to be implemented by most listable bean factories.
  * In addition to {@link ConfigurableBeanFactory}, it provides facilities to
@@ -42,6 +49,11 @@ import org.springframework.lang.Nullable;
 public interface ConfigurableListableBeanFactory
 		extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
 
+	/**
+	 *忽略给定的自动装配依赖类型:例如，String。默认为none。
+	 * 形参:
+	 * 类型 -要忽略的依赖类型
+	 */
 	/**
 	 * Ignore the given dependency type for autowiring:
 	 * for example, String. Default is none.
@@ -148,6 +160,9 @@ public interface ConfigurableListableBeanFactory
 	 */
 	boolean isConfigurationFrozen();
 
+	/*
+	 * 确保所有非惰性初始化单例都已实例化，同时考虑 FactoryBeans.如果需要，通常在出厂设置结束时调用。
+	 */
 	/**
 	 * Ensure that all non-lazy-init singletons are instantiated, also considering
 	 * {@link org.springframework.beans.factory.FactoryBean FactoryBeans}.

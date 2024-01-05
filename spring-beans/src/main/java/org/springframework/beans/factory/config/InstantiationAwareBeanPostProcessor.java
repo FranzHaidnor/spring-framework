@@ -75,6 +75,19 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 		return null;
 	}
 
+	/*
+	 * 在 Bean 实例化之后，通过构造函数或工厂方法，但在 Spring 属性填充（来自显式属性或自动连接）发生之前执行操作。
+	 * 这是在 Spring 的自动连线启动之前在给定的 Bean 实例上执行自定义字段注入的理想回调。
+	 * 默认实现返回 true.
+	 * 形参:
+	 * bean – 已创建的 Bean 实例，其属性尚未设置 beanName – 豆子的名字
+	 * 返回值:
+	 * true 是否应该在 Bean 上设置属性; false 是否应跳过属性填充。正常实现应返回 true。返回 false 还将阻止在此 Bean 实例上调用任何后续 InstantiationAwareBeanPostProcessor 实例。
+	 * 抛出:
+	 * BeansException – 万一出现错误
+	 * 请参阅:
+	 * postProcessBeforeInstantiation
+	 */
 	/**
 	 * Perform operations after the bean has been instantiated, via a constructor or factory method,
 	 * but before Spring property population (from explicit properties or autowiring) occurs.

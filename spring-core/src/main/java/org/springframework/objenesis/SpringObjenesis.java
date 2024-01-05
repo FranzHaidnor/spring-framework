@@ -22,6 +22,11 @@ import org.springframework.objenesis.strategy.InstantiatorStrategy;
 import org.springframework.objenesis.strategy.StdInstantiatorStrategy;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
+/*
+ * 的spring特定变体 ObjenesisStd / ObjenesisBase，提供基于的缓存 类 键而不是类名，并允许选择性地使用缓存。
+ * 自:
+ * 4.2
+ */
 /**
  * Spring-specific variant of {@link ObjenesisStd} / {@link ObjenesisBase},
  * providing a cache based on {@code Class} keys instead of class names,
@@ -34,6 +39,10 @@ import org.springframework.util.ConcurrentReferenceHashMap;
  */
 public class SpringObjenesis implements Objenesis {
 
+	/*
+	 * 系统属性，指示Spring忽略对象，甚至不尝试使用它。将这个标志设置为“true”相当于让Spring发现Objenesis在运行时不工作，
+	 * 立即触发回退代码路径:最重要的是，这意味着所有CGLIB AOP代理都将通过默认构造函数通过常规实例化创建。
+	 */
 	/**
 	 * System property that instructs Spring to ignore Objenesis, not even attempting
 	 * to use it. Setting this flag to "true" is equivalent to letting Spring find
@@ -44,6 +53,9 @@ public class SpringObjenesis implements Objenesis {
 	public static final String IGNORE_OBJENESIS_PROPERTY_NAME = "spring.objenesis.ignore";
 
 
+	/**
+	 * 实例化器策略
+	 */
 	private final InstantiatorStrategy strategy;
 
 	private final ConcurrentReferenceHashMap<Class<?>, ObjectInstantiator<?>> cache =
@@ -52,6 +64,9 @@ public class SpringObjenesis implements Objenesis {
 	private volatile Boolean worthTrying;
 
 
+	/*
+	 * 建一个 SpringObjenesis 使用标准实例化器策略实例化。
+	 */
 	/**
 	 * Create a new {@code SpringObjenesis} instance with the
 	 * standard instantiator strategy.
@@ -60,6 +75,11 @@ public class SpringObjenesis implements Objenesis {
 		this(null);
 	}
 
+	/*
+	 * 新建一个 SpringObjenesis 使用给定的标准实例化器策略实例化。
+	 * 形参:
+	 * 策略 -要使用的实例化策略
+	 */
 	/**
 	 * Create a new {@code SpringObjenesis} instance with the
 	 * given standard instantiator strategy.
@@ -74,7 +94,10 @@ public class SpringObjenesis implements Objenesis {
 		}
 	}
 
-
+	/*
+	 * 返回此Objenesis实例是否值得尝试创建实例，即它是否尚未被使用或已知是否有效。
+	 * 如果已配置的Objenesis实例化器策略被识别为根本不能在当前JVM上工作，或者如果“spring.objenesis。”忽略"属性被设置为"true"，此方法返回 假．
+	 */
 	/**
 	 * Return whether this Objenesis instance is worth trying for instance creation,
 	 * i.e. whether it hasn't been used yet or is known to work.
@@ -106,6 +129,9 @@ public class SpringObjenesis implements Objenesis {
 		return getInstantiatorOf(clazz).newInstance();
 	}
 
+	/**
+	 * 获取 clazz 的实例化器
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> ObjectInstantiator<T> getInstantiatorOf(Class<T> clazz) {
 		ObjectInstantiator<?> instantiator = this.cache.get(clazz);

@@ -89,6 +89,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	public static final int AUTOWIRE_CONSTRUCTOR = AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR;
 
+	/*
+	 * 指示通过对 Bean 类的内省来确定适当的自动连线策略的常量。
+	 * 已弃用
+	 * 从 Spring 3.0 开始：如果您使用的是混合自动布线策略，请使用基于注释的自动布线，以便更清楚地划分自动布线需求。
+	 */
 	/**
 	 * Constant that indicates determining an appropriate autowire strategy
 	 * through introspection of the bean class.
@@ -599,6 +604,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.autowireMode;
 	}
 
+	/*
+	 * 返回已解析的自动连线代码（将AUTOWIRE_AUTODETECT解析为 AUTOWIRE_CONSTRUCTOR 或 AUTOWIRE_BY_TYPE）。
+	 */
 	/**
 	 * Return the resolved autowire code,
 	 * (resolving AUTOWIRE_AUTODETECT to AUTOWIRE_CONSTRUCTOR or AUTOWIRE_BY_TYPE).
@@ -614,9 +622,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			Constructor<?>[] constructors = getBeanClass().getConstructors();
 			for (Constructor<?> constructor : constructors) {
 				if (constructor.getParameterCount() == 0) {
+					// 根据类型自动注入
 					return AUTOWIRE_BY_TYPE;
 				}
 			}
+			// 根据构造方法自动注入
 			return AUTOWIRE_CONSTRUCTOR;
 		}
 		else {

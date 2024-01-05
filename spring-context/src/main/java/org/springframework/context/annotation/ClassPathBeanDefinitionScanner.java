@@ -62,6 +62,7 @@ import org.springframework.util.PatternMatchUtils;
  */
 public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
 
+	// bean 定义注册器
 	private final BeanDefinitionRegistry registry;
 
 	private BeanDefinitionDefaults beanDefinitionDefaults = new BeanDefinitionDefaults();
@@ -244,6 +245,12 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	}
 
 
+	/*
+	 * 在指定的基本包中执行扫描。
+	 * 形参:
+	 * basePackages -检查带注释的类的包
+	 * 返回值: 注册 bean 的数量
+	 */
 	/**
 	 * Perform a scan within the specified base packages.
 	 * @param basePackages the packages to check for annotated classes
@@ -251,7 +258,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 */
 	public int scan(String... basePackages) {
 		// 获取bean注册器的数量
-		int beanCountAtScanStart = this.registry.getBeanDefinitionCount();
+		int beanCountAtScanStart = this.registry.getBeanDefinitionCount();  // 获取 Bean 定义计数器
 
 		// 扫描包
 		doScan(basePackages);
@@ -259,6 +266,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		// 如有必要，注册注释配置处理器。
 		// Register annotation config processors, if necessary.
 		if (this.includeAnnotationConfig) {
+			// 注册注解配置处理器
 			AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 		}
 
@@ -266,6 +274,14 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		return (this.registry.getBeanDefinitionCount() - beanCountAtScanStart);
 	}
 
+	/*
+	 * 在指定的基础包中执行扫描，返回已注册的 Bean 定义。
+	 * 此方法 不 注册注释配置处理器，而是将其留给调用方。
+	 * 形参:
+	 * basePackages – 要检查带注释的类的包
+	 * 返回值:
+	 * 为工具注册目的而注册的一组 bean（如果有）（从不 null）
+	 */
 	/**
 	 * Perform a scan within the specified base packages,
 	 * returning the registered bean definitions.
@@ -280,8 +296,9 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		// 遍历配置的包路径
 		for (String basePackage : basePackages) {
-			// 查找候选组件 BeanDefinition
+			// 扫描类路径以查找候选组件 查找候选组件 BeanDefinition
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
+			// 循环遍历候选的 BeanDefinition
 			for (BeanDefinition candidate : candidates) {
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());

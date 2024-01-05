@@ -18,6 +18,9 @@ package org.springframework.core.env;
 
 import org.springframework.lang.Nullable;
 
+/*
+ * 用于针对任何基础源解析属性的接口
+ */
 /**
  * Interface for resolving properties against any underlying source.
  *
@@ -29,12 +32,18 @@ import org.springframework.lang.Nullable;
  */
 public interface PropertyResolver {
 
+	/*
+	 * 返回给定的属性键是否可用于解析，即给定键的值是否 null为 。
+	 */
 	/**
 	 * Return whether the given property key is available for resolution,
 	 * i.e. if the value for the given key is not {@code null}.
 	 */
 	boolean containsProperty(String key);
 
+	/**
+	 * 返回给定 key 相关联的属性
+	 */
 	/**
 	 * Return the property value associated with the given key,
 	 * or {@code null} if the key cannot be resolved.
@@ -46,6 +55,11 @@ public interface PropertyResolver {
 	@Nullable
 	String getProperty(String key);
 
+	/*
+	 * 返回与给定键关联的属性值，或者 defaultValue 如果无法解析该键，则返回属性值。
+	 * 形参:
+	 * key – 要解析的属性名称 defaultValue – 未找到值时返回的默认值
+	 */
 	/**
 	 * Return the property value associated with the given key, or
 	 * {@code defaultValue} if the key cannot be resolved.
@@ -56,6 +70,11 @@ public interface PropertyResolver {
 	 */
 	String getProperty(String key, String defaultValue);
 
+	/*
+	 * 返回与给定键关联的属性值，或者 null 如果无法解析该键，则返回属性值。
+	 * 形参:
+	 * key – 要解析的属性名称 targetType – 属性值的预期类型
+	 */
 	/**
 	 * Return the property value associated with the given key,
 	 * or {@code null} if the key cannot be resolved.

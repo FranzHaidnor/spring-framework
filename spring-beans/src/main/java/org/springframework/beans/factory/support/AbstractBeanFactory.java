@@ -168,7 +168,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	/** Map from bean name to merged RootBeanDefinition. */
 	private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
-
+	// 已至少创建一次的 Bean 的名称
 	/** Names of beans that have already been created at least once. */
 	private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
 
@@ -246,6 +246,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		String beanName = transformedBeanName(name);
 		Object bean;
 
+		// k1 三级缓存
+		// 急切地检查单例缓存中是否有手动注册的单例。
 		// Eagerly check singleton cache for manually registered singletons.
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
@@ -317,11 +319,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 				}
 
+				// 创建 Bean 的实例
 				// Create bean instance.
-				if (mbd.isSingleton()) {
-					sharedInstance = getSingleton(beanName, () -> {
+				if (mbd.isSingleton()) {  //
+					// 创建获取单例
+					sharedInstance = getSingleton(beanName, () -> {  //  ObjectFactory 接口的匿名对象
 						try {
-							return createBean(beanName, mbd, args);
+							// k1 创建 Bean 对象
+							return createBean(beanName, mbd, args);   // 抽象方法,由子类 AbstractAutowireCapableBeanFactory  实现
 						}
 						catch (BeansException ex) {
 							// Explicitly remove instance from singleton cache: It might have been put there
@@ -1777,6 +1782,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return !this.alreadyCreated.isEmpty();
 	}
 
+	/*\
+	 * 获取给定 Bean 实例的对象，如果是 FactoryBean，则可以是 Bean 实例本身，也可以是其创建的对象。
+	 * 形参:
+	 * beanInstance – 共享 Bean 实例 name – 可能包含出厂取消引用前缀的名称 beanName – 规范的 Bean 名称 mbd – 合并的 Bean 定义
+	 * 返回值:
+	 * 要为 Bean 公开的对象
+	 */
 	/**
 	 * Get the object for the given bean instance, either the bean
 	 * instance itself or its created object in case of a FactoryBean.

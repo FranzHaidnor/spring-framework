@@ -129,6 +129,11 @@ public abstract class AnnotationConfigUtils {
 	}
 
 
+	/*
+	 * 在给定的注册表中注册所有相关的注释后处理器。
+	 * 形参:
+	 * 注册表 -要操作的注册表
+	 */
 	/**
 	 * Register all relevant annotation post processors in the given registry.
 	 * @param registry the registry to operate on
@@ -137,6 +142,13 @@ public abstract class AnnotationConfigUtils {
 		registerAnnotationConfigProcessors(registry, null);
 	}
 
+	/*
+	 * 在给定的注册表中注册所有相关的注释后处理器。
+	 * 形参:
+	 * 注册表 -要操作的注册表 源 -触发此注册的配置源元素(已提取)。可能是 零．
+	 * 返回值:
+	 * 一组BeanDefinitionHolders，其中包含通过此调用实际注册的所有bean定义
+	 */
 	/**
 	 * Register all relevant annotation post processors in the given registry.
 	 * @param registry the registry to operate on
@@ -148,6 +160,7 @@ public abstract class AnnotationConfigUtils {
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
+		// 类型强制转换, 将 BeanDefinitionRegistry 转换成 DefaultListableBeanFactory
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
@@ -160,7 +173,7 @@ public abstract class AnnotationConfigUtils {
 
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
-		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
+		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME /*配置注释处理器bean名称*/)) {
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));
@@ -217,6 +230,10 @@ public abstract class AnnotationConfigUtils {
 		return new BeanDefinitionHolder(definition, beanName);
 	}
 
+	/*
+	 * 拆包默认列表Bean工厂
+	 * 类型强制转换, 将 BeanDefinitionRegistry 转换成 DefaultListableBeanFactory
+	 */
 	@Nullable
 	private static DefaultListableBeanFactory unwrapDefaultListableBeanFactory(BeanDefinitionRegistry registry) {
 		if (registry instanceof DefaultListableBeanFactory) {
