@@ -280,6 +280,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				try {
 					// 执行 ObjectFactory 接口方法创建单例
 					singletonObject = singletonFactory.getObject();
+
 					newSingleton = true;
 				} catch (IllegalStateException ex) {
 					// Has the singleton object implicitly appeared in the meantime ->
@@ -304,7 +305,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 				// 根据标识判断是否创建成功
 				if (newSingleton) {
-					// bean 创建成功以后执行, 将 bean 添加到单例池
+					// K1 将 bean 实例添加到单例池
 					addSingleton(beanName, singletonObject);
 				}
 			}

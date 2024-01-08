@@ -22,6 +22,24 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.lang.Nullable;
 
+/*
+   Instantiation   实例化；例示；具现化
+   Aware  adj.意识到；知道；明白；发现
+
+ * InstantiationAwareBeanPostProcessor 是 Spring 框架中的一个接口，用于在 bean 实例化之前和之后进行自定义处理。
+ *
+ * Spring 容器在实例化 bean 对象时，会通过一系列的 BeanPostProcessor 进行处理，其中 InstantiationAwareBeanPostProcessor 是其中之一。它扩展了 BeanPostProcessor 接口，并添加了一些额外的回调方法，用于在 bean 实例化的不同阶段进行处理。
+ *
+ * 具体来说，InstantiationAwareBeanPostProcessor 提供了以下几个方法：
+ *
+ * 1. postProcessBeforeInstantiation()：在 bean 实例化之前调用，可以返回一个自定义的 bean 实例，用于替代默认的实例化过程。
+ * 2. postProcessAfterInstantiation()：在 bean 实例化之后调用，可以对实例进行自定义初始化操作。
+ * 3. postProcessPropertyValues()：在 bean 的属性注入之前调用，可以修改要注入的属性值或者验证属性的有效性。
+ * 4. postProcessBeforeInitialization()：在 bean 的初始化方法（例如 InitializingBean 接口的 afterPropertiesSet() 方法或者自定义的 init 方法）之前调用，可以对 bean 进行自定义的初始化操作。
+ * 5. postProcessAfterInitialization()：在 bean 的初始化方法之后调用，可以对 bean 进行自定义的后处理操作。
+ *
+ * 通过实现 InstantiationAwareBeanPostProcessor 接口，并重写这些方法，开发者可以在 bean 实例化的各个阶段进行自定义处理，灵活地修改或增强 bean 的行为。
+ */
 /**
  * Subinterface of {@link BeanPostProcessor} that adds a before-instantiation callback,
  * and a callback after instantiation but before explicit properties are set or
@@ -107,6 +125,16 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 		return true;
 	}
 
+	/*
+	 * 在工厂将给定的属性值应用于给定的 Bean 之前，对它们进行后处理，而无需任何属性描述符。
+	 * 如果实现提供自定义postProcessPropertyValues实现，则应返回（默认值），pvs否则应返回null。在此接口的未来版本中（已删除postProcessPropertyValues），默认实现将直接返回给定pvs的原样。
+	 * 形参:
+	 * pvs – 工厂将要应用的属性值（从不 null） bean – 已创建但尚未设置其属性的 Bean 实例 beanName – 豆子的名字
+	 * 返回值:
+	 * 要应用于给定 Bean 的实际属性值（可以是传入的 PropertyValues 实例），或者 null 继续处理现有属性，但具体继续调用 postProcessPropertyValues （需要对当前 Bean 类初始化 PropertyDescriptors）
+	 * 抛出:
+	 * BeansException – 万一出现错误
+	 */
 	/**
 	 * Post-process the given property values before the factory applies them
 	 * to the given bean, without any need for property descriptors.

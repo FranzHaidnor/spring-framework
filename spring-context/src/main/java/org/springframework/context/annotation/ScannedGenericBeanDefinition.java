@@ -25,6 +25,9 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+/*
+扫描的通用 Bean 定义
+ */
 /**
  * Extension of the {@link org.springframework.beans.factory.support.GenericBeanDefinition}
  * class, based on an ASM ClassReader, with support for annotation metadata exposed
@@ -58,6 +61,7 @@ public class ScannedGenericBeanDefinition extends GenericBeanDefinition implemen
 	 */
 	public ScannedGenericBeanDefinition(MetadataReader metadataReader) {
 		Assert.notNull(metadataReader, "MetadataReader must not be null");
+		// 获取注解元数据
 		this.metadata = metadataReader.getAnnotationMetadata();
 		setBeanClassName(this.metadata.getClassName());
 		setResource(metadataReader.getResource());

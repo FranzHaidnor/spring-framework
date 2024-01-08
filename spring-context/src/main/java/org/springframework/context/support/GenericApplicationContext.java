@@ -94,7 +94,8 @@ import org.springframework.util.Assert;
 public class GenericApplicationContext extends AbstractApplicationContext implements BeanDefinitionRegistry {
 
 	/**
-	 * 默认的bean定义注册器 BeanDefinitionRegistry
+	 * 这是一个非常重要的对象, 它有注册 BeanDefinition 和单例 Bean 的能力
+	 * 它在构造方法中创建 org.springframework.context.support.GenericApplicationContext#GenericApplicationContext()
 	 */
 	private final DefaultListableBeanFactory beanFactory;
 

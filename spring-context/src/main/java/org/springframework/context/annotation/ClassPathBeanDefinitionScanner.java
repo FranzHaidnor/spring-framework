@@ -292,28 +292,35 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 */
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
-		// 存储 BeanDefinitionHolder
+		// 存储 BeanDefinitionHolder 的集合
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
-		// 遍历配置的包路径
+
+		// 玄幻遍历配置的包路径
 		for (String basePackage : basePackages) {
 			// 扫描类路径以查找候选组件 查找候选组件 BeanDefinition
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
+
 			// 循环遍历候选的 BeanDefinition
 			for (BeanDefinition candidate : candidates) {
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
+				// 后置处理 AbstractBeanDefinition
 				if (candidate instanceof AbstractBeanDefinition) {
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
+				// 后置处理 AnnotatedBeanDefinition
 				if (candidate instanceof AnnotatedBeanDefinition) {
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
+				// 校验待注册的 BeanDefinition
 				if (checkCandidate(beanName, candidate)) {
+					// 创建 BeanDefinition 包装器
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
-					definitionHolder =
-							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+					definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+
+					// 注册 BeanDefinition
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}
@@ -358,7 +365,9 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * bean definition has been found for the specified name
 	 */
 	protected boolean checkCandidate(String beanName, BeanDefinition beanDefinition) throws IllegalStateException {
+		// 判断是不是没有注册过
 		if (!this.registry.containsBeanDefinition(beanName)) {
+			// 没有注册过就返回 true
 			return true;
 		}
 		BeanDefinition existingDef = this.registry.getBeanDefinition(beanName);
