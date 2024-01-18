@@ -394,8 +394,10 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+		// 查找自动注入的元数据信息
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			// 填充属性
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -640,6 +642,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				value = resolveFieldValue(field, bean, beanName);
 			}
 			if (value != null) {
+				// 使用反射将值设置到字段中
 				ReflectionUtils.makeAccessible(field);
 				field.set(bean, value);
 			}

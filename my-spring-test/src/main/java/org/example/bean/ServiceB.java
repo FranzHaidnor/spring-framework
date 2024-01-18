@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Student {
+public class ServiceB {
 
 	@Autowired
-	private Dog dog;
+	private ServiceA serviceA;
 
+	public void method01() {
+		System.out.println("invoke ServiceB method_01");
+	}
 }

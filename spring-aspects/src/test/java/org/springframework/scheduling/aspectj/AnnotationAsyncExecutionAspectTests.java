@@ -59,7 +59,7 @@ public class AnnotationAsyncExecutionAspectTests {
 	@BeforeEach
 	public void setUp() {
 		executor = new CountingExecutor();
-		AnnotationAsyncExecutionAspect.aspectOf().setExecutor(executor);
+//		AnnotationAsyncExecutionAspect.aspectOf().setExecutor(executor);
 	}
 
 

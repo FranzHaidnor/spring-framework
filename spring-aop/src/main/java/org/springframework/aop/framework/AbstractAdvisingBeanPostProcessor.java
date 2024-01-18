@@ -89,6 +89,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 			}
 			proxyFactory.addAdvisor(this.advisor);
 			customizeProxyFactory(proxyFactory);
+			// k1 返回代理后的 Bean
 			return proxyFactory.getProxy(getProxyClassLoader());
 		}
 

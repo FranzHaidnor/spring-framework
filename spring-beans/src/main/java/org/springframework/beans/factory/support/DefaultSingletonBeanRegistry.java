@@ -113,6 +113,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/** Map between containing bean names: bean name to Set of bean names that the bean contains. */
 	private final Map<String, Set<String>> containedBeanMap = new ConcurrentHashMap<>(16);
 
+	/* 依赖 Bean 名称之间的映射：Bean 名称到依赖 Bean 名称集 */
 	/** Map between dependent bean names: bean name to Set of dependent bean names. */
 	private final Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
 
@@ -159,9 +160,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		}
 	}
 
-	/**
+	/*
 	 * 向三级缓存中添加Bean
-	 *
+	 */
+	/**
 	 * Add the given singleton factory for building the specified singleton
 	 * if necessary.
 	 * <p>To be called for eager registration of singletons, e.g. to be able to
@@ -174,8 +176,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		synchronized (this.singletonObjects) {
 			// 如果一级缓存中不存在
 			if (!this.singletonObjects.containsKey(beanName)) {
+				// 存放早期 Bean 的引用存放进入 3 级缓存
 				this.singletonFactories.put(beanName, singletonFactory);
+				// 二级缓存移除 Bean
 				this.earlySingletonObjects.remove(beanName);
+				// 已经注册的 Bean 集合
 				this.registeredSingletons.add(beanName);
 			}
 		}
@@ -224,7 +229,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 						if (singletonObject == null) {
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);   // 从三级缓存中获取对象工厂
 							if (singletonFactory != null) {
-								// 创建 Bean 对象并返回
+								// 调用对象工厂 ObjectFactory 的获取对象的方法
 								singletonObject = singletonFactory.getObject();
 								// 将 Bean 存放到二级缓存中
 								this.earlySingletonObjects.put(beanName, singletonObject);
@@ -338,9 +343,13 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	protected void removeSingleton(String beanName) {
 		synchronized (this.singletonObjects) {
+			// 一级缓存中移除
 			this.singletonObjects.remove(beanName);
+			// 三级缓存中移除
 			this.singletonFactories.remove(beanName);
+			// 二级缓存中移除
 			this.earlySingletonObjects.remove(beanName);
+			// 已经注册的 Bean 列表中移除
 			this.registeredSingletons.remove(beanName);
 		}
 	}
@@ -527,6 +536,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		return false;
 	}
 
+	/*
+	 * 确定是否已为给定名称注册依赖 Bean。
+	 * 形参:
+	 * beanName – 要检查的 bean 的名称
+	 */
 	/**
 	 * Determine whether a dependent bean has been registered for the given name.
 	 * @param beanName the name of the bean to check
@@ -535,6 +549,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		return this.dependentBeanMap.containsKey(beanName);
 	}
 
+	/*
+	 * 返回依赖于指定 Bean 的所有 Bean 的名称（如果有）。
+	 * 返回值:
+	 * 依赖 Bean 名称的数组，如果没有，则为空数组
+	 */
 	/**
 	 * Return the names of all beans which depend on the specified bean, if any.
 	 * @param beanName the name of the bean

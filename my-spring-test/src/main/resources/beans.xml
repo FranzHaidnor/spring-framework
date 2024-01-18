@@ -6,7 +6,7 @@
 
 	<alias name="student" alias="student01"/>
 
-	<bean id="student" class="org.example.bean.Student">
+	<bean id="student" class="org.example.bean.ServiceB">
 <!--		<property name="message" value="Hello World!"/>-->
 	</bean>
 

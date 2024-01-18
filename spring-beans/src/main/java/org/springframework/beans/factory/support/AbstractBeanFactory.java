@@ -131,6 +131,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	private final List<BeanPostProcessor> beanPostProcessors = new CopyOnWriteArrayList<>();
 
+	/*
+	 * 指示是否已注册任何 InstantiationAwareBeanPostProcessors。
+	 */
 	/**
 	 * Indicates whether any InstantiationAwareBeanPostProcessors have been registered.
 	 */
@@ -156,6 +159,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * Map from bean name to merged RootBeanDefinition.
 	 */
 	private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
+
 	// 已至少创建一次的 Bean 的名称
 	/**
 	 * Names of beans that have already been created at least once.
@@ -303,7 +307,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				// 创建 Bean 的实例
 				// Create bean instance.
 				if (mbd.isSingleton()) {  //
-					// 创建获取单例
+					// 从单例池中获取 这个方法做了几件事情 1.创建 Bean 2.将 Bean 注册到单例池中
 					sharedInstance = getSingleton(beanName, () -> {  //  ObjectFactory 接口的匿名对象
 						try {
 							// k1 创建 Bean 对象
@@ -1222,7 +1226,17 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		}
 	}
 
-
+	/*
+	 * 返回合并的 RootBeanDefinition，如果指定的 Bean 对应于子 Bean 定义，则遍历父 Bean 定义。
+	 * 形参:
+	 * beanName – 要检索其合并定义的 Bean 的名称
+	 * 返回值:
+	 * 给定 Bean 的（可能合并的）RootBeanDefinition
+	 * 抛出:
+	 * NoSuchBeanDefinitionException – 如果没有具有给定名称的 bean
+	 * BeanDefinitionStoreException – 如果 Bean 定义无效
+	 * BeansException
+	 */
 	/**
 	 * Return a merged RootBeanDefinition, traversing the parent bean definition
 	 * if the specified bean corresponds to a child bean definition.
@@ -1692,6 +1706,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return this.alreadyCreated.contains(beanName);
 	}
 
+	/*
+	 * 删除给定 Bean 名称的单例实例（如果有），但前提是它尚未用于类型检查以外的其他目的。
+	 * 形参:
+	 * beanName – Bean 的名字
+	 * 返回值: true 如果实际删除， false 否则
+	 */
 	/**
 	 * Remove the singleton instance (if any) for the given bean name,
 	 * but only if it hasn't been used for other purposes than type checking.
