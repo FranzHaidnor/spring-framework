@@ -112,7 +112,8 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	}
 
 	/*
-	 * 此实现将执行此上下文的底层 Bean 工厂的实际刷新，关闭先前的 Bean 工厂（如果有），并为上下文生命周期的下一阶段初始化一个新的 Bean 工厂。
+	 * 此实现将执行此上下文的底层 Bean 工厂的实际刷新，关闭先前的 Bean 工厂（如果有），
+	 * 并为上下文生命周期的下一阶段初始化一个新的 Bean 工厂。
 	 * 指定的:
 	 * refreshBeanFactory在类AbstractApplicationContext里边
 	 * 抛出:

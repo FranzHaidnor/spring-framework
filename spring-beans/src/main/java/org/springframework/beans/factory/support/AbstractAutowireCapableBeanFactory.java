@@ -397,12 +397,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return result;
 	}
 
+	// 执行 Bean后置处理器, 这个地方还可以对Bean进行代理
 	@Override
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 			throws BeansException {
-
 		Object result = existingBean;
+		// 获取所有的 Bean 后置处理器
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
+			// 初始化以后再后置处理
 			Object current = processor.postProcessAfterInitialization(result, beanName);
 			if (current == null) {
 				return result;

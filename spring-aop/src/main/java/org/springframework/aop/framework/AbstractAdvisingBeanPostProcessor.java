@@ -61,6 +61,10 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 		return bean;
 	}
 
+	/**
+	 * 重点代码
+	 * 在 Bean 初始完毕以后再执行后置处理方法
+	 */
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		if (this.advisor == null || bean instanceof AopInfrastructureBean) {
@@ -83,10 +87,12 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 		}
 
 		if (isEligible(bean, beanName)) {
+			// 准备代理工厂
 			ProxyFactory proxyFactory = prepareProxyFactory(bean, beanName);
 			if (!proxyFactory.isProxyTargetClass()) {
 				evaluateProxyInterfaces(bean.getClass(), proxyFactory);
 			}
+			// 添加委托者
 			proxyFactory.addAdvisor(this.advisor);
 			customizeProxyFactory(proxyFactory);
 			// k1 返回代理后的 Bean
@@ -97,6 +103,15 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 		return bean;
 	}
 
+	/*
+	 * 检查给定的 bean 是否有资格使用此后处理器的 Advisor(顾问).
+	 * 委托给 isEligible(Class) 目标类检查。可以被覆盖，例如，通过名称专门排除某些 bean。
+	 * 注意：仅对常规 Bean 实例调用，而不对现有代理实例调用，这些实例实现 Advised 并允许将本地 Advisor 添加到现有代理 Advisor 链中。对于后者，直接调用， isEligible(Class) 实际目标类位于现有代理后面（由 AopUtils.getTargetClass(Object)确定）。
+	 * 形参:
+	 * bean – Bean 实例 beanName – 豆子的名字
+	 * 请参阅:
+	 * isEligible(Class)
+	 */
 	/**
 	 * Check whether the given bean is eligible for advising with this
 	 * post-processor's {@link Advisor}.

@@ -906,8 +906,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 									getAccessControlContext());
 						}
 						else {
-							isEagerInit = (factory instanceof SmartFactoryBean &&
-									((SmartFactoryBean<?>) factory).isEagerInit());
+							isEagerInit = (factory instanceof SmartFactoryBean && ((SmartFactoryBean<?>) factory).isEagerInit());
 						}
 						if (isEagerInit) {
 							getBean(beanName);
@@ -1231,7 +1230,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	public Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
 
-		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
+   		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
 		if (Optional.class == descriptor.getDependencyType()) {
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
@@ -1299,7 +1298,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			if (multipleBeans != null) {
 				return multipleBeans;
 			}
-
+			// 查询自动注入的候选者
 			Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
 			if (matchingBeans.isEmpty()) {
 				if (isRequired(descriptor)) {
@@ -1338,7 +1337,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			if (instanceCandidate instanceof Class) {
 				// K1 创建Bean的属性
-				// 如果 bean 中的属性是 Class 类型，则从 BeanFactory 中创建并获取
+				// 如果 bean 中的属性是 Class 类型，解析候选
 				instanceCandidate = descriptor.resolveCandidate(autowiredBeanName, type, this);
 			}
 			Object result = instanceCandidate;

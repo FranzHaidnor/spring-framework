@@ -667,7 +667,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					Object cachedFieldValue = null;
 					if (value != null || this.required) {
 						cachedFieldValue = desc;
-						registerDependentBeans(beanName, autowiredBeanNames);
+						registerDependentBeans(beanName, autowiredBeanNames);  // 注册依赖的Bean
 						if (autowiredBeanNames.size() == 1) {
 							String autowiredBeanName = autowiredBeanNames.iterator().next();
 							if (beanFactory.containsBean(autowiredBeanName) &&

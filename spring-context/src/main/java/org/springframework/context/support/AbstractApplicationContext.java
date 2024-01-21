@@ -600,6 +600,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 	}
 
+	/*
+	 * Spring框架中的prepareRefresh()方法是在应用程序上下文刷新过程中的一个重要步骤。它主要用于准备和初始化应用程序上下文的刷新操作。
+	 *
+	 * 具体来说，prepareRefresh()方法会执行以下几个主要任务：
+	 * 1. 初始化应用程序上下文环境：该方法会设置应用程序上下文的一些必要环境，例如设置类加载器、资源加载器等。
+	 * 2. 注册必要的系统事件监听器：该方法会注册一些必要的系统事件监听器，以便在应用程序上下文刷新过程中能够接收并处理相关的系统事件。
+	 * 3. 初始化应用程序上下文的一些配置：在该方法中，Spring框架会对应用程序上下文的一些配置进行初始化，例如设置属性源、注册BeanPostProcessor等。
+	 *
+	 * 总的来说，prepareRefresh()方法是在应用程序上下文刷新之前执行的一个准备工作，
+	 * 它确保应用程序上下文的环境和配置都得到正确的初始化，为后续的刷新操作做好准备。
+	 */
 	/**
 	 * 准备此上下文以进行刷新、设置其启动日期和活动标志以及执行属性源的任何初始化
 	 * Prepare this context for refreshing, setting its startup date and
@@ -656,6 +667,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// For subclasses: do nothing by default.
 	}
 
+	/*
+	 * obtainFreshBeanFactory()是Spring框架中的一个方法，用于获取新鲜的Bean工厂。它是在应用程序上下文的刷新过程中被调用的一个关键步骤。
+	 *
+	 * 具体来说，obtainFreshBeanFactory()方法的作用如下：
+	 *
+	 * 1. 创建或刷新Bean工厂：该方法会创建一个新的Bean工厂或刷新已存在的Bean工厂。Bean工厂是Spring框架中负责管理和提供Bean实例的核心组件。
+	 * 2. 加载Bean定义：在该方法中，Spring框架会根据配置信息加载Bean定义，包括通过XML文件、注解或Java配置等方式定义的Bean信息。
+	 * 3. 解析Bean定义：在加载Bean定义后，obtainFreshBeanFactory()方法会解析这些定义，将其转换为内部的数据结构，方便后续的Bean实例化和依赖注入。
+	 * 4. 预处理Bean定义：在解析过程中，Spring框架可以对Bean定义进行一些预处理操作，例如属性占位符解析、Bean后置处理器的注册等。
+	 *
+	 * 总的来说，obtainFreshBeanFactory()方法是在应用程序上下文刷新过程中负责创建或刷新Bean工厂，并加载、解析和预处理Bean定义的关键步骤。
+	 * 它确保应用程序上下文中的Bean工厂是最新的，并且能够正确地管理和提供Bean实例。
+	 */
 	/**
 	 * // 返回一个新的BeanFactory实例
 	 * 告诉子类刷新内部bean工厂。
@@ -752,7 +776,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-		// 执行 BeanFactoryPostProcessors
+		// 执行 BeanFactoryPostProcessors 后置处理器接口方法
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// 检测 LoadTimeWeaver 并准备编织（如果在此期间发现）

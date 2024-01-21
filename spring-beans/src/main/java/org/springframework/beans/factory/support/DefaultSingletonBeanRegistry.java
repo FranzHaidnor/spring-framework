@@ -702,6 +702,14 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		this.dependenciesForBeanMap.remove(beanName);
 	}
 
+	/*
+	 * 将单例互斥锁公开给子类和外部协作者。
+	 * 如果子类执行任何类型的扩展单例创建阶段，则它们应该在给定的 Object 上同步。特别是，子类在创建单例时不应涉及自己的互斥锁， 以避免在惰 性初始化情况下出现死锁的可能性。
+	 * 指定的:
+	 * SingletonBeanRegistry 接口 中的getSingletonMutex
+	 * 返回值:
+	 * 互斥对象（从不 null
+	 */
 	/**
 	 * Exposes the singleton mutex to subclasses and external collaborators.
 	 * <p>Subclasses should synchronize on the given Object if they perform

@@ -53,25 +53,37 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 
+	// 静态方法
 	public static void invokeBeanFactoryPostProcessors(
-			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
+			ConfigurableListableBeanFactory beanFactory,
+			List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		Set<String> processedBeans = new HashSet<>();
 
+		// 如果是 Bean定义注册器类型的Bean工厂
 		if (beanFactory instanceof BeanDefinitionRegistry) {
+			// Bean 定义注册器
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+			// 常规后处理器
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
+			// 注册表处理器
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
+			// 循环遍历所有的 BeanFactoryPostProcessor
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
+				// 如果是 Bean定义注册器后置处理器
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
-					BeanDefinitionRegistryPostProcessor registryProcessor =
-							(BeanDefinitionRegistryPostProcessor) postProcessor;
+					// 类型强制转换
+					BeanDefinitionRegistryPostProcessor registryProcessor
+							= (BeanDefinitionRegistryPostProcessor) postProcessor;
+					// 执行后置处理方法, 它的特点是可以对 BeanDefinitionRegistry 做后置处理
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					registryProcessors.add(registryProcessor);
 				}
+				//
 				else {
+					// 将注册器添加到常规处理器集合中
 					regularPostProcessors.add(postProcessor);
 				}
 			}
@@ -93,6 +105,7 @@ final class PostProcessorRegistrationDelegate {
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
+			// 执行 bean 定义注册器后置处理器
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
 
@@ -106,6 +119,7 @@ final class PostProcessorRegistrationDelegate {
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
+			// 执行 bean 定义注册器后置处理器
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
 

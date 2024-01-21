@@ -18,6 +18,8 @@ package org.springframework.beans.factory.config;
 
 import org.springframework.beans.BeansException;
 
+import java.util.Collection;
+
 /**
  * Factory hook that allows for custom modification of an application context's
  * bean definitions, adapting the bean property values of the context's underlying
@@ -72,6 +74,8 @@ public interface BeanFactoryPostProcessor {
 	 * properties even to eager-initializing beans.
 	 * @param beanFactory the bean factory used by the application context
 	 * @throws org.springframework.beans.BeansException in case of errors
+	 *
+	 * {@link org.springframework.context.support.PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(Collection, ConfigurableListableBeanFactory)}
 	 */
 	void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException;
 

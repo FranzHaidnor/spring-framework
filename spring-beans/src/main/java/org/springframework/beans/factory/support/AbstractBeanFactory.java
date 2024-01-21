@@ -304,9 +304,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 				}
 
-				// 创建 Bean 的实例
-				// Create bean instance.
-				if (mbd.isSingleton()) {  //
+				//  Create bean instance 创建 Bean 的实例
+				// 如果是单例模式的Bean
+				if (mbd.isSingleton()) {
 					// 从单例池中获取 这个方法做了几件事情 1.创建 Bean 2.将 Bean 注册到单例池中
 					sharedInstance = getSingleton(beanName, () -> {  //  ObjectFactory 接口的匿名对象
 						try {
@@ -322,11 +322,15 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						}
 					});
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
-				} else if (mbd.isPrototype()) {
+				}
+				// 如果是原型模式的Bean  (多例模式)
+				else if (mbd.isPrototype()) {
 					// It's a prototype -> create a new instance.
+					// 创建新的实例
 					Object prototypeInstance = null;
 					try {
 						beforePrototypeCreation(beanName);
+						// 创建 bean 的实例
 						prototypeInstance = createBean(beanName, mbd, args);
 					} finally {
 						afterPrototypeCreation(beanName);
@@ -1620,6 +1624,15 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return ResolvableType.NONE;
 	}
 
+	/*
+	 * 通过检查 FactoryBean 的属性值来 FactoryBean.OBJECT_TYPE_ATTRIBUTE 确定其 Bean 类型。
+	 * 形参:
+	 * attributes – 要检查的属性
+	 * 返回值:
+	 * 从属性中提取的 a ResolvableType 或 ResolvableType.NONE
+	 * 自:
+	 * 5.2
+	 */
 	/**
 	 * Determine the bean type for a FactoryBean by inspecting its attributes for a
 	 * {@link FactoryBean#OBJECT_TYPE_ATTRIBUTE} value.
@@ -1630,11 +1643,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @since 5.2
 	 */
 	ResolvableType getTypeForFactoryBeanFromAttributes(AttributeAccessor attributes) {
+		// 从 BeanDefinition 中获取对象类型属性
 		Object attribute = attributes.getAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE);
 		if (attribute instanceof ResolvableType) {
 			return (ResolvableType) attribute;
 		}
+		// 是一个类
 		if (attribute instanceof Class) {
+			// 创建一个可解析类型的对象
 			return ResolvableType.forClass((Class<?>) attribute);
 		}
 		return ResolvableType.NONE;
@@ -1794,6 +1810,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			// 从 FactoryBean 中获取 Bean
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
 		return object;

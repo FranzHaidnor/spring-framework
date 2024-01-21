@@ -85,6 +85,7 @@ import org.springframework.util.ClassUtils;
  * @see ScannedGenericBeanDefinition
  * @see CandidateComponentsIndex
  */
+// 类路径扫描候选组件提供者
 public class ClassPathScanningCandidateComponentProvider implements EnvironmentCapable, ResourceLoaderAware {
 
 	static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
@@ -297,6 +298,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 */
 	public final MetadataReaderFactory getMetadataReaderFactory() {
 		if (this.metadataReaderFactory == null) {
+			// 缓存元数据读取器工厂
 			this.metadataReaderFactory = new CachingMetadataReaderFactory();
 		}
 		return this.metadataReaderFactory;
@@ -424,17 +426,20 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		try {
 			// 拼接包路径.格式为 classpath*:org/example/**/*.class
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + resolveBasePackage(basePackage) + '/' + this.resourcePattern;
+			// 到这里就获取了指定路径下的所有资源
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
+			// 循环遍历所有的资源文件
 			for (Resource resource : resources) {
 				if (traceEnabled) {
 					logger.trace("Scanning " + resource);
 				}
 				try {
+					// 获取资源的元数据读取器
 					MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
 					if (isCandidateComponent(metadataReader)) {
-						// 构建 BeanDefinition 对象
+						// k1 创建 BeanDefinition 对象
 						ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 						// 设置资源对象
 						sbd.setSource(resource);
@@ -502,7 +507,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		}
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
-				return isConditionMatch(metadataReader);
+				return isConditionMatch(metadataReader);// 返回是否匹配条件
 			}
 		}
 		return false;
