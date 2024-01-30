@@ -213,7 +213,7 @@ class ConstructorResolver {
 				if (parameterCount < minNrOfArgs) {
 					continue;
 				}
-
+				// 参数持有者
 				ArgumentsHolder argsHolder;
 				Class<?>[] paramTypes = candidate.getParameterTypes();
 				if (resolvedValues != null) {
@@ -225,8 +225,10 @@ class ConstructorResolver {
 								paramNames = pnd.getParameterNames(candidate);
 							}
 						}
+
+						Constructor<?> userDeclaredConstructor = getUserDeclaredConstructor(candidate);
 						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,
-								getUserDeclaredConstructor(candidate), autowiring, candidates.length == 1);
+								userDeclaredConstructor, autowiring, candidates.length == 1);
 					}
 					catch (UnsatisfiedDependencyException ex) {
 						if (logger.isTraceEnabled()) {
@@ -730,6 +732,7 @@ class ConstructorResolver {
 		Set<ConstructorArgumentValues.ValueHolder> usedValueHolders = new HashSet<>(paramTypes.length);
 		Set<String> autowiredBeanNames = new LinkedHashSet<>(4);
 
+		// 循环遍历所有的参数信息
 		for (int paramIndex = 0; paramIndex < paramTypes.length; paramIndex++) {
 			Class<?> paramType = paramTypes[paramIndex];
 			String paramName = (paramNames != null ? paramNames[paramIndex] : "");
@@ -787,8 +790,8 @@ class ConstructorResolver {
 							"] - did you specify the correct bean references as arguments?");
 				}
 				try {
-					Object autowiredArgument = resolveAutowiredArgument(
-							methodParam, beanName, autowiredBeanNames, converter, fallback);
+					// k2 解析自动注入的参数
+					Object autowiredArgument = resolveAutowiredArgument(methodParam, beanName, autowiredBeanNames, converter, fallback);
 					args.rawArguments[paramIndex] = autowiredArgument;
 					args.arguments[paramIndex] = autowiredArgument;
 					args.preparedArguments[paramIndex] = autowiredArgumentMarker;
@@ -802,7 +805,7 @@ class ConstructorResolver {
 		}
 
 		for (String autowiredBeanName : autowiredBeanNames) {
-			this.beanFactory.registerDependentBean(autowiredBeanName, beanName);
+			this.beanFactory.registerDependentBean(autowiredBeanName, beanName);  // 注册依赖的 Bean
 			if (logger.isDebugEnabled()) {
 				logger.debug("Autowiring by type from bean name '" + beanName +
 						"' via " + (executable instanceof Constructor ? "constructor" : "factory method") +

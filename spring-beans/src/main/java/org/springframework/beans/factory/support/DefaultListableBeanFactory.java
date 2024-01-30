@@ -85,6 +85,7 @@ import org.springframework.util.CompositeIterator;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+// 此类是整个 Bean 加载的核心部分, 是 Spring 注册及加载 bean 的模式实现
 /*
  * Spring 的 and BeanDefinitionRegistry 接口的默认实现ConfigurableListableBeanFactory：一个基于 Bean 定义元数据的成熟 Bean 工厂，可通过后处理器进行扩展。
  *
@@ -175,8 +176,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** Map from bean name to merged BeanDefinitionHolder. */
 	private final Map<String, BeanDefinitionHolder> mergedBeanDefinitionHolders = new ConcurrentHashMap<>(256);
 
+	// 单例和非单例 Bean 名称的映射，按依赖类型键控。
 	/** Map of singleton and non-singleton bean names, keyed by dependency type. */
-	private final Map<Class<?>, String[]> allBeanNamesByType = new ConcurrentHashMap<>(64);
+	private final Map<Class<?>/*Bean 的类型*/, String[]> allBeanNamesByType = new ConcurrentHashMap<>(64);
 
 	/** Map of singleton-only bean names, keyed by dependency type. */
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
@@ -362,6 +364,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public <T> T getBean(Class<T> requiredType, @Nullable Object... args) throws BeansException {
 		Assert.notNull(requiredType, "Required type must not be null");
+		// 解析 Bean
 		Object resolved = resolveBean(ResolvableType.forRawClass(requiredType), args, false);
 		if (resolved == null) {
 			throw new NoSuchBeanDefinitionException(requiredType);
@@ -433,10 +436,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	@Nullable
 	private <T> T resolveBean(ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) {
+		// 获取 Bean 的名称
 		NamedBeanHolder<T> namedBean = resolveNamedBean(requiredType, args, nonUniqueAsNull);
 		if (namedBean != null) {
+			// 获取 Bean 的实例
 			return namedBean.getBeanInstance();
 		}
+		// 从父级工厂中获取
 		BeanFactory parent = getParentBeanFactory();
 		if (parent instanceof DefaultListableBeanFactory) {
 			return ((DefaultListableBeanFactory) parent).resolveBean(requiredType, args, nonUniqueAsNull);
@@ -510,9 +516,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		if (!isConfigurationFrozen() || type == null || !allowEagerInit) {
 			return doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);
 		}
+		// 首先尝试从缓存中获取对应类型的 Bean 名称
 		Map<Class<?>, String[]> cache =
 				(includeNonSingletons ? this.allBeanNamesByType : this.singletonBeanNamesByType);
 		String[] resolvedBeanNames = cache.get(type);
+		// 如果从缓存中获取到了 Bean 的名称就直接返回
 		if (resolvedBeanNames != null) {
 			return resolvedBeanNames;
 		}
@@ -1177,8 +1185,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) throws BeansException {
 
 		Assert.notNull(requiredType, "Required type must not be null");
+		// 根据类型获取 Bean 的名称
 		String[] candidateNames = getBeanNamesForType(requiredType);
 
+		// 如果匹配的 Bean 的数量大于 1
 		if (candidateNames.length > 1) {
 			List<String> autowireCandidates = new ArrayList<>(candidateNames.length);
 			for (String beanName : candidateNames) {
@@ -1190,10 +1200,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				candidateNames = StringUtils.toStringArray(autowireCandidates);
 			}
 		}
-
+		// 如果数量等于1
 		if (candidateNames.length == 1) {
+			// 取数组中的第一个
 			String beanName = candidateNames[0];
-			return new NamedBeanHolder<>(beanName, (T) getBean(beanName, requiredType.toClass(), args));
+			// 根据名称获取实际的 Bean
+			T bean = (T) getBean(beanName, requiredType.toClass(), args);
+			return new NamedBeanHolder<>(beanName, bean);
 		}
 		else if (candidateNames.length > 1) {
 			Map<String, Object> candidates = new LinkedHashMap<>(candidateNames.length);
@@ -1272,7 +1285,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			if (shortcut != null) {
 				return shortcut;
 			}
-
+			// 获取依赖的类型
 			Class<?> type = descriptor.getDependencyType();
 			Object value = getAutowireCandidateResolver().getSuggestedValue(descriptor);
 			if (value != null) {
@@ -1503,7 +1516,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 */
 	protected Map<String, Object> findAutowireCandidates(
 			@Nullable String beanName, Class<?> requiredType, DependencyDescriptor descriptor) {
-
+		// 根据 Bean 的类型获取对应的 Bean 的名称
 		String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 				this, requiredType, true, descriptor.isEager());
 		Map<String, Object> result = new LinkedHashMap<>(candidateNames.length);

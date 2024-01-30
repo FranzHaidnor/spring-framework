@@ -1,14 +1,14 @@
 package org.example.bean;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class ServiceA {
 
-	@Autowired
-	private ServiceC serviceC;
+	private ServiceD serviceD;
 
+	public ServiceA(ServiceD serviceD) {
+		this.serviceD = serviceD;
+	}
 }

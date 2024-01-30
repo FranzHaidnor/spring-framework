@@ -59,6 +59,7 @@ import org.springframework.util.ClassUtils;
  */
 public abstract class AnnotationConfigUtils {
 
+	// 内部管理的配置注释处理器的 Bean 名称。
 	/**
 	 * The bean name of the internally managed Configuration annotation processor.
 	 */
@@ -173,8 +174,10 @@ public abstract class AnnotationConfigUtils {
 
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
-		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME /*配置注释处理器bean名称*/)) {
-			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
+		// 关键后置处理器, 配置类后置处理器
+		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
+			// 这个 ConfigurationClassPostProcessor 比较关键
+			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class); // 创建 RootBeanDefinition
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}

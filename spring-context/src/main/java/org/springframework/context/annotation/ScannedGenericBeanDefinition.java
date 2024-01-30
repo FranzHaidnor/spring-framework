@@ -25,6 +25,7 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+// 扫描的通用 Bean 定义
 /*
  * 类的 GenericBeanDefinition 扩展，基于 ASM ClassReader，支持通过 AnnotatedBeanDefinition 接口公开的注释元数据。
  * 此类 不会 提前加载 bean Class 。而是从“.class”文件本身检索所有相关的元数据，并使用 ASM ClassReader 进行解析。

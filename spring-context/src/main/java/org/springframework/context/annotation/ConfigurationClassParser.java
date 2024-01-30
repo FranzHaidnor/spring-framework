@@ -171,7 +171,7 @@ class ConfigurationClassParser {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
 			try {
-				if (bd instanceof AnnotatedBeanDefinition) {
+   				if (bd instanceof AnnotatedBeanDefinition) {
 					parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());
 				}
 				else if (bd instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) bd).hasBeanClass()) {
@@ -321,11 +321,11 @@ class ConfigurationClassParser {
 				configClass.addImportedResource(resolvedResource, readerClass);
 			}
 		}
-
+		// 处理单个@Bean方法
 		// Process individual @Bean methods
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
-			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
+			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));  // 添加 @Bean 的方法
 		}
 
 		// Process default methods on interfaces
@@ -550,6 +550,7 @@ class ConfigurationClassParser {
 		}
 	}
 
+	// 处理 Imports 注解
 	private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
 			Collection<SourceClass> importCandidates, Predicate<String> exclusionFilter,
 			boolean checkForCircularImports) {
@@ -578,8 +579,8 @@ class ConfigurationClassParser {
 							this.deferredImportSelectorHandler.handle(configClass, (DeferredImportSelector) selector);
 						}
 						else {
-							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
-							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
+							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata()); // 执行选择方法
+							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter); // 获取被选择的类
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false);
 						}
 					}

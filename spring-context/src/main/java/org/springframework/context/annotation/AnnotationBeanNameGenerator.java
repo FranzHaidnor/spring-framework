@@ -87,7 +87,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 		// Fallback: generate a unique default bean name.
 		return buildDefaultBeanName(definition, registry);
 	}
-
+	// 从类的某个注释中派生 Bean 名称。
 	/**
 	 * Derive a bean name from one of the annotations on the class.
 	 * @param annotatedDef the annotation-aware bean definition
@@ -99,7 +99,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 		Set<String> types = amd.getAnnotationTypes();
 		String beanName = null;
 		for (String type : types) {
-			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
+			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type); // 获取注解中的属性值
 			if (attributes != null) {
 				Set<String> metaTypes = this.metaAnnotationTypesCache.computeIfAbsent(type, key -> {
 					Set<String> result = amd.getMetaAnnotationTypes(key);

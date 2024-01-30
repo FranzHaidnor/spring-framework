@@ -85,6 +85,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public AnnotationConfigApplicationContext() {
 		// 创建注解 bean 定义读取器， 参数 BeanDefinitionRegistry (bean 定义注册器)  参数是自己
+		// 注册 BeanDefinitionRegistryPostProcessor
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		// 创建类路径 bean 定义扫描器， 参数 BeanDefinitionRegistry (bean 定义注册器) 参数是自己
 		this.scanner = new ClassPathBeanDefinitionScanner(this);

@@ -193,6 +193,12 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		}
 	}
 
+	/*
+	 * 注册默认的 @Component 过滤器。
+	 * 这将隐式注册所有具有 @Component 元注释的注释，包括 @Repository、 @Service和 @Controller 构造型注释。
+	 *
+	 * 还支持 Java EE 6 javax.annotation.ManagedBean 和 JSR-330 javax.inject.Named 的注解（如果可用）
+	 */
 	/**
 	 * Register the default filter for {@link Component @Component}.
 	 * <p>This will implicitly register all annotations that have the
@@ -205,17 +211,29 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 */
 	@SuppressWarnings("unchecked")
 	protected void registerDefaultFilters() {
+		// 包含过滤器中添加一个注解类型的过滤器
+		// 含有 @Component 注解的类就会被注册为 BeanDefinition
 		this.includeFilters.add(new AnnotationTypeFilter(Component.class));
+
+		// 获取自身的类加载器
 		ClassLoader cl = ClassPathScanningCandidateComponentProvider.class.getClassLoader();
 		try {
+			// 添加注解类型的过滤器
+			// 含有 @ManagedBean 注解的类就会被注册为 BeanDefinition
+			// 此处使用了当前的类加载器去加载注解类 javax.annotation.ManagedBean
 			this.includeFilters.add(new AnnotationTypeFilter(
-					((Class<? extends Annotation>) ClassUtils.forName("javax.annotation.ManagedBean", cl)), false));
+					((Class<? extends Annotation>) ClassUtils.forName("javax.annotation.ManagedBean", cl)),
+					false));
+
 			logger.trace("JSR-250 'javax.annotation.ManagedBean' found and supported for component scanning");
-		}
-		catch (ClassNotFoundException ex) {
+		} catch (ClassNotFoundException ex) {
 			// JSR-250 1.1 API (as included in Java EE 6) not available - simply skip.
 		}
+
 		try {
+			// 添加注解类型的过滤器
+			// 含有 @Named 注解的类就会被注册为 BeanDefinition
+			// 此处使用了当前的类加载器去加载注解类 javax.inject.Named
 			this.includeFilters.add(new AnnotationTypeFilter(
 					((Class<? extends Annotation>) ClassUtils.forName("javax.inject.Named", cl)), false));
 			logger.trace("JSR-330 'javax.inject.Named' annotation found and supported for component scanning");
@@ -500,14 +518,19 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @return whether the class qualifies as a candidate component
 	 */
 	protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
+		// 循环所有的排除过滤器
 		for (TypeFilter tf : this.excludeFilters) {
+			// 判断是否排除
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
 				return false;
 			}
 		}
+		// 循环所有的包含过滤器
 		for (TypeFilter tf : this.includeFilters) {
+			// 判断是否包含
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
-				return isConditionMatch(metadataReader);// 返回是否匹配条件
+				// 校验否匹配条件
+				return isConditionMatch(metadataReader);
 			}
 		}
 		return false;
@@ -520,10 +543,12 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @return whether the class qualifies as a candidate component
 	 */
 	private boolean isConditionMatch(MetadataReader metadataReader) {
+		// 如果条件评估器为null
 		if (this.conditionEvaluator == null) {
-			this.conditionEvaluator =
-					new ConditionEvaluator(getRegistry(), this.environment, this.resourcePatternResolver);
+			// 立刻创建一个条件评估器对象
+			this.conditionEvaluator = new ConditionEvaluator(getRegistry(), this.environment, this.resourcePatternResolver);
 		}
+		// 判断是否应该跳过
 		return !this.conditionEvaluator.shouldSkip(metadataReader.getAnnotationMetadata());
 	}
 

@@ -22,6 +22,12 @@ import org.springframework.lang.Nullable;
 
 
 /*
+基础类型IoC容器，提供完整的IoC服务支持。如果没有特殊指定，默认采用延
+迟初始化策略（lazy-load）。只有当客户端对象需要访问容器中的某个受管对象的时候，才对
+该受管对象进行初始化以及依赖注入操作。所以，相对来说，容器启动初期速度较快，所需
+要的资源有限。对于资源有限，并且功能要求不是很严格的场景，BeanFactory是比较合适的
+IoC容器选择
+
  * 用于访问 Spring Bean 容器的根接口。
  * 这是 Bean 容器的基本客户端视图;其他接口（如 ListableBeanFactory AND org.springframework.beans.factory.config.ConfigurableBeanFactory ）可用于特定目的。
  * 此接口由包含多个 Bean 定义的对象实现，每个定义都由 String 名称唯一标识。根据 Bean 定义，工厂将返回包含对象的独立实例（原型设计模式）或单个共享实例（单例设计模式的更好替代方案，其中实例是工厂范围内的单例）。返回哪种类型的实例取决于 Bean 工厂配置：API 是相同的。从 Spring 2.0 开始，根据具体的应用程序上下文（例如，Web 环境中的“请求”和“会话”范围），可以使用更多范围。

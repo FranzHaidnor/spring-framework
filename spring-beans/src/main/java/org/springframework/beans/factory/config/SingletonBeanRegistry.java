@@ -34,6 +34,12 @@ import org.springframework.lang.Nullable;
  */
 public interface SingletonBeanRegistry {
 
+	/*
+	 * 在 Bean 注册表中，在给定的 Bean 名称下，将给定的现有对象注册为单例。
+	 * 给定的实例应该被完全初始化;注册表不会执行任何初始化回调（特别是，它不会调用 InitializingBean afterPropertiesSet 的方法）。给定的实例也不会收到任何销毁回调（如 DisposableBean destroy 的方法）。
+	 * 在完整的 BeanFactory 中运行时：如果 Bean 应该接收初始化和/或销毁回调，请注册 Bean 定义而不是现有实例。
+	 * 通常在注册表配置期间调用，但也可用于单例的运行时注册。因此，注册表实现应同步单例访问;如果它支持 BeanFactory 的单例延迟初始化，它无论如何都必须这样做。
+	 */
 	/**
 	 * Register the given existing object as singleton in the bean registry,
 	 * under the given bean name.

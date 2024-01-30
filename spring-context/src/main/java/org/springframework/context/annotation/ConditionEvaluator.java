@@ -53,13 +53,20 @@ class ConditionEvaluator {
 	/**
 	 * Create a new {@link ConditionEvaluator} instance.
 	 */
-	public ConditionEvaluator(@Nullable BeanDefinitionRegistry registry,
-			@Nullable Environment environment, @Nullable ResourceLoader resourceLoader) {
+	public ConditionEvaluator(
+			@Nullable BeanDefinitionRegistry registry,   // Bean 定义注册器
+			@Nullable Environment environment,			 // 环境对象
+			@Nullable ResourceLoader resourceLoader) {   // 资源加载器
 
+		// 创建条件上下文对象
 		this.context = new ConditionContextImpl(registry, environment, resourceLoader);
 	}
 
 
+	/*
+	 * 根据 @Conditional 批注确定是否应跳过某个项目。将从 ConfigurationCondition.ConfigurationPhase 项目的类型中推导出来
+	 * （即一个 @Configuration 类将是 ConfigurationCondition.ConfigurationPhase.PARSE_CONFIGURATION）
+	 */
 	/**
 	 * Determine if an item should be skipped based on {@code @Conditional} annotations.
 	 * The {@link ConfigurationPhase} will be deduced from the type of item (i.e. a
@@ -78,6 +85,7 @@ class ConditionEvaluator {
 	 * @return if the item should be skipped
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
+		// 如果元数据为null 或 元数据中不包含 @Conditional 注解
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
 		}
@@ -154,6 +162,7 @@ class ConditionEvaluator {
 			this.classLoader = deduceClassLoader(resourceLoader, this.beanFactory);
 		}
 
+		// 从 Bean 定义注册器中返回 Bean工厂 ConfigurableListableBeanFactory
 		@Nullable
 		private ConfigurableListableBeanFactory deduceBeanFactory(@Nullable BeanDefinitionRegistry source) {
 			if (source instanceof ConfigurableListableBeanFactory) {
@@ -179,9 +188,11 @@ class ConditionEvaluator {
 			return new DefaultResourceLoader();
 		}
 
+		// 获取类加载器
 		@Nullable
 		private ClassLoader deduceClassLoader(@Nullable ResourceLoader resourceLoader,
 				@Nullable ConfigurableListableBeanFactory beanFactory) {
+			// 优先从 resourceLoader 中获取,如果获取不到则从 beanFactory 获取, 如果获取不到则使用当前线程的类加载器
 
 			if (resourceLoader != null) {
 				ClassLoader classLoader = resourceLoader.getClassLoader();

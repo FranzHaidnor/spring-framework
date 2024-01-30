@@ -23,6 +23,7 @@ import org.springframework.lang.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
+// 根据各种条件获取 bean 的配置清单
 /*
  * ListableBeanFactory的主要作用是允许应用程序以编程方式获取和遍历应用程序上下文中的所有bean实例。它提供了以下功能：
  *

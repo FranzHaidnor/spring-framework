@@ -139,8 +139,10 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	public ClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry, boolean useDefaultFilters,
 			Environment environment) {
 
-		this(registry, useDefaultFilters, environment,
-				(registry instanceof ResourceLoader ? (ResourceLoader) registry : null));
+		this(registry,
+			useDefaultFilters,  // 是否使用默认的 BeanDefinition 过滤器
+			environment,
+			(registry instanceof ResourceLoader ? (ResourceLoader) registry : null));
 	}
 
 	/**
@@ -164,7 +166,9 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		this.registry = registry;
 
+		// 判断是否使用默认的过滤器
 		if (useDefaultFilters) {
+			// 注册默认的过滤器
 			registerDefaultFilters();
 		}
 		setEnvironment(environment);
@@ -304,6 +308,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 			for (BeanDefinition candidate : candidates) {
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
+				// 生成 Bean 的名称
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
 				// 后置处理 AbstractBeanDefinition
 				if (candidate instanceof AbstractBeanDefinition) {

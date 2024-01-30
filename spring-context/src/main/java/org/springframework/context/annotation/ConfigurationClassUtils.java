@@ -73,7 +73,7 @@ abstract class ConfigurationClassUtils {
 		candidateIndicators.add(ImportResource.class.getName());
 	}
 
-
+	// 检查给定的 Bean 定义是否是配置类的候选者（或在配置/组件类中声明的嵌套组件类，也要自动注册），并相应地对其进行标记。
 	/**
 	 * Check whether the given bean definition is a candidate for a configuration class
 	 * (or a nested component class declared within a configuration/component class,

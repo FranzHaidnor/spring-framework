@@ -567,7 +567,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 		}
-
+		// 如果我们不能使用目标类型，请尝试定期预测。
 		// If we couldn't use the target type, try regular prediction.
 		if (predictedType == null) {
 			predictedType = predictBeanType(beanName, mbd, typesToMatch);
@@ -1037,6 +1037,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		return getMergedLocalBeanDefinition(beanName);
 	}
 
+	// 判断是否为 FactoryBean 类型的 Bean
 	@Override
 	public boolean isFactoryBean(String name) throws NoSuchBeanDefinitionException {
 		String beanName = transformedBeanName(name);
