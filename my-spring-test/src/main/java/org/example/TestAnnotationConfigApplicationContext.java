@@ -1,10 +1,11 @@
 package org.example;
 
+import org.example.bean.IServiceE;
 import org.example.bean.ServiceA;
 import org.example.bean.ServiceC;
 import org.example.bean.ServiceD;
-import org.example.factorybean.ServiceCFactoryBean;
 import org.example.config.SpringConfiguration;
+import org.example.factorybean.ServiceCFactoryBean;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -13,13 +14,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class TestAnnotationConfigApplicationContext {
 
 	public static void main(String[] args) {
-		test3();
+		test1();
 	}
 
 	public static void test1() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
 		ServiceA serviceA = (ServiceA) context.getBean("serviceA");
-		System.out.println(serviceA);
+		serviceA.method();
 	}
 
 	public static void test2() {
@@ -46,7 +47,13 @@ public class TestAnnotationConfigApplicationContext {
 		// 根据类型获取
 		ServiceC serviceC = context.getBean(ServiceC.class);
 		// 根据名称获取,报错
-//		ServiceC serviceC = context.getBean("serviceC", ServiceC.class);
+		// ServiceC serviceC = context.getBean("serviceC", ServiceC.class);
 		System.out.println(serviceC);
+	}
+
+	public static void test5() {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
+		IServiceE serviceE = context.getBean("serviceEImpl_01", IServiceE.class);
+		serviceE.method();
 	}
 }

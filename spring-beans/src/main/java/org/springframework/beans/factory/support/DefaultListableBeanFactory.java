@@ -1532,7 +1532,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 		}
 		for (String candidate : candidateNames) {
-			if (!isSelfReference(beanName, candidate) && isAutowireCandidate(candidate, descriptor)) {
+ 			if (!isSelfReference(beanName, candidate) &&
+				// 判断是否为自动注入的候选者
+				isAutowireCandidate(candidate, descriptor)
+			) {
 				addCandidateEntry(result, candidate, descriptor, requiredType);
 			}
 		}
@@ -1738,7 +1741,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		return (candidateName != null &&
 				(candidateName.equals(beanName) || ObjectUtils.containsElement(getAliases(beanName), candidateName)));
 	}
-
+	// 确定给定的 beanName/candidateName 对是否表示自引用，即候选对象是指向原始 Bean 还是指向原始 Bean 上的工厂方法。
 	/**
 	 * Determine whether the given beanName/candidateName pair indicates a self reference,
 	 * i.e. whether the candidate points back to the original bean or to a factory method

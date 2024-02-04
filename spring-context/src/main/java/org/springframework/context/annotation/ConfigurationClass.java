@@ -47,24 +47,25 @@ import org.springframework.util.ClassUtils;
  * @see ConfigurationClassParser
  */
 final class ConfigurationClass {
-
+	// 注解元数据
 	private final AnnotationMetadata metadata;
-
+	// URL 资源
 	private final Resource resource;
 
 	@Nullable
 	private String beanName;
-
+	// 是 import 注解的
 	private final Set<ConfigurationClass> importedBy = new LinkedHashSet<>(1);
-
+	// bean 注解的方法
 	private final Set<BeanMethod> beanMethods = new LinkedHashSet<>();
-
+	// processConfigurationClass 映射
 	private final Map<String, Class<? extends BeanDefinitionReader>> importedResources =
 			new LinkedHashMap<>();
-
+	// ImportBeanDefinitionRegistrar 映射
+	/** {@link ConfigurationClass#getImportBeanDefinitionRegistrars()}*/
 	private final Map<ImportBeanDefinitionRegistrar, AnnotationMetadata> importBeanDefinitionRegistrars =
 			new LinkedHashMap<>();
-
+	// 需要忽略的 Bean 方法
 	final Set<String> skippedBeanMethods = new HashSet<>();
 
 

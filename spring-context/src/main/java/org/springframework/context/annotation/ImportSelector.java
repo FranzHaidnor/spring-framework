@@ -21,6 +21,22 @@ import java.util.function.Predicate;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 
+/*
+ * 由类型实现的接口，这些类型根据给定的选择条件（通常是一个或多个注释属性）确定应导入哪些 @Configuration 类。
+ * 可以 ImportSelector 实现以下 Aware 任何接口，并且它们各自的方法将在之前 selectImports调用：
+ * EnvironmentAware
+ * BeanFactoryAware
+ * BeanClassLoaderAware
+ * ResourceLoaderAware
+ *
+ * 或者，该类可以为单个构造函数提供以下一个或多个受支持的参数类型：
+ * Environment
+ * BeanFactory
+ * ClassLoader
+ * ResourceLoader
+ *
+ * ImportSelector 实现的处理方式通常与常规 @Import 注解相同，但是，也可以推迟导入的选择，直到处理完所有 @Configuration 类（有关详细信息，请参阅 DeferredImportSelector ）。
+ */
 /**
  * Interface to be implemented by types that determine which @{@link Configuration}
  * class(es) should be imported based on a given selection criteria, usually one or
@@ -60,6 +76,9 @@ import org.springframework.lang.Nullable;
  */
 public interface ImportSelector {
 
+	/*
+	 * 根据导入的 @Configuration 类选择AnnotationMetadata并返回应导入的类的名称
+	 */
 	/**
 	 * Select and return the names of which class(es) should be imported based on
 	 * the {@link AnnotationMetadata} of the importing @{@link Configuration} class.
@@ -67,6 +86,13 @@ public interface ImportSelector {
 	 */
 	String[] selectImports(AnnotationMetadata importingClassMetadata);
 
+
+	/*
+	 * 返回排除的类，是一个类过滤器，但是这个方法被default注解了，可见Spring公司也知道，这个基本没人用
+	 *
+	 * 返回一个谓词，用于从导入候选项中排除类，以传递方式应用于通过此选择器的导入找到的所有类。
+	 * 如果此谓词返回 true 给定的完全限定类名，则该类将不被视为导入的配置类，从而绕过类文件加载和元数据自省。
+	 */
 	/**
 	 * Return a predicate for excluding classes from the import candidates, to be
 	 * transitively applied to all classes found through this selector's imports.
@@ -81,5 +107,13 @@ public interface ImportSelector {
 	default Predicate<String> getExclusionFilter() {
 		return null;
 	}
+
+// Predicate 是一个接口, 可以用于判断是否符合条件
+//	Predicate<String> predicate = new Predicate<String>() {
+//		@Override
+//		public boolean test(String string) {
+//			return false;
+//		}
+//	};
 
 }

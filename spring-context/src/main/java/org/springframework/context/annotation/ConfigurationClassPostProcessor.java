@@ -233,7 +233,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					"postProcessBeanFactory already called on this post-processor against " + registry);
 		}
 		this.registriesPostProcessed.add(registryId);
-		// 处理配置 BeanDefinition
+		// 处理配置Bean定义
 		processConfigBeanDefinitions(registry);
 	}
 
@@ -259,26 +259,30 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
 	}
 
+	// 基于类注册表 Configuration 生成和验证配置模型
 	/**
 	 * Build and validate a configuration model based on the registry of
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
-		// 配置 Bean 候选
+		// 存放候选的 BeanDefinition 集合
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
+		// 从 BeanDefinition 注册器中获取所有已经被扫描了的 BeanDefinition 名称数组
 		String[] candidateNames = registry.getBeanDefinitionNames();
-
+		// 遍历所有的 BeanDefinition 名称
 		for (String beanName : candidateNames) {
-			// 获取 bean 定义
+			// 根据 BeanDefinition 名称获取 BeanDefinition
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
-			// 如果属性不为null
+
+			// 如果 CONFIGURATION_CLASS_ATTRIBUTE 属性不为 null 代表 Bean 定义已经作为配置类进行处理过了
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
 			}
-			// 检查配置类候选
+			// 检查 BeanDefinition 是否符为配置类候选者
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
+				// 如果满足条件,就把此 BeanDefinition 添加进入候选组
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
@@ -344,6 +348,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						registry, this.sourceExtractor, this.resourceLoader, this.environment,
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
+
+			// 加载所有导入的 BeanDefinition
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 

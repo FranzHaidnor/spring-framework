@@ -25,6 +25,14 @@ import java.lang.annotation.Target;
 import org.springframework.beans.factory.support.BeanDefinitionReader;
 import org.springframework.core.annotation.AliasFor;
 
+/*
+ * 指示包含要导入的 Bean 定义的一个或多个资源。
+ * 与类似 @Import，此注解提供了类似于 <import/> Spring XML 中的元素的功能。
+ * 它通常用于设计 @Configuration 由 AnnotationConfigApplicationContext引导的类，但某些 XML 功能（如命名空间）仍然是必要的。
+ * 默认情况下，该value属性的参数将使用 if 结尾进行".groovy"处理;
+ * 否则，将使用 GroovyBeanDefinitionReader an XmlBeanDefinitionReader 来解析 Spring <beans/> XML 文件。
+ * 或者，可以声明该reader属性，允许用户选择自定义BeanDefinitionReader实现。
+ */
 /**
  * Indicates one or more resources containing bean definitions to import.
  *

@@ -129,7 +129,14 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 		this.valueAnnotationType = valueAnnotationType;
 	}
 
-
+	/*
+	 * 确定提供的 Bean 定义是否为自动连线候选项
+	 * 要被视为候选者，Bean 的 autowire-candidate 属性不得设置为“false”。
+	 * 此外，如果此 Bean 工厂将要自动连接的字段或参数上的注释识别为 限定符，
+	 * 则该 Bean 必须与注释及其可能包含的任何属性“匹配”。
+	 * Bean 定义必须包含相同的限定符或按元属性匹配。如果限定符或属性不匹配，
+	 * “value”属性将回退以匹配 Bean 名称或别名。
+	 */
 	/**
 	 * Determine whether the provided bean definition is an autowire candidate.
 	 * <p>To be considered a candidate the bean's <em>autowire-candidate</em>
@@ -146,6 +153,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 	public boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
 		boolean match = super.isAutowireCandidate(bdHolder, descriptor);
 		if (match) {
+			//k1 检查 @Qualifier 注解别名
 			match = checkQualifiers(bdHolder, descriptor.getAnnotations());
 			if (match) {
 				MethodParameter methodParam = descriptor.getMethodParameter();
@@ -168,6 +176,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 			return true;
 		}
 		SimpleTypeConverter typeConverter = new SimpleTypeConverter();
+
 		for (Annotation annotation : annotationsToSearch) {
 			Class<? extends Annotation> type = annotation.annotationType();
 			boolean checkMeta = true;
@@ -261,7 +270,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 				return true;
 			}
 		}
-
+		// 获取注解中所有的属性
 		Map<String, Object> attributes = AnnotationUtils.getAnnotationAttributes(annotation);
 		if (attributes.isEmpty() && qualifier == null) {
 			// If no attributes, the qualifier must be present
@@ -280,7 +289,9 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 				actualValue = bd.getAttribute(attributeName);
 			}
 			if (actualValue == null && attributeName.equals(AutowireCandidateQualifier.VALUE_KEY) &&
-					expectedValue instanceof String && bdHolder.matchesName((String) expectedValue)) {
+					expectedValue instanceof String
+					// 比较 Bean 的名称是否一致
+					&& bdHolder.matchesName((String) expectedValue)) {
 				// Fall back on bean name (or alias) match
 				continue;
 			}

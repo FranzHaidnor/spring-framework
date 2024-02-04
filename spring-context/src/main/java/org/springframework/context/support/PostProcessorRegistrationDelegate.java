@@ -57,8 +57,10 @@ final class PostProcessorRegistrationDelegate {
 	// 静态方法
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory,
-			List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
+			List<BeanFactoryPostProcessor> beanFactoryPostProcessors
+	) {
 
+		// 如果有，请先调用 BeanDefinitionRegistryPostProcessors。
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		Set<String> processedBeans = new HashSet<>();
 
@@ -73,18 +75,20 @@ final class PostProcessorRegistrationDelegate {
 
 			// 循环遍历所有的 BeanFactoryPostProcessor
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
-				// 如果是 Bean定义注册器后置处理器
+
+				// 如果是 BeanDefinitionRegistryPostProcessor 类型的后置处理器
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					// 类型强制转换
-					BeanDefinitionRegistryPostProcessor registryProcessor
-							= (BeanDefinitionRegistryPostProcessor) postProcessor;
+					BeanDefinitionRegistryPostProcessor registryProcessor = (BeanDefinitionRegistryPostProcessor) postProcessor;
+
 					// 执行后置处理方法, 它的特点是可以对 BeanDefinitionRegistry 做后置处理
+					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					// 备注:关于 @Import 注解,就是这里处理的
 					/**{@link ConfigurationClassPostProcessor#postProcessBeanDefinitionRegistry(BeanDefinitionRegistry)*/
-					registryProcessor.postProcessBeanDefinitionRegistry(registry);
+
 					registryProcessors.add(registryProcessor);
 				}
-				//
+
 				else {
 					// 将注册器添加到常规处理器集合中
 					regularPostProcessors.add(postProcessor);

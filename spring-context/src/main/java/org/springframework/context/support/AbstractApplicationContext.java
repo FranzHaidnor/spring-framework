@@ -530,7 +530,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// 准备 bean 工厂以供在此上下文中使用。
+			// 对 beanFactory 进行各种功能填充. 准备 bean 工厂以供在此上下文中使用。
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
@@ -540,7 +540,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				postProcessBeanFactory(beanFactory); // 后处理 Bean 工厂
 
 				// k1 扩展点：执行bean工厂后置处理器 （BeanFactoryPostProcessor）
-				// 调用在上下文中注册为 bean 的工厂处理器。
+				// 调用在上下文中注册为 bean 的工厂处理器。例如 @Configuration 就是在这里被扫描处理的
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
@@ -556,7 +556,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
 
-				// 在特定上下文子类中初始化其他特殊 bean。
+				// 留给子类来初始化其它的 Bean. 在特定上下文子类中初始化其他特殊 bean。
 				// Initialize other special beans in specific context subclasses.
 				onRefresh();
 
@@ -568,8 +568,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
 
-				// 最后一步：发布相应的事件。
-				// Last step: publish corresponding event.
+				//
+				// Last step: publish corresponding event.最后一步：发布相应的事件。
 				finishRefresh();
 			}
 
@@ -776,6 +776,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 遍历Bean工厂后置处理器集合 List<BeanFactoryPostProcessor>
 		// 执行 BeanFactoryPostProcessors 后置处理器接口方法
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 

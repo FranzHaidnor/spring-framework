@@ -1,14 +1,19 @@
 package org.example.bean;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class ServiceA {
 
-	private ServiceD serviceD;
+	@Autowired
+	@Qualifier("serviceEImpl_01")
+	private IServiceE serviceE;
 
-	public ServiceA(ServiceD serviceD) {
-		this.serviceD = serviceD;
+	public void method() {
+		serviceE.method();
 	}
+
 }

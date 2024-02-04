@@ -117,10 +117,14 @@ class ConfigurationClassBeanDefinitionReader {
 	public void loadBeanDefinitions(Set<ConfigurationClass> configurationModel) {
 		TrackedConditionEvaluator trackedConditionEvaluator = new TrackedConditionEvaluator();
 		for (ConfigurationClass configClass : configurationModel) {
+			// 从 ConfigurationClass 加载 BeanDefinition
 			loadBeanDefinitionsForConfigurationClass(configClass, trackedConditionEvaluator);
 		}
 	}
 
+	/*
+	 * 这是一个统一的加载 BeanDefinition 的方法
+	 */
 	/**
 	 * Read a particular {@link ConfigurationClass}, registering bean definitions
 	 * for the class itself and all of its {@link Bean} methods.
@@ -146,6 +150,9 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+
+		// 从 ImportBeanDefinitionRegistrar 加载 BeanDefinition
+		// 这里就是执行 ImportBeanDefinitionRegistrar.registerBeanDefinitions() 自定义方法地方
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 

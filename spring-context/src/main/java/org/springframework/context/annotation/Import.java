@@ -22,6 +22,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/*
+ * 指示要导入的一个或多个 组件 类，通常为 @Configuration 类。
+ *
+ * 提供与 <import/> Spring XML 中的元素等效的功能。允许导入 @Configuration 类和 ImportSelector ImportBeanDefinitionRegistrar 实现，
+ * 以及常规组件类（从 4.2 开始;类似于 AnnotationConfigApplicationContext.register）。
+ *
+ * @Bean应使用@Autowired注入来访问在导入@Configuration类中声明的定义。Bean 本身可以自动连线，或者声明 Bean 的配置类实例可以自动连线。
+ * 后一种方法允许在类方法之间@Configuration进行显式的、IDE 友好的导航。
+ *
+ * 可以在类级别声明，也可以作为元注释声明。
+ *
+ * 如果需要导入 XML 或其他非@Configuration Bean 定义资源，请改用 @ImportResource 注解
+ */
 /**
  * Indicates one or more <em>component classes</em> to import &mdash; typically
  * {@link Configuration @Configuration} classes.

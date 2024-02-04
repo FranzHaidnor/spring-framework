@@ -43,6 +43,10 @@ import org.springframework.util.Assert;
  */
 abstract class ParserStrategyUtils {
 
+	/*
+	 * 使用适当的构造函数实例化类，并将新实例作为指定的可分配类型返回。如果返回的实例BeanClassLoaderAware由给定对象实现，
+	 * 则将调用 BeanFactoryAwareEnvironmentAware和 ResourceLoaderAware 协定。
+	 */
 	/**
 	 * Instantiate a class using an appropriate constructor and return the new
 	 * instance as the specified assignable type. The returned instance will
@@ -62,7 +66,9 @@ abstract class ParserStrategyUtils {
 		}
 		ClassLoader classLoader = (registry instanceof ConfigurableBeanFactory ?
 				((ConfigurableBeanFactory) registry).getBeanClassLoader() : resourceLoader.getClassLoader());
+		// 创建对象实例
 		T instance = (T) createInstance(clazz, environment, resourceLoader, registry, classLoader);
+		// 执行 Aware 回调接口
 		ParserStrategyUtils.invokeAwareMethods(instance, environment, resourceLoader, registry, classLoader);
 		return instance;
 	}
