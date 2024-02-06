@@ -1,9 +1,6 @@
 package org.example;
 
-import org.example.bean.IServiceE;
-import org.example.bean.ServiceA;
-import org.example.bean.ServiceC;
-import org.example.bean.ServiceD;
+import org.example.bean.*;
 import org.example.config.SpringConfiguration;
 import org.example.factorybean.ServiceCFactoryBean;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -14,7 +11,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class TestAnnotationConfigApplicationContext {
 
 	public static void main(String[] args) {
-		test1();
+		test6();
 	}
 
 	public static void test1() {
@@ -55,5 +52,11 @@ public class TestAnnotationConfigApplicationContext {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
 		IServiceE serviceE = context.getBean("serviceEImpl_01", IServiceE.class);
 		serviceE.method();
+	}
+
+	public static void test6() {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
+		ServiceF serviceF = context.getBean(ServiceF.class);
+		System.out.println(serviceF);
 	}
 }

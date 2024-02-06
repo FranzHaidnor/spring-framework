@@ -40,7 +40,9 @@ import org.springframework.util.StringUtils;
  * @author Phillip Webb
  * @since 5.2
  */
-final class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
+// 默认没有public 修饰， 方便测试
+// final class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
+public final class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
 
 	@Nullable
 	private final ClassLoader classLoader;
@@ -71,8 +73,9 @@ final class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
 	@Nullable
 	private Source source;
 
-
-	SimpleAnnotationMetadataReadingVisitor(@Nullable ClassLoader classLoader) {
+	// 默认没有public 修饰， 方便测试
+	// SimpleAnnotationMetadataReadingVisitor(@Nullable ClassLoader classLoader) {
+	public SimpleAnnotationMetadataReadingVisitor(@Nullable ClassLoader classLoader) {
 		super(SpringAsmInfo.ASM_VERSION);
 		this.classLoader = classLoader;
 	}

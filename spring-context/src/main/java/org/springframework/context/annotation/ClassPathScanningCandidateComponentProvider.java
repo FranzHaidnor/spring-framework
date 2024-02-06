@@ -458,6 +458,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 					MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
 					if (isCandidateComponent(metadataReader)) {
 						// k1 创建 BeanDefinition 对象
+						// 每一个 BeanDefinition 最开始都是以 ScannedGenericBeanDefinition 类型创建的
 						ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 						// 设置资源对象
 						sbd.setSource(resource);

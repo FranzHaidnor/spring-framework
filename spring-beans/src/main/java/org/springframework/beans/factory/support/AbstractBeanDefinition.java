@@ -105,6 +105,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	public static final int AUTOWIRE_AUTODETECT = AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT;
 
 	/**
+	 * 表示完全没有依赖项检查的常量。
 	 * Constant that indicates no dependency check at all.
 	 * @see #setDependencyCheck
 	 */
@@ -151,9 +152,15 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	private boolean abstractFlag = false;
 
+	/**
+	 * 是否懒加载
+	 */
 	@Nullable
 	private Boolean lazyInit;
 
+	/**
+	 * 自动注入模式
+	 */
 	private int autowireMode = AUTOWIRE_NO;
 
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
@@ -194,8 +201,14 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private String destroyMethodName;
 
+	/**
+	 * 是否强制执行初始化方法
+	 */
 	private boolean enforceInitMethod = true;
 
+	/**
+	 * 是否强制执行销毁方法
+	 */
 	private boolean enforceDestroyMethod = true;
 
 	private boolean synthetic = false;
@@ -364,21 +377,29 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		}
 	}
 
+	// 将提供的缺省值应用于此 Bean。
 	/**
 	 * Apply the provided default values to this bean.
 	 * @param defaults the default settings to apply
 	 * @since 2.5
 	 */
 	public void applyDefaults(BeanDefinitionDefaults defaults) {
+		// 是否懒加载
 		Boolean lazyInit = defaults.getLazyInit();
 		if (lazyInit != null) {
 			setLazyInit(lazyInit);
 		}
+		// 自动注入模式
 		setAutowireMode(defaults.getAutowireMode());
+		// 依赖检查标记
 		setDependencyCheck(defaults.getDependencyCheck());
+		// 构造函数名称
 		setInitMethodName(defaults.getInitMethodName());
+		// 是否强制执行初始化方法
 		setEnforceInitMethod(false);
+		// 销毁方法的名称
 		setDestroyMethodName(defaults.getDestroyMethodName());
+		// 是否强制执行销毁方法
 		setEnforceDestroyMethod(false);
 	}
 
@@ -675,6 +696,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.dependsOn;
 	}
 
+	/*
+	 * 设置此 Bean 是否是自动注入到其他 Bean 的候选者。
+	 * 请注意，此标志旨在仅影响基于类型的自动布线。它不会影响按名称的显式引用，即使指定的 Bean 未标记为 autowire 候选项，也会解析该引用。
+	 * 因此，如果名称匹配，则按名称自动布线仍将注入 bean。
+	 */
 	/**
 	 * Set whether this bean is a candidate for getting autowired into some other bean.
 	 * <p>Note that this flag is designed to only affect type-based autowiring.
@@ -954,6 +980,12 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.initMethodName;
 	}
 
+	/*
+	 * 指定配置的初始值设定项方法是否为默认方法。
+	 * 缺省值用于 true 本地指定的 init 方法，
+	 * 但切换到 false 默认部分中的共享设置（例如， bean init-method XML 中的 versus beans default-init-method level），
+	 * 这可能不适用于所有包含的 Bean 定义
+	 */
 	/**
 	 * Specify whether or not the configured initializer method is the default.
 	 * <p>The default value is {@code true} for a locally specified init method
@@ -993,6 +1025,12 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.destroyMethodName;
 	}
 
+	/*
+	 * 指定配置的销毁方法是否为默认方法。
+	 * 缺省值用于 true 本地指定的 destroy 方法，
+	 * 但切换到 false defaults 部分中的共享设置（例如 bean destroy-method ，XML 中的 versus beans default-destroy-method level），
+	 * 这可能不适用于所有包含的 Bean 定义。
+	 */
 	/**
 	 * Specify whether or not the configured destroy method is the default.
 	 * <p>The default value is {@code true} for a locally specified destroy method

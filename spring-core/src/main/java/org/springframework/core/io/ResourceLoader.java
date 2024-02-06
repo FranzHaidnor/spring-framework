@@ -45,6 +45,15 @@ public interface ResourceLoader {
 	String CLASSPATH_URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
 
 
+	/*
+	 * 返回指定资源位置的 Resource 句柄。
+	 * 句柄应始终是可重用的资源描述符，允许多次 Resource.getInputStream() 调用。
+	 *
+	 * 必须支持完全限定的 URL，例如“file：C：/test.dat”。
+	 * 必须支持类路径伪 URL，例如“classpath:test.dat”。
+	 * 应支持相对文件路径，例如“WEB-INF/test.dat”。（这将是特定于实现的，通常由 ApplicationContext 实现提供。
+	 * 请注意，Resource 句柄并不意味着现有资源;您需要调用 Resource.exists 以检查是否存在。
+	 */
 	/**
 	 * Return a Resource handle for the specified resource location.
 	 * <p>The handle should always be a reusable resource descriptor,

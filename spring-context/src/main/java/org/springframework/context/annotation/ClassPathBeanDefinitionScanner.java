@@ -67,6 +67,20 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 	private BeanDefinitionDefaults beanDefinitionDefaults = new BeanDefinitionDefaults();
 
+	/*
+	 * 在 Spring 框架中，org.springframework.context.annotation.ClassPathBeanDefinitionScanner 类是用于扫描类路径下的 Bean 定义的工具类。
+	 * 这个类提供了 autowireCandidatePatterns 属性，用于指定自动装配候选者的模式。
+	 *
+	 * 具体来说，autowireCandidatePatterns 属性允许你在使用 ClassPathBeanDefinitionScanner 扫描类路径时，
+	 * 通过指定一组模式来过滤出符合条件的自动装配候选者。这样可以控制哪些 Bean 对象会被认为是自动装配的候选者。
+	 *
+	 * 举个例子，如果你希望只有包含特定后缀的类才作为自动装配的候选者，可以通过设置 autowireCandidatePatterns 来进行过滤。
+	 *
+	 * 在使用 ClassPathBeanDefinitionScanner 进行组件扫描时，Spring 框架会根据 autowireCandidatePatterns 中指定的模式来匹配 Bean 的名称，
+	 * 只有名称符合模式的 Bean 会被认为是自动装配的候选者。
+	 *
+	 * 通过合理设置 autowireCandidatePatterns 属性，可以灵活地控制哪些类会成为自动装配的候选者，从而实现更精细化的依赖注入和管理。
+	 */
 	@Nullable
 	private String[] autowireCandidatePatterns;
 
@@ -310,12 +324,14 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 				candidate.setScope(scopeMetadata.getScopeName());
 				// 生成 Bean 的名称
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
-				// 后置处理 AbstractBeanDefinition
-				if (candidate instanceof AbstractBeanDefinition) {
+				// 如果 AbstractBeanDefinition 类型的 BeanDefinition
+				if (candidate instanceof AbstractBeanDefinition) { // 因为扫描出来的都是 ScannedGenericBeanDefinition, 所以一定为 true
+					// 后置处理 AbstractBeanDefinition
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
-				// 后置处理 AnnotatedBeanDefinition
-				if (candidate instanceof AnnotatedBeanDefinition) {
+				// 如果 AnnotatedBeanDefinition 类型的 BeanDefinition
+				if (candidate instanceof AnnotatedBeanDefinition) { // 因为扫描出来的都是 ScannedGenericBeanDefinition, 所以一定为 true
+					// 后置处理 AnnotatedBeanDefinition
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
 				// 校验待注册的 BeanDefinition
@@ -333,6 +349,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		return beanDefinitions;
 	}
 
+	// 对给定的 Bean 定义应用进一步的设置，而不是从扫描组件类中检索到的内容
 	/**
 	 * Apply further settings to the given bean definition,
 	 * beyond the contents retrieved from scanning the component class.
@@ -340,6 +357,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @param beanName the generated bean name for the given bean
 	 */
 	protected void postProcessBeanDefinition(AbstractBeanDefinition beanDefinition, String beanName) {
+		// 设置 beanDefinition 的默认值
 		beanDefinition.applyDefaults(this.beanDefinitionDefaults);
 		if (this.autowireCandidatePatterns != null) {
 			beanDefinition.setAutowireCandidate(PatternMatchUtils.simpleMatch(this.autowireCandidatePatterns, beanName));

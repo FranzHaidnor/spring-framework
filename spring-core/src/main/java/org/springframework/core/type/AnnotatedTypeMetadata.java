@@ -66,6 +66,13 @@ public interface AnnotatedTypeMetadata {
 		return getAnnotations().isPresent(annotationName);
 	}
 
+	/*
+	 * 检索给定类型的注释的属性（如果有）（即，如果在基础元素上定义，则作为直接注释或元注释），同时考虑组合注释的属性覆盖。
+	 * 形参:
+	 * annotationName – 要查找的注释类型的完全限定类名
+	 * 返回值:
+	 * 属性映射，属性名称为键（例如“值”），定义的属性值为映射值。如果未定义匹配的注释，则此返回值。null
+	 */
 	/**
 	 * Retrieve the attributes of the annotation of the given type, if any (i.e. if
 	 * defined on the underlying element, as direct annotation or meta-annotation),

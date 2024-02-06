@@ -176,21 +176,21 @@ public abstract class AnnotationConfigUtils {
 
 		// 关键后置处理器, 配置类后置处理器
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
-			// 这个 ConfigurationClassPostProcessor 比较关键
-			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class); // 创建 RootBeanDefinition
+			// ConfigurationClassPostProcessor 后置处理器比较关键. 它负责处理 @Configuration 标记的配置类
+			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class); // BeanFactoryPostProcessor
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
 		if (!registry.containsBeanDefinition(AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME)) {
-			RootBeanDefinition def = new RootBeanDefinition(AutowiredAnnotationBeanPostProcessor.class);
+			RootBeanDefinition def = new RootBeanDefinition(AutowiredAnnotationBeanPostProcessor.class); // BeanPostProcessor
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
 		// Check for JSR-250 support, and if present add the CommonAnnotationBeanPostProcessor.
 		if (jsr250Present && !registry.containsBeanDefinition(COMMON_ANNOTATION_PROCESSOR_BEAN_NAME)) {
-			RootBeanDefinition def = new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class);
+			RootBeanDefinition def = new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class); // BeanPostProcessor
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, COMMON_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
@@ -200,7 +200,7 @@ public abstract class AnnotationConfigUtils {
 			RootBeanDefinition def = new RootBeanDefinition();
 			try {
 				def.setBeanClass(ClassUtils.forName(PERSISTENCE_ANNOTATION_PROCESSOR_CLASS_NAME,
-						AnnotationConfigUtils.class.getClassLoader()));
+						AnnotationConfigUtils.class.getClassLoader()));  // BeanPostProcessor
 			}
 			catch (ClassNotFoundException ex) {
 				throw new IllegalStateException(
@@ -211,13 +211,13 @@ public abstract class AnnotationConfigUtils {
 		}
 
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_PROCESSOR_BEAN_NAME)) {
-			RootBeanDefinition def = new RootBeanDefinition(EventListenerMethodProcessor.class);
+			RootBeanDefinition def = new RootBeanDefinition(EventListenerMethodProcessor.class); // BeanFactoryPostProcessor
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_PROCESSOR_BEAN_NAME));
 		}
 
 		if (!registry.containsBeanDefinition(EVENT_LISTENER_FACTORY_BEAN_NAME)) {
-			RootBeanDefinition def = new RootBeanDefinition(DefaultEventListenerFactory.class);
+			RootBeanDefinition def = new RootBeanDefinition(DefaultEventListenerFactory.class); // EventListenerFactory
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, EVENT_LISTENER_FACTORY_BEAN_NAME));
 		}
@@ -225,11 +225,18 @@ public abstract class AnnotationConfigUtils {
 		return beanDefs;
 	}
 
+	/**
+	 * 注册后置处理器
+	 * @param registry BeanDefinitionRegistry
+	 * @param definition RootBeanDefinition
+	 * @param beanName Bean名称
+	 */
 	private static BeanDefinitionHolder registerPostProcessor(
 			BeanDefinitionRegistry registry, RootBeanDefinition definition, String beanName) {
 
 		definition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		registry.registerBeanDefinition(beanName, definition);
+		// 将 BeanDefinition 包装起来, 返回一个 BeanDefinitionHolder.
 		return new BeanDefinitionHolder(definition, beanName);
 	}
 
@@ -255,8 +262,11 @@ public abstract class AnnotationConfigUtils {
 	}
 
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
+		// 获取懒加载注解
 		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
+		// 如果属性不为 null
 		if (lazy != null) {
+			// 设置是否进行懒加载, 根据用户配置决定
 			abd.setLazyInit(lazy.getBoolean("value"));
 		}
 		else if (abd.getMetadata() != metadata) {

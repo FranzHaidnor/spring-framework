@@ -669,9 +669,10 @@ class ConfigurationClassParser {
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar -> process it as an @Configuration class
 						this.importStack.registerImport(currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
 
+						// 处理 ConfigurationClass
 						processConfigurationClass(
 								candidate.asConfigClass(configClass), // 创建一个 ConfigurationClass 对象
-								exclusionFilter
+								exclusionFilter  // 过滤器
 						);
 					}
 				}

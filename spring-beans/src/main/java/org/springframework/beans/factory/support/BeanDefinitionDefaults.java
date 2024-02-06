@@ -19,6 +19,7 @@ package org.springframework.beans.factory.support;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
+// 默认为 {@code BeanDefinition} 属性的简单持有者。
 /**
  * A simple holder for {@code BeanDefinition} property defaults.
  *
@@ -29,16 +30,31 @@ import org.springframework.util.StringUtils;
  */
 public class BeanDefinitionDefaults {
 
+	/**
+	 * 是否懒加载, 默认为 false
+	 */
 	@Nullable
 	private Boolean lazyInit;
 
+	/**
+	 * 自动注入模式
+	 */
 	private int autowireMode = AbstractBeanDefinition.AUTOWIRE_NO;
 
+	/**
+	 * 依赖检查标记
+	 */
 	private int dependencyCheck = AbstractBeanDefinition.DEPENDENCY_CHECK_NONE;
 
+	/**
+	 * 构造函数名称
+	 */
 	@Nullable
 	private String initMethodName;
 
+	/**
+	 * Bean 销毁函数名称
+	 */
 	@Nullable
 	private String destroyMethodName;
 
@@ -73,6 +89,10 @@ public class BeanDefinitionDefaults {
 		return this.lazyInit;
 	}
 
+	/*
+	 * 设置自动注入模式。这决定了是否将发生任何自动检测和设置 Bean 引用。
+	 * 默认值为 AUTOWIRE_NO这意味着不会按名称或类型进行基于约定的自动布线（但是，可能仍存在显式注释驱动的自动布线）。
+	 */
 	/**
 	 * Set the autowire mode. This determines whether any automagical detection
 	 * and setting of bean references will happen. Default is AUTOWIRE_NO

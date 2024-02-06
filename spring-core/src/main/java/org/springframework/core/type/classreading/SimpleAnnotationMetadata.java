@@ -33,7 +33,9 @@ import org.springframework.lang.Nullable;
  * @author Phillip Webb
  * @since 5.2
  */
-final class SimpleAnnotationMetadata implements AnnotationMetadata {
+//final class SimpleAnnotationMetadata implements AnnotationMetadata {
+// 默认没有 public， 添加public方便测试
+public final class SimpleAnnotationMetadata implements AnnotationMetadata {
 
 	private final String className;
 

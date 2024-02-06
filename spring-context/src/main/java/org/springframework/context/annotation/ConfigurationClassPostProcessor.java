@@ -123,6 +123,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 	private final Set<Integer> registriesPostProcessed = new HashSet<>();
 
+	// 记录 bean 工厂的 HashCode
 	private final Set<Integer> factoriesPostProcessed = new HashSet<>();
 
 	@Nullable
@@ -218,6 +219,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	}
 
 
+	// BeanDefinitionRegistryPostProcessor.postProcessBeanDefinitionRegistry
 	/**
 	 * Derive further bean definitions from the configuration classes in the registry.
 	 */
@@ -237,19 +239,25 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		processConfigBeanDefinitions(registry);
 	}
 
+	// 顶级接口 BeanFactoryPostProcessor.postProcessBeanFactory
 	/**
 	 * Prepare the Configuration classes for servicing bean requests at runtime
 	 * by replacing them with CGLIB-enhanced subclasses.
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+		// 返回 Bean 工厂的 hashCode
 		int factoryId = System.identityHashCode(beanFactory);
+		// 如果发现Bean工厂已经被处理过了,则抛出异常
 		if (this.factoriesPostProcessed.contains(factoryId)) {
-			throw new IllegalStateException(
-					"postProcessBeanFactory already called on this post-processor against " + beanFactory);
+			throw new IllegalStateException("postProcessBeanFactory already called on this post-processor against " + beanFactory);
 		}
+		// 记录 bean 工厂的 HashCode
 		this.factoriesPostProcessed.add(factoryId);
+		// Bean 工厂没有被处理过
 		if (!this.registriesPostProcessed.contains(factoryId)) {
+			// 显然不支持 BeanDefinitionRegistryPostProcessor 钩子...
+			// 此时只需懒惰地调用 processConfigurationClasses。
 			// BeanDefinitionRegistryPostProcessor hook apparently not supported...
 			// Simply call processConfigurationClasses lazily at this point then.
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
@@ -293,7 +301,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			return;
 		}
 
-		// 按先前确定的@Order值排序（如果适用）
+		// 按先前确定的@Order注解值排序（如果适用）
+		// k2 @Configuration 标记的类,可以按照 @Order 排序处理
 		// Sort by previously determined @Order value, if applicable
 		configCandidates.sort((bd1, bd2) -> {
 			int i1 = ConfigurationClassUtils.getOrder(bd1.getBeanDefinition());
@@ -349,10 +358,12 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
 
+			// 统一加载处理
 			// 加载所有导入的 BeanDefinition
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 
+			// 清空候选组
 			candidates.clear();
 			if (registry.getBeanDefinitionCount() > candidateNames.length) {
 				String[] newCandidateNames = registry.getBeanDefinitionNames();

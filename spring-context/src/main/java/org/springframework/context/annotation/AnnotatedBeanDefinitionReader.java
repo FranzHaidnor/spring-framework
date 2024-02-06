@@ -109,6 +109,7 @@ public class AnnotatedBeanDefinitionReader {
 		// 条件评估器
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
 		// k1 注册注解配置处理器
+		// 注册了一堆 BeanFactoryPostProcessor 和 BeanPostProcessor 后置处理器
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 	}
 

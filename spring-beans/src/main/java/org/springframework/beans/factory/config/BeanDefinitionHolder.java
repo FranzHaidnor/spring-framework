@@ -23,6 +23,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+/*
+ * 具有名称和别名的 BeanDefinition 的 Holder。可以注册为内部 Bean 的占位符。
+ * 还可用于内部 Bean 定义的编程注册。
+ * 如果您不关心 BeanNameAware 等，注册 RootBeanDefinition 或 ChildBeanDefinition 就足够了。
+ */
 /**
  * Holder for a BeanDefinition with name and aliases.
  * Can be registered as a placeholder for an inner bean.
@@ -39,10 +44,19 @@ import org.springframework.util.StringUtils;
  */
 public class BeanDefinitionHolder implements BeanMetadataElement {
 
+	/**
+	 * 原始的 BeanDefinition
+	 */
 	private final BeanDefinition beanDefinition;
 
+	/**
+	 * Bean 的名称
+	 */
 	private final String beanName;
 
+	/**
+	 * 别名数组
+	 */
 	@Nullable
 	private final String[] aliases;
 

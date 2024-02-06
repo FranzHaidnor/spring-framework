@@ -95,12 +95,15 @@ abstract class ConfigurationClassUtils {
 
 		// 注解元数据
 		AnnotationMetadata metadata;
-		if (beanDef instanceof AnnotatedBeanDefinition &&
-				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
+		if (beanDef instanceof AnnotatedBeanDefinition	// 如果是 AnnotatedBeanDefinition
+			&& className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())
+		) {
+			// 可以重用给定 BeanDefinition 中的预解析元数据...
 			// Can reuse the pre-parsed metadata from the given BeanDefinition...
 			metadata = ((AnnotatedBeanDefinition) beanDef).getMetadata();
 		}
-		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
+		else if (beanDef instanceof AbstractBeanDefinition
+			&& ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
 			// Check already loaded Class if present...
 			// since we possibly can't even load the class file for this Class.
 			Class<?> beanClass = ((AbstractBeanDefinition) beanDef).getBeanClass();
@@ -126,6 +129,7 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		// 获取注解的属性
 		Map<String, Object> config = metadata.getAnnotationAttributes(Configuration.class.getName());
 		if (config != null && !Boolean.FALSE.equals(config.get("proxyBeanMethods"))) {
 			// 给 BeanDefinition 设置配置类的属性
@@ -136,6 +140,7 @@ abstract class ConfigurationClassUtils {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
 		else {
+			// 判断到这里,代表没有添加 @Configuration 注解, 直接跳过
 			return false;
 		}
 
@@ -143,6 +148,7 @@ abstract class ConfigurationClassUtils {
 		// It's a full or lite configuration candidate... Let's determine the order value, if any.
 		Integer order = getOrder(metadata);
 		if (order != null) {
+			// 设置 order 的值
 			beanDef.setAttribute(ORDER_ATTRIBUTE, order);
 		}
 

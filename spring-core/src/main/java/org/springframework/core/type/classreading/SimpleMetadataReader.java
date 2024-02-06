@@ -26,6 +26,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.ClassMetadata;
 import org.springframework.lang.Nullable;
 
+// 简单的元数据读取器
 /**
  * {@link MetadataReader} implementation based on an ASM
  * {@link org.springframework.asm.ClassReader}.
@@ -45,15 +46,18 @@ final class SimpleMetadataReader implements MetadataReader {
 
 
 	SimpleMetadataReader(Resource resource, @Nullable ClassLoader classLoader) throws IOException {
+		// 创建 简单注释元数据读取访问器
 		SimpleAnnotationMetadataReadingVisitor visitor = new SimpleAnnotationMetadataReadingVisitor(classLoader);
 		getClassReader(resource).accept(visitor, PARSING_OPTIONS);
 		this.resource = resource;
+		// 读取元数据
 		this.annotationMetadata = visitor.getMetadata();
 	}
 
 	private static ClassReader getClassReader(Resource resource) throws IOException {
 		try (InputStream is = resource.getInputStream()) {
 			try {
+				// 创建类读取器
 				return new ClassReader(is);
 			}
 			catch (IllegalArgumentException ex) {
