@@ -27,6 +27,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 
+// 根据指定名称创建代理对象。通过设置 advisor，可以对指定的 beanName 进行代理。支持模糊匹配
 /**
  * Auto proxy creator that identifies beans to proxy via a list of names.
  * Checks for direct, "xxx*", and "*xxx" matches.

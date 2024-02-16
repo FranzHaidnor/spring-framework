@@ -107,6 +107,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/** Flag that indicates whether we're currently within destroySingletons. */
 	private boolean singletonsCurrentlyInDestruction = false;
 
+	// 实现了 DisposableBean 接口的 Bean 集合
 	/** Disposable bean instances: bean name to disposable instance. */
 	private final Map<String, Object> disposableBeans = new LinkedHashMap<>();
 
@@ -629,14 +630,17 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @see #destroyBean
 	 */
 	public void destroySingleton(String beanName) {
+		// 从一二三级缓存中移除，解除引用
 		// Remove a registered singleton of the given name, if any.
 		removeSingleton(beanName);
 
+		// 实现 DisposableBean 接口的 Bean 集合，执行自定义的销毁 Bean 的方法
 		// Destroy the corresponding DisposableBean instance.
 		DisposableBean disposableBean;
 		synchronized (this.disposableBeans) {
 			disposableBean = (DisposableBean) this.disposableBeans.remove(beanName);
 		}
+		// 销毁 Bean
 		destroyBean(beanName, disposableBean);
 	}
 

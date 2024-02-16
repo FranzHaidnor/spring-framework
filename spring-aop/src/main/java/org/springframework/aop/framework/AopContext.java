@@ -19,6 +19,12 @@ package org.springframework.aop.framework;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.lang.Nullable;
 
+/*
+ * 包含静态方法的类，用于获取有关当前 AOP 调用的信息。
+ * 如果 AOP 框架配置为公开当前代理（而不是默认代理），则该 currentProxy() 方法可用。它返回正在使用的 AOP 代理。目标对象或建议可以使用它来进行建议调用，其方式与 getEJBObject() 在 EJB 中使用的方式相同。他们还可以使用它来查找建议配置。
+ * 默认情况下，Spring 的 AOP 框架不会公开代理，因为这样做会降低性能成本。
+ * 此类中的功能可能由需要访问调用资源的目标对象使用。但是，当有合理的替代方案时，不应使用此方法，因为它使应用程序代码依赖于 AOP 和 Spring AOP 框架下的使用情况。
+ */
 /**
  * Class containing static methods used to obtain information about the current AOP invocation.
  *

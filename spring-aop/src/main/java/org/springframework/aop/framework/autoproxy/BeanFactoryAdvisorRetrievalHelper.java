@@ -57,7 +57,9 @@ public class BeanFactoryAdvisorRetrievalHelper {
 		this.beanFactory = beanFactory;
 	}
 
-
+	/*
+	 * 在当前 Bean 工厂中查找所有符合条件的 Advisor Bean，忽略 FactoryBean 并排除当前正在创建的 Bean
+	 */
 	/**
 	 * Find all eligible Advisor beans in the current bean factory,
 	 * ignoring FactoryBeans and excluding beans that are currently in creation.

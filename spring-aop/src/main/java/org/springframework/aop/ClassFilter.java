@@ -16,6 +16,7 @@
 
 package org.springframework.aop;
 
+// 定义类匹配类，用于切点找到给定的接口和目标类。
 /**
  * Filter that restricts matching of a pointcut or introduction to
  * a given set of target classes.
@@ -35,6 +36,9 @@ package org.springframework.aop;
 @FunctionalInterface
 public interface ClassFilter {
 
+	/*
+	 * 切入点应该应用于给定的接口还是目标类？
+	 */
 	/**
 	 * Should the pointcut apply to the given interface or target class?
 	 * @param clazz the candidate target class
@@ -42,7 +46,7 @@ public interface ClassFilter {
 	 */
 	boolean matches(Class<?> clazz);
 
-
+	// 与所有类匹配的 ClassFilter 的规范实例。
 	/**
 	 * Canonical instance of a ClassFilter that matches all classes.
 	 */

@@ -18,6 +18,10 @@ package org.aopalliance.intercept;
 
 import java.lang.reflect.Constructor;
 
+/*
+ * 对构造函数的调用的描述，在构造函数调用时提供给拦截器。
+ * 构造函数调用是一个连接点，可以由构造函数拦截器截获。
+ */
 /**
  * Description of an invocation to a constructor, given to an
  * interceptor upon constructor-call.

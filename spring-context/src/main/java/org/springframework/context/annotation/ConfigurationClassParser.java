@@ -293,6 +293,7 @@ class ConfigurationClassParser {
 
 		// 如果有 @Component 注解
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
+			// 首先以递归方式处理任何成员（嵌套）类
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
 		}
@@ -367,7 +368,7 @@ class ConfigurationClassParser {
 			configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));  // 添加 @Bean 的方法
 		}
 
-		// 处理接口的 default 方法
+		// 处理接口上标记 @Bean 的 default 方法
 		// Process default methods on interfaces
 		processInterfaces(configClass, sourceClass);
 
@@ -394,9 +395,11 @@ class ConfigurationClassParser {
 	 */
 	private void processMemberClasses(ConfigurationClass configClass, SourceClass sourceClass,
 			Predicate<String> filter) throws IOException {
-
+		// 获取所有的成员类 (内部类)
 		Collection<SourceClass> memberClasses = sourceClass.getMemberClasses();
+		// 如果内部类不为空
 		if (!memberClasses.isEmpty()) {
+			// 把所有的内部类装到 List 集合里
 			List<SourceClass> candidates = new ArrayList<>(memberClasses.size());
 			for (SourceClass memberClass : memberClasses) {
 				if (ConfigurationClassUtils.isConfigurationCandidate(memberClass.getMetadata()) &&
@@ -404,6 +407,7 @@ class ConfigurationClassParser {
 					candidates.add(memberClass);
 				}
 			}
+			// 排序
 			OrderComparator.sort(candidates);
 			for (SourceClass candidate : candidates) {
 				if (this.importStack.contains(configClass)) {
@@ -412,6 +416,7 @@ class ConfigurationClassParser {
 				else {
 					this.importStack.push(configClass);
 					try {
+						// 循环处理
 						processConfigurationClass(candidate.asConfigClass(configClass), filter);
 					}
 					finally {
@@ -422,15 +427,19 @@ class ConfigurationClassParser {
 		}
 	}
 
+	// 在配置类实现的接口上注册默认方法
 	/**
 	 * Register default methods on interfaces implemented by the configuration class.
 	 */
 	private void processInterfaces(ConfigurationClass configClass, SourceClass sourceClass) throws IOException {
 		// 遍历类的所有接口
 		for (SourceClass ifc : sourceClass.getInterfaces()) {
+			// 检索所有 @Bean 方法的元数据
 			Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(ifc);
 			for (MethodMetadata methodMetadata : beanMethods) {
+				// 如果不是抽象类
 				if (!methodMetadata.isAbstract()) {
+					// Java 8+ 接口上的缺省方法或其他具体方法...
 					// A default method or other concrete method on a Java 8+ interface...
 					configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
 				}
@@ -439,19 +448,24 @@ class ConfigurationClassParser {
 		}
 	}
 
+	// 检索所有 @Bean 方法的元数据
 	/**
 	 * Retrieve the metadata for all <code>@Bean</code> methods.
 	 */
 	private Set<MethodMetadata> retrieveBeanMethodMetadata(SourceClass sourceClass) {
 		AnnotationMetadata original = sourceClass.getMetadata();
+		// 获取所有标记 @Bean 注解方法的元数据
 		Set<MethodMetadata> beanMethods = original.getAnnotatedMethods(Bean.class.getName());
 		if (beanMethods.size() > 1 && original instanceof StandardAnnotationMetadata) {
+			// 尝试通过 ASM 读取类文件以获得确定性声明顺序...
+			// 不幸的是，JVM 的标准反射以任意顺序返回方法，即使在同一 JVM 上同一应用程序的不同运行之间也是如此。
 			// Try reading the class file via ASM for deterministic declaration order...
 			// Unfortunately, the JVM's standard reflection returns methods in arbitrary
 			// order, even between different runs of the same application on the same JVM.
 			try {
 				AnnotationMetadata asm =
 						this.metadataReaderFactory.getMetadataReader(original.getClassName()).getAnnotationMetadata();
+				// 使用 ASM 再次获取@Bean 注解方法的元数据，以保证声明的顺序不是随机的
 				Set<MethodMetadata> asmMethods = asm.getAnnotatedMethods(Bean.class.getName());
 				if (asmMethods.size() >= beanMethods.size()) {
 					Set<MethodMetadata> selectedMethods = new LinkedHashSet<>(asmMethods.size());

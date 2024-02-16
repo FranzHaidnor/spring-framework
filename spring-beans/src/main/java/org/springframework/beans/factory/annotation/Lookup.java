@@ -22,6 +22,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/*
+ * 指示“查找”方法的注释，由容器重写以将它们重定向回 org.springframework.beans.factory.BeanFactory for a getBean 调用。这实质上是 XML lookup-method 属性的基于注释的版本，从而产生相同的运行时安排。
+ * 目标 Bean 的解析可以基于返回类型 （getBean(Class)） 或建议的 Bean 名称 （getBean(String)），在这两种情况下，都将方法的参数传递给调用， getBean 以便将它们作为目标工厂方法参数或构造函数参数应用。
+ * 此类查找方法可以具有默认（存根）实现，这些实现将简单地被容器替换，也可以将它们声明为抽象 - 以便容器在运行时填充它们。在这两种情况下，容器都将通过 CGLIB 生成方法包含类的运行时子类，这就是为什么此类查找方法只能在容器通过常规构造函数实例化的 bean 上工作的原因：即，在我们无法动态地为它们提供子类的情况下，查找方法不能在从工厂方法返回的 bean 上被替换。
+ * 针对典型 Spring 配置方案的建议： 如果在某些情况下可能需要具体类，请考虑提供查找方法的存根实现。请记住，查找方法不适用于从 @Bean 配置类中的方法返回的 bean;您必须求助 @Inject Provider<TargetBean> 于类似方法。
+ */
 /**
  * An annotation that indicates 'lookup' methods, to be overridden by the container
  * to redirect them back to the {@link org.springframework.beans.factory.BeanFactory}

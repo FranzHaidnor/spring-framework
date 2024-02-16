@@ -49,6 +49,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
+/*
+ * 将 EventListener 方法注册为单个 ApplicationListener 实例。实现 BeanFactoryPostProcessor （从 5.1 开始）主要用于早期检索，避免对此处理器 Bean 及其 EventListenerFactory 委托进行 AOP 检查。
+ */
 /**
  * Registers {@link EventListener} methods as individual {@link ApplicationListener} instances.
  * Implements {@link BeanFactoryPostProcessor} (as of 5.1) primarily for early retrieval,

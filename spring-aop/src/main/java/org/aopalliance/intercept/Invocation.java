@@ -16,6 +16,10 @@
 
 package org.aopalliance.intercept;
 
+/*
+此接口表示程序中的调用。
+调用是一个连接点，可以被拦截器截获。
+*/
 /**
  * This interface represents an invocation in the program.
  *

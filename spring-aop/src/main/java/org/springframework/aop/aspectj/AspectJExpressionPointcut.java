@@ -63,6 +63,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+// AspectJExpression 表达式切入点
 /**
  * Spring {@link org.springframework.aop.Pointcut} implementation
  * that uses the AspectJ weaver to evaluate a pointcut expression.
@@ -128,6 +129,11 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	public AspectJExpressionPointcut() {
 	}
 
+	/*
+	 * 使用给定的设置创建新的 AspectJExpressionPointcut。
+	 * 形参:
+	 * declarationScope – Pointcut 的声明范围 paramNames – 切入点的参数名称 paramTypes – 切入点的参数类型
+	 */
 	/**
 	 * Create a new AspectJExpressionPointcut with the given settings.
 	 * @param declarationScope the declaration scope for the pointcut
@@ -184,7 +190,9 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 		return this;
 	}
 
-
+	/*
+	 * 检查此切入点是否准备好匹配，懒惰地构建底层 AspectJ 切入表达式。
+	 */
 	/**
 	 * Check whether this pointcut is ready to match,
 	 * lazily building the underlying AspectJ pointcut expression.

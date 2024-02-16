@@ -18,6 +18,18 @@ package org.springframework.aop;
 
 import org.aopalliance.aop.Advice;
 
+/*
+ * Advisor(顾问/增强器)
+ * advisor：顾问（切面的另一种实现），封装了spring aop中的切点和通知。通知（advice）中包含了增强的横切代码，切点（pointcut）包含了连接点的描述信息。
+ *
+ * 1、StaticMethodMatcherPointcut：静态方法切面。定义了一个classFilter，通过重写getClassFilter()方法来指定切面规则。另外实现了StaticMethodMatcher接口，通过重写matches来指定方法匹配规则。
+ * 2、StaticMethodMatcherPointcutAdvisor：静态方法匹配切面顾问。扩展了切面排序方法。
+ * 3、NameMatchMethodPointcut：名称匹配切面。通过指定方法集合变量mappedNames，模糊匹配。
+ * 4、NameMatchMethodPointcutAdvisor：方法名称切面顾问。内部封装了NameMatchMethodPointcut，通过设置方法名称模糊匹配规则和通知来实现切面功能。
+ * 5、RegexpMethodPointcutAdvisor：正则表达式切面顾问。可设置多个正则表达式规则，通过内部封装的JdkRegexpMethodPointcut解析正则表达式。
+ * 6、DefaultPointcutAdvisor：默认切面顾问。比较灵活，可自由组合切面和通知。
+ * 7、InstantiationModelAwarePointcutAdvisorImpl：springboot自动装配的顾问类型。是最常用的一种顾问实现。在注解实现的切面中，所有@Aspect类，都会被解析成该对象。
+ */
 /**
  * Base interface holding AOP <b>advice</b> (action to take at a joinpoint)
  * and a filter determining the applicability of the advice (such as

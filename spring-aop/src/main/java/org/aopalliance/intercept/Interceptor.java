@@ -18,6 +18,28 @@ package org.aopalliance.intercept;
 
 import org.aopalliance.aop.Advice;
 
+/*
+此接口表示泛型侦听器。
+通用侦听器可以截获基本程序中发生的运行时事件。这些事件由（具体化）连接点具体化。运行时连接点可以是调用、字段访问、异常......
+此接口不直接使用。使用子接口拦截特定事件。例如，以下类实现一些特定的侦听器以实现调试器：
+  class DebuggingInterceptor implements MethodInterceptor,
+      ConstructorInterceptor {
+
+    Object invoke(MethodInvocation i) throws Throwable {
+      debug(i.getMethod(), i.getThis(), i.getArgs());
+      return i.proceed();
+    }
+
+    Object construct(ConstructorInvocation i) throws Throwable {
+      debug(i.getConstructor(), i.getThis(), i.getArgs());
+      return i.proceed();
+    }
+
+    void debug(AccessibleObject ao, Object this, Object value) {
+      ...
+    }
+  }
+*/
 /**
  * This interface represents a generic interceptor.
  *

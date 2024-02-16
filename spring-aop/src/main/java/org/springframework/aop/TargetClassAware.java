@@ -18,6 +18,8 @@ package org.springframework.aop;
 
 import org.springframework.lang.Nullable;
 
+// 用于在代理后面公开目标类的最小接口。
+//由 AOP 代理对象和代理工厂（通过 org.springframework.aop.framework.Advised） TargetSources以及 .
 /**
  * Minimal interface for exposing the target class behind a proxy.
  *

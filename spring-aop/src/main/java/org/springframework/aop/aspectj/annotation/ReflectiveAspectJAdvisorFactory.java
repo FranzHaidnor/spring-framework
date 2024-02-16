@@ -114,13 +114,13 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		this.beanFactory = beanFactory;
 	}
 
-
+	// 获取增强的方法
 	@Override
 	public List<Advisor> getAdvisors(MetadataAwareAspectInstanceFactory aspectInstanceFactory) {
 		Class<?> aspectClass = aspectInstanceFactory.getAspectMetadata().getAspectClass();
 		String aspectName = aspectInstanceFactory.getAspectMetadata().getAspectName();
 		validate(aspectClass);
-
+		// 我们需要用装饰器包装 MetadataAwareAspectInstanceFactory，以便它只实例化一次。
 		// We need to wrap the MetadataAwareAspectInstanceFactory with a decorator
 		// so that it will only instantiate once.
 		MetadataAwareAspectInstanceFactory lazySingletonAspectInstanceFactory =
@@ -135,13 +135,13 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			// Thus, we now hard code the declarationOrderInAspect to 0 for all advice methods
 			// discovered via reflection in order to support reliable advice ordering across JVM launches.
 			// Specifically, a value of 0 aligns with the default value used in
-			// AspectJPrecedenceComparator.getAspectDeclarationOrder(Advisor).
+			// AspectJPrecedenceComparator.getAspectDeclarationOrder(Advisor).在 Spring Framework 5.2.7 之前，advisors.size（） 作为 declarationOrderInAspect 提供给 getAdvisor（...），以表示声明的方法列表中的“当前位置”。但是，从 Java 7 开始，“当前位置”无效，因为 JDK 不再按照它们在源代码中声明的顺序返回声明的方法。因此，对于通过反射发现的所有建议方法，我们现在将 declarationOrderInAspect 硬编码为 0，以便支持跨 JVM 启动的可靠建议排序。具体而言，值 0 与 AspectJPrecedenceComparator.getAspectDeclarationOrder（Advisor） 中使用的默认值一致
 			Advisor advisor = getAdvisor(method, lazySingletonAspectInstanceFactory, 0, aspectName);
 			if (advisor != null) {
 				advisors.add(advisor);
 			}
 		}
-
+		// 如果是每个目标的方面，则发出虚拟实例化方面。
 		// If it's a per target aspect, emit the dummy instantiating aspect.
 		if (!advisors.isEmpty() && lazySingletonAspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) {
 			Advisor instantiationAdvisor = new SyntheticInstantiationAdvisor(lazySingletonAspectInstanceFactory);
@@ -162,8 +162,8 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 	private List<Method> getAdvisorMethods(Class<?> aspectClass) {
 		final List<Method> methods = new ArrayList<>();
 		ReflectionUtils.doWithMethods(aspectClass, method -> {
-			// Exclude pointcuts
-			if (AnnotationUtils.getAnnotation(method, Pointcut.class) == null) {
+			// Exclude pointcuts 排除切入点
+			if (AnnotationUtils.getAnnotation(method, Pointcut.class) == null) { // 排除切入点方法
 				methods.add(method);
 			}
 		}, ReflectionUtils.USER_DECLARED_METHODS);
@@ -203,7 +203,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 			int declarationOrderInAspect, String aspectName) {
 
 		validate(aspectInstanceFactory.getAspectMetadata().getAspectClass());
-
+		// AspectJ 表达式切入点
 		AspectJExpressionPointcut expressionPointcut = getPointcut(
 				candidateAdviceMethod, aspectInstanceFactory.getAspectMetadata().getAspectClass());
 		if (expressionPointcut == null) {
@@ -213,7 +213,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		return new InstantiationModelAwarePointcutAdvisorImpl(expressionPointcut, candidateAdviceMethod,
 				this, aspectInstanceFactory, declarationOrderInAspect, aspectName);
 	}
-
+	// 获取切入点
 	@Nullable
 	private AspectJExpressionPointcut getPointcut(Method candidateAdviceMethod, Class<?> candidateAspectClass) {
 		AspectJAnnotation<?> aspectJAnnotation =

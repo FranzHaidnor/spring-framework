@@ -49,8 +49,11 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 
 	@Override
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(
-			Advised config, Method method, @Nullable Class<?> targetClass) {
+			Advised config,
+			Method method,			// 当前被执行的方法
+			@Nullable Class<?> targetClass) {
 
+		// 这有点棘手......我们必须首先处理介绍，但我们需要在最终列表中保持顺序。
 		// This is somewhat tricky... We have to process introductions first,
 		// but we need to preserve order in the ultimate list.
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
@@ -64,20 +67,26 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 				// Add it conditionally.
 				PointcutAdvisor pointcutAdvisor = (PointcutAdvisor) advisor;
 				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) {
+					// 方法匹配器
 					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
 					boolean match;
 					if (mm instanceof IntroductionAwareMethodMatcher) {
 						if (hasIntroductions == null) {
 							hasIntroductions = hasMatchingIntroductions(advisors, actualClass);
 						}
+						// 判断方法是否被拦截
 						match = ((IntroductionAwareMethodMatcher) mm).matches(method, actualClass, hasIntroductions);
 					}
 					else {
+						// 判断方法是否被拦截
 						match = mm.matches(method, actualClass);
 					}
+					// 如果方法被拦截
 					if (match) {
+						// 获取方法拦截器
 						MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
 						if (mm.isRuntime()) {
+							// 在 getInterceptors（） 方法中创建一个新的对象实例不是问题，因为我们通常会缓存创建的链。
 							// Creating a new object instance in the getInterceptors() method
 							// isn't a problem as we normally cache created chains.
 							for (MethodInterceptor interceptor : interceptors) {

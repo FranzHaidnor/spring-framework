@@ -16,6 +16,16 @@
 
 package org.aopalliance.aop;
 
+/*
+ * Advice（通知/增强）
+ *
+ * Advice有以下几种常见的类型：
+ * 1、AspectJMethodBeforeAdvice：前置通知。AspectJ中 before 属性对应的通知（@Before标注的方法会被解析成该通知），在切面方法执行之前执行。
+ * 2、AspectJAfterReturningAdvice：后置通知。AspectJ中 afterReturning 属性对应的通知（@AfterReturning 标注的方法会被解析成该通知），在切面方法执行之后执行，如果有异常，则不执行。注意：该通知与AspectJMethodBeforeAdvice对应。
+ * 3、AspectJAroundAdvice：环绕通知。AspectJ中 around 属性对应的通知（@Around标注的方法会被解析成该通知），在切面方法执行前后执行。
+ * 4、AspectJAfterAdvice：返回通知。AspectJ中 after 属性对应的通知（@After 标注的方法会被解析成该通知），不论是否异常都会执行。
+ * 5、AspectJAfterThrowingAdvice：异常通知，AspectJ中 after 属性对应的通知（@AfterThrowing标注的方法会被解析成该通知），在连接点抛出异常后执行。
+ */
 /**
  * Tag interface for Advice. Implementations can be any type
  * of advice, such as Interceptors.

@@ -6,14 +6,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ServiceA {
+public class ServiceA implements IServiceA {
 
 	@Autowired
-	@Qualifier("serviceEImpl_01")
-	private IServiceE serviceE;
+	private ServiceB serviceB;
 
+
+	@Override
 	public void method() {
-		serviceE.method();
+		serviceB.method01();
 	}
 
 }

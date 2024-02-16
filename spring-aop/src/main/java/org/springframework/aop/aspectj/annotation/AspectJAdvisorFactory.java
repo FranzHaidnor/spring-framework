@@ -26,6 +26,9 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.AopConfigException;
 import org.springframework.lang.Nullable;
 
+/*
+ * 工厂的接口，可以从使用 AspectJ 注解语法注解的类创建 Spring AOP Advisors。
+ */
 /**
  * Interface for factories that can create Spring AOP Advisors from classes
  * annotated with AspectJ annotation syntax.
@@ -38,6 +41,12 @@ import org.springframework.lang.Nullable;
  */
 public interface AspectJAdvisorFactory {
 
+	/*
+	 * 确定给定的类是否是一个方面，如 AspectJ org.aspectj.lang.reflect.AjTypeSystem的 .
+	 * 如果假定的方面无效（例如具体方面类的扩展），则将简单地返回 false 。
+	 * 对于 Spring AOP 无法处理的某些方面，例如那些具有不受支持的实例化模型的方面，将返回 true。
+	 * 如有必要，请使用该 validate 方法处理这些情况。
+	 */
 	/**
 	 * Determine whether or not the given class is an aspect, as reported
 	 * by AspectJ's {@link org.aspectj.lang.reflect.AjTypeSystem}.
@@ -51,6 +60,14 @@ public interface AspectJAdvisorFactory {
 	 */
 	boolean isAspect(Class<?> clazz);
 
+	/*
+	 * 给定的类是否是有效的 AspectJ aspect 类？
+	 * 形参:
+	 * aspectClass – 要验证的假定 AspectJ 注解样式类
+	 * 抛出:
+	 * AopConfigException – 如果该类是无效的方面（这永远不可能是合法的）
+	 * NotAnAtAspectException – 如果该类根本不是一个方面（根据上下文，这可能是合法的，也可能是不合法的）
+	 */
 	/**
 	 * Is the given class a valid AspectJ aspect class?
 	 * @param aspectClass the supposed AspectJ annotation-style class to validate
@@ -61,6 +78,13 @@ public interface AspectJAdvisorFactory {
 	 */
 	void validate(Class<?> aspectClass) throws AopConfigException;
 
+	/*
+	 * 在指定的切面实例上为所有带注释的 At-AspectJ 方法构建 Spring AOP Advisors。
+	 * 形参:
+	 * aspectInstanceFactory – Aspect 实例工厂（而不是 Aspect 实例本身，以避免急切实例化）
+	 * 返回值:
+	 * 本课程的顾问列表
+	 */
 	/**
 	 * Build Spring AOP Advisors for all annotated At-AspectJ methods
 	 * on the specified aspect instance.

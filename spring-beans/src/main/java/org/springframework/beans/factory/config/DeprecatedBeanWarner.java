@@ -24,6 +24,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
+// 记录 Bean 警告 @Deprecated 的 Bean 工厂后处理器。
 /**
  * Bean factory post processor that logs a warning for {@link Deprecated @Deprecated} beans.
  *

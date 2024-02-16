@@ -42,6 +42,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
+/*
+ * 主要是用于把代理、拦截、匹配的各项属性包装到一个类中，方便在 Proxy 实现类进行使用。
+ *
+ */
 /**
  * Base class for AOP proxy configuration managers.
  * These are not themselves AOP proxies, but subclasses of this class are
@@ -64,6 +68,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	private static final long serialVersionUID = 2651364800145442165L;
 
 
+	// 是一个目标对象，在目标对象类中提供 Object 入参属性，以及获取目标类 TargetClass 信息。
 	/**
 	 * Canonical TargetSource when there's no target, and behavior is
 	 * supplied by the advisors.
@@ -71,30 +76,41 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	public static final TargetSource EMPTY_TARGET_SOURCE = EmptyTargetSource.INSTANCE;
 
 
+	// 封装保护，允许直接访问以提高效率
 	/** Package-protected to allow direct access for efficiency. */
 	TargetSource targetSource = EMPTY_TARGET_SOURCE;
 
+	// 是否已针对特定目标类筛选顾问。
 	/** Whether the Advisors are already filtered for the specific target class. */
 	private boolean preFiltered = false;
 
+	// 要使用的 AdvisorChainFactory。
 	/** The AdvisorChainFactory to use. */
 	AdvisorChainFactory advisorChainFactory = new DefaultAdvisorChainFactory();
 
+	// 以 Method 作为键，以 advisor chain List 作为值进行缓存
 	/** Cache with Method as key and advisor chain List as value. */
 	private transient Map<MethodCacheKey, List<Object>> methodCache;
 
+	/*
+	 * 要由代理实现的接口。保持在列表中以保持注册顺序，以创建具有指定接口顺序的 JDK 代理。
+	 */
 	/**
 	 * Interfaces to be implemented by the proxy. Held in List to keep the order
 	 * of registration, to create JDK proxy with specified order of interfaces.
 	 */
 	private List<Class<?>> interfaces = new ArrayList<>();
 
+	/*
+	 * Advice名单。如果添加了Advice，则在添加到此列表之前，它将被包装在顾问中。
+	 */
 	/**
 	 * List of Advisors. If an Advice is added, it will be wrapped
 	 * in an Advisor before being added to this List.
 	 */
 	private List<Advisor> advisors = new ArrayList<>();
 
+	// Array 更新了顾问列表的更改，这更易于在内部操作。
 	/**
 	 * Array updated on changes to the advisors list, which is easier
 	 * to manipulate internally.
@@ -479,6 +495,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		MethodCacheKey cacheKey = new MethodCacheKey(method);
 		List<Object> cached = this.methodCache.get(cacheKey);
 		if (cached == null) {
+			// 获取拦截器和动态拦截建议
 			cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 					this, method, targetClass);
 			this.methodCache.put(cacheKey, cached);

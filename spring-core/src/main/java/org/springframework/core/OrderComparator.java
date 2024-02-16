@@ -52,6 +52,7 @@ import org.springframework.util.ObjectUtils;
  */
 public class OrderComparator implements Comparator<Object> {
 
+	// 单例模式
 	/**
 	 * Shared default instance of {@code OrderComparator}.
 	 */

@@ -47,7 +47,7 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
 	private static final long serialVersionUID = 7930414337282325166L;
 
-
+	// 创建 AOP 代理对象
 	@Override
 	public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
 		if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
@@ -62,6 +62,7 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 			return new ObjenesisCglibAopProxy(config);
 		}
 		else {
+			// JDK 接口动态代理
 			return new JdkDynamicAopProxy(config);
 		}
 	}

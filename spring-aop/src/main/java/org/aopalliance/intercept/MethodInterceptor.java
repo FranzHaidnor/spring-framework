@@ -16,6 +16,20 @@
 
 package org.aopalliance.intercept;
 
+/*
+在接口到达目标的途中拦截调用。它们嵌套在目标的“顶部”。
+用户应实现 invoke(MethodInvocation) 修改原始行为的方法。 例如，以下类实现了一个跟踪拦截器（跟踪截获方法上的所有调用）：
+  class TracingInterceptor implements MethodInterceptor {
+    Object invoke(MethodInvocation i) throws Throwable {
+      System.out.println("method "+i.getMethod()+" is called on "+i.getThis()+" with args "+i.getArguments());
+      Object ret=i.proceed();
+      System.out.println("method "+i.getMethod()+" returns "+ret);
+      return ret;
+    }
+  }
+
+ */
+
 /**
  * Intercepts calls on an interface on its way to the target. These
  * are nested "on top" of the target.

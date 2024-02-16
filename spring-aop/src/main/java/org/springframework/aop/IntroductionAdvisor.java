@@ -16,6 +16,11 @@
 
 package org.springframework.aop;
 
+/*
+ * 用于执行一个或多个 AOP 引入的顾问的超级接口。
+ * 此接口不能直接实现;子接口必须提供实现引入的建议类型。
+ * 引入是通过 AOP 建议实现其他接口（不是由目标实现的）。
+ */
 /**
  * Superinterface for advisors that perform one or more AOP <b>introductions</b>.
  *
@@ -31,6 +36,10 @@ package org.springframework.aop;
  */
 public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 
+	/*
+	 * 返回筛选器，确定此引入应应用于哪些目标类。
+	 * 这表示切入点的类部分。请注意，方法匹配对介绍没有意义。
+	 */
 	/**
 	 * Return the filter determining which target classes this introduction
 	 * should apply to.

@@ -28,6 +28,16 @@ import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
+/*
+ * 允许 BeanFactoryPostProcessor 方便地注册自定义 autowire 限定符类型的实现。
+ *   <bean id="customAutowireConfigurer" class="org.springframework.beans.factory.annotation.CustomAutowireConfigurer">
+ *     <property name="customQualifierTypes">
+ *       <set>
+ *         <value>mypackage.MyQualifier</value>
+ *       </set>
+ *     </property>
+ *   </bean>
+ */
 /**
  * A {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}
  * implementation that allows for convenient registration of custom autowire

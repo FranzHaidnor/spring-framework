@@ -16,6 +16,12 @@
 
 package org.springframework.core;
 
+/*
+ * 接口的Ordered扩展，表示优先级排序：PriorityOrdered无论对象的顺序值如何，对象始终在普通Ordered对象之前应用。
+ * 在对一组Ordered对象进行排序时，对象和普通对象实际上被视为两个独立的子集，对象集位于普通 Ordered Ordered对象集PriorityOrdered之前，PriorityOrdered并在这些子集中应用相对排序。
+ * 这主要是一个特殊用途的接口，在框架本身中用于首先识别 优先 对象特别重要的对象，甚至可能没有获取剩余对象。一个典型的例子：Spring org.springframework.context.ApplicationContext中的优先级后处理器。
+ * 注： PriorityOrdered 后处理器 Bean 在特殊阶段初始化，优先于其他后处理器 Bean。这微妙地影响了它们的自动布线行为：它们只会针对不需要预先初始化类型匹配的 bean 进行自动布线。
+ */
 /**
  * Extension of the {@link Ordered} interface, expressing a <em>priority</em>
  * ordering: {@code PriorityOrdered} objects are always applied before

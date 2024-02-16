@@ -19,6 +19,20 @@ package org.springframework.beans.factory.config;
 import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
+/*
+ * 工厂钩子函数，允许对新 Bean 实例进行自定义修改 — 例如，检查标记接口或使用代理包装 Bean。
+ * 通常，通过标记接口等填充 Bean 的后处理器将实现 ，
+ * 而使用代理包装 Bean 的后处理器通常会实现 postProcessBeforeInitializationpostProcessAfterInitialization。注册
+ * 可以在 ApplicationContext 其 Bean 定义中自动检测 BeanPostProcessor bean，并将这些后处理器应用于随后创建的任何 bean。
+ * plain BeanFactory 允许以编程方式注册后处理器，将它们应用于通过 Bean 工厂创建的所有 bean。
+ *
+ * 订购
+ * BeanPostProcessor 在 an ApplicationContext 中自动检测到的 bean 将根据 org.springframework.core.PriorityOrdered
+ * 和 org.springframework.core.Ordered 语义进行排序。
+ * 相反， BeanPostProcessor 以编程方式注册 a BeanFactory 的 Bean 将按注册顺序应用;
+ * 对于以编程方式注册的后处理器，将忽略通过实现 PriorityOrdered OR Ordered 接口表示的任何排序语义。
+ * 此外，对于 bean， @Order 注释不被考虑 BeanPostProcessor 在内。
+ */
 /**
  * Factory hook that allows for custom modification of new bean instances &mdash;
  * for example, checking for marker interfaces or wrapping beans with proxies.

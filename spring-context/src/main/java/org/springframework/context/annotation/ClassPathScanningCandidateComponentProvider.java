@@ -61,6 +61,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
+/*
+ * 从基础包中提供候选组件的组件提供程序。如果可用，则可以使用 the index 扫描类路径，否则。通过应用排除和包含筛选器来标识候选组件。
+ *  AnnotationTypeFilter， AssignableTypeFilter 则支持注释/超类上带有注释 Indexed 的 include 过滤器：
+ * 如果指定了任何其他包含过滤器，则忽略索引并改用类路径扫描。
+ *
+ * 此实现基于 Spring MetadataReader 的 Facility ，由 ASM ClassReader提供支持
+ */
+
 /**
  * A component provider that provides candidate components from a base package. Can
  * use {@link CandidateComponentsIndex the index} if it is available of scans the

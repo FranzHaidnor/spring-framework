@@ -27,6 +27,13 @@ import org.springframework.core.PriorityOrdered;
 import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.util.ObjectUtils;
 
+/*
+ * 允许从属性资源（即属性文件）配置单个 Bean 属性值。对于面向系统管理员的定制配置文件非常有用，这些配置文件覆盖了在应用程序上下文中配置的 Bean 属性。
+ * 发行版中提供了两个具体的实现：
+ * PropertyOverrideConfigurer 对于“beanName.property=value”样式覆盖（将值从属性文件推送到 Bean 定义中）
+ * PropertyPlaceholderConfigurer 用于替换“${...}”占位符（将值从属性文件中提取 到 Bean 定义中）
+ * 属性值可以在读入后通过重写 convertPropertyValue 方法进行转换。例如，在处理加密值之前，可以对其进行相应的检测和解密。
+ */
 /**
  * Allows for configuration of individual bean property values from a property resource,
  * i.e. a properties file. Useful for custom config files targeted at system

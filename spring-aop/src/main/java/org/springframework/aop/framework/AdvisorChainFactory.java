@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.springframework.lang.Nullable;
 
+// 顾问链的工厂接口。
 /**
  * Factory interface for advisor chains.
  *

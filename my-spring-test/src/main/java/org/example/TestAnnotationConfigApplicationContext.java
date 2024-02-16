@@ -11,17 +11,22 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class TestAnnotationConfigApplicationContext {
 
 	public static void main(String[] args) {
-		test6();
+		test1();
 	}
 
 	public static void test1() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
-		ServiceA serviceA = (ServiceA) context.getBean("serviceA");
+
+		IServiceA serviceA = (IServiceA) context.getBean("serviceA");
 		serviceA.method();
+
+		// 销毁Spring上下文
+		context.close();
 	}
 
 	public static void test2() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		// context.addBeanFactoryPostProcessor(); // 提前手动添加一些自定义的 BeanFactoryPostProcessor
 		context.register(SpringConfiguration.class);
 		context.refresh();
 

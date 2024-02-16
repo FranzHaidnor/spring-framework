@@ -18,6 +18,24 @@ package org.springframework.aop;
 
 import java.lang.reflect.Method;
 
+/*
+ * 方法匹配器
+ *
+ * Pointcut一部分 ：检查目标方法是否符合增强条件。
+ * MethodMatcher 可以 静态 计算，也可以在 运行时 （动态）计算。静态匹配涉及方法和（可能）方法属性。
+ * 动态匹配还使特定调用的参数可用，并且运行先前建议的任何效果都适用于联接点。
+ *
+ * 如果实现从其方法返回 false ，则可以静态执行计算，并且无论其 isRuntime() 参数如何，此方法的所有调用的结果都将相同。
+ * 这意味着如果 isRuntime() 该方法返回 false，则永远不会调用 3-arg matches(Method, Class, Object[]) 方法。
+ *
+ * 如果实现从其 2-arg 方法返回，并且其isRuntime()方法返回 true true，
+ * 则将在每次可能执行相关建议之前立即调用 3-arg matches(Method, Class) matches(Method, Class, Object[]) 方法，
+ * 以决定是否应运行该建议。所有以前的建议（例如拦截器链中的早期拦截器）都将运行，
+ * 因此它们在参数或 ThreadLocal 状态中产生的任何状态更改都将在评估时可用。
+ *
+ * 此接口的具体实现通常应提供适当的实现 Object.equals(Object) ，以便允许在缓存方案中使用匹配器，
+ * 例如， Object.hashCode() 在 CGLIB 生成的代理中。
+ */
 /**
  * Part of a {@link Pointcut}: Checks whether the target method is eligible for advice.
  *
@@ -52,6 +70,10 @@ import java.lang.reflect.Method;
  */
 public interface MethodMatcher {
 
+	/*
+	 * 执行静态检查给定方法是否匹配。
+	 * 如果这返回或isRuntime()方法返回falsefalse，则不会进行运行时检查（即不matches(Method, Class, Object[])调用）。
+	 */
 	/**
 	 * Perform static checking whether the given method matches.
 	 * <p>If this returns {@code false} or if the {@link #isRuntime()}
@@ -64,6 +86,12 @@ public interface MethodMatcher {
 	 */
 	boolean matches(Method method, Class<?> targetClass);
 
+	/*
+	 * 这个 MethodMatcher 是动态的，也就是说，即使 2-arg 匹配方法返回true，
+	 * 也必须在运行时对matches(Method, Class, Object[])方法进行最终调用吗？
+	 *
+	 * 可以在创建AOP代理时调用，每次方法调用前无需再次调用，
+	 */
 	/**
 	 * Is this MethodMatcher dynamic, that is, must a final call be made on the
 	 * {@link #matches(java.lang.reflect.Method, Class, Object[])} method at
@@ -76,6 +104,11 @@ public interface MethodMatcher {
 	 */
 	boolean isRuntime();
 
+	/*
+	 * 检查此方法是否存在运行时（动态）匹配项，该匹配项必须具有静态匹配项。
+	 * 仅当 2-arg 匹配给定方法和目标类的方法返回，并且该isRuntime()方法返回 true true时，才会调用此方法。
+	 * 在潜在建议运行之前，在建议链中较早的任何建议运行之后立即调用。
+	 */
 	/**
 	 * Check whether there a runtime (dynamic) match for this method,
 	 * which must have matched statically.

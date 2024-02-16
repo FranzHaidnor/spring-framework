@@ -17,7 +17,15 @@
 package org.aopalliance.intercept;
 
 import java.lang.reflect.AccessibleObject;
+/*
+此接口表示通用运行时连接点（在 AOP 术语中）。
+运行时连接点是在静态连接点（即程序中的某个位置）上发生的 事件 。
+例如，调用是方法上的运行时连接点（静态连接点）。
+给定连接点的静态部分通常可以使用该 getStaticPart() 方法进行检索。
 
+在拦截框架的上下文中，运行时连接点是对可访问对象（方法、构造函数、字段）的访问的再化，
+即连接点的静态部分。它被传递给安装在静态连接点上的拦截器。
+* */
 /**
  * This interface represents a generic runtime joinpoint (in the AOP
  * terminology).
@@ -39,6 +47,10 @@ import java.lang.reflect.AccessibleObject;
  */
 public interface Joinpoint {
 
+	/*
+	 * 继续执行链中的下一个拦截器。
+	 * 此方法的实现和语义取决于实际的联接点类型（请参阅子接口）。
+	 */
 	/**
 	 * Proceed to the next interceptor in the chain.
 	 * <p>The implementation and the semantics of this method depends
@@ -48,6 +60,12 @@ public interface Joinpoint {
 	 */
 	Object proceed() throws Throwable;
 
+	/*
+	 * 返回保存当前连接点的静态部分的对象。
+	 * 例如，调用的目标对象。
+	 * 返回值:
+	 * 对象（如果可访问对象是静态的，则可以为 null）
+	 */
 	/**
 	 * Return the object that holds the current joinpoint's static part.
 	 * <p>For instance, the target object for an invocation.
@@ -55,6 +73,10 @@ public interface Joinpoint {
 	 */
 	Object getThis();
 
+	/*
+	 * 返回此连接点的静态部分。
+	 * 静态部分是一个可访问的对象，其上安装了一连串拦截器。
+	 */
 	/**
 	 * Return the static part of this joinpoint.
 	 * <p>The static part is an accessible object on which a chain of

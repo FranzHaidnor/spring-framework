@@ -95,26 +95,42 @@ final class PostProcessorRegistrationDelegate {
 				}
 			}
 
+			// ---------------------------------------------------------------------------------------------------------
+
+			/*
+			 * 不要在这里初始化 FactoryBeans：我们需要让所有常规 Bean 保持未初始化状态，以便让 Bean 工厂后处理器应用于它们！
+			 * 在实现 PriorityOrdered、Ordered 和其他 BeanDefinitionRegistryPostProcessors 之间分开。
+			 */
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the bean factory post-processors apply to them!
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
 			// PriorityOrdered, Ordered, and the rest.
+			// 当前注册的后置处理器
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
+			// 首先，调用实现 PriorityOrdered 的 BeanDefinitionRegistryPostProcessors。
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
-			String[] postProcessorNames =
-					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
+			String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
+
+			// 遍历所有的后置处理器名称
 			for (String ppName : postProcessorNames) {
+				// 判断这个 Bean 是不是 PriorityOrdered 类型
 				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+					// beanFactory.getBean()创建后置处理器实例, 然后添加到集合中
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
 			}
+			// 对后置处理器进行排序
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
+			// 数据复制
 			registryProcessors.addAll(currentRegistryProcessors);
+
 			// 执行 bean 定义注册器后置处理器
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
+
+			// ---------------------------------------------------------------------------------------------------------
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
@@ -130,7 +146,13 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
 
+			// ---------------------------------------------------------------------------------------------------------
+
 			// Finally, invoke all other BeanDefinitionRegistryPostProcessors until no further ones appear.
+
+			// 最后，调用所有其他 BeanDefinitionRegistryPostProcessor，直到不再出现其他 BeanDefinitionRegistryPostProcessor
+			// 为什么这里需要再循环执行所有的 BeanDefinitionRegistryPostProcessor 呢？
+			// 因为之前使用 @Configuration 配置类中，可能会有 @Bean 方法注册的 BeanDefinitionRegistryPostProcessor，所以需要再执行
 			boolean reiterate = true;
 			while (reiterate) {
 				reiterate = false;
@@ -148,11 +170,16 @@ final class PostProcessorRegistrationDelegate {
 				currentRegistryProcessors.clear();
 			}
 
+			// ---------------------------------------------------------------------------------------------------------
+
+			// 现在，调用到目前为止处理的所有处理器的 postProcessBeanFactory 回调。
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
+			// 注册表后置处理器
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
+			// 常规后置处理器
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
 		}
-
+		// ----------------------------------------------------------------------------------------------------------------
 		else {
 			// Invoke factory processors registered with the context instance.
 			invokeBeanFactoryPostProcessors(beanFactoryPostProcessors, beanFactory);
@@ -286,8 +313,10 @@ final class PostProcessorRegistrationDelegate {
 			comparatorToUse = ((DefaultListableBeanFactory) beanFactory).getDependencyComparator();
 		}
 		if (comparatorToUse == null) {
+			// 使用默认的比较器
 			comparatorToUse = OrderComparator.INSTANCE;
 		}
+		// 给集合进行排序
 		postProcessors.sort(comparatorToUse);
 	}
 
@@ -296,7 +325,7 @@ final class PostProcessorRegistrationDelegate {
 	 */
 	private static void invokeBeanDefinitionRegistryPostProcessors(
 			Collection<? extends BeanDefinitionRegistryPostProcessor> postProcessors, BeanDefinitionRegistry registry) {
-
+		// 循环执行后置处理器方法
 		for (BeanDefinitionRegistryPostProcessor postProcessor : postProcessors) {
 			postProcessor.postProcessBeanDefinitionRegistry(registry);
 		}

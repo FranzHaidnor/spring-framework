@@ -13,8 +13,16 @@ dependencies {
     compile(project(":spring-context"))
     compile(project(":spring-tx"))
     compile(project(":spring-jdbc"))
+    compile(project(":spring-aop"))
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
+    compile 'org.aspectj:aspectjweaver:1.9.21'
+// https://mvnrepository.com/artifact/org.projectlombok/lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+
+
 }
 
 test {

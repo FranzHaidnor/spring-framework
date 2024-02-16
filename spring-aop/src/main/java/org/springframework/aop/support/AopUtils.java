@@ -270,6 +270,14 @@ public abstract class AopUtils {
 		return canApply(advisor, targetClass, false);
 	}
 
+	/*
+	 * 给定的顾问可以完全适用于给定的class吗？
+	 * 这是一个重要的测试，因为它可以用来优化课程的顾问。此版本还考虑了介绍（用于 IntroductionAwareMethodMatchers）。
+	 * 形参:
+	 * advisor – 要检查的顾问 targetClass – 我们正在测试的类 hasIntroductions – 此 Bean 的顾问链是否包含任何介绍
+	 * 返回值:
+	 * 切入点是否可以应用于任何方法
+	 */
 	/**
 	 * Can the given advisor apply at all on the given class?
 	 * <p>This is an important test as it can be used to optimize out a advisor for a class.
@@ -282,6 +290,7 @@ public abstract class AopUtils {
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
 		if (advisor instanceof IntroductionAdvisor) {
+			//获取类筛选器进行判断
 			return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);
 		}
 		else if (advisor instanceof PointcutAdvisor) {
@@ -294,6 +303,7 @@ public abstract class AopUtils {
 		}
 	}
 
+	// 确定适用于给定类的列表的 candidateAdvisors 子列表。
 	/**
 	 * Determine the sublist of the {@code candidateAdvisors} list
 	 * that is applicable to the given class.
@@ -303,12 +313,16 @@ public abstract class AopUtils {
 	 * (may be the incoming List as-is)
 	 */
 	public static List<Advisor> findAdvisorsThatCanApply(List<Advisor> candidateAdvisors, Class<?> clazz) {
+		// 如果候选的增强器为空
 		if (candidateAdvisors.isEmpty()) {
+			// 直接返回,不做任何筛选
 			return candidateAdvisors;
 		}
+		// 用于保存可用的增强器集合
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
 		for (Advisor candidate : candidateAdvisors) {
-			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
+			if (candidate instanceof IntroductionAdvisor
+					&& canApply(candidate, clazz)) { // 判断是否可以使用
 				eligibleAdvisors.add(candidate);
 			}
 		}

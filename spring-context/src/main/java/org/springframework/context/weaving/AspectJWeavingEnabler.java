@@ -31,6 +31,9 @@ import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver
 import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.lang.Nullable;
 
+/*
+ * 后处理器，将 AspectJ ClassPreProcessorAgentAdapter 注册为 Spring 应用程序上下文的默认值 LoadTimeWeaver。
+ */
 /**
  * Post-processor that registers AspectJ's
  * {@link org.aspectj.weaver.loadtime.ClassPreProcessorAgentAdapter}

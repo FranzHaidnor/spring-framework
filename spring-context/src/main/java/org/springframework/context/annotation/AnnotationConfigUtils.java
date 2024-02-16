@@ -179,7 +179,7 @@ public abstract class AnnotationConfigUtils {
 			// ConfigurationClassPostProcessor 后置处理器比较关键. 它负责处理 @Configuration 标记的配置类
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class); // BeanFactoryPostProcessor
 			def.setSource(source);
-			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));
+			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));  // 这里指定了 Bean 的名称
 		}
 
 		if (!registry.containsBeanDefinition(AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME)) {

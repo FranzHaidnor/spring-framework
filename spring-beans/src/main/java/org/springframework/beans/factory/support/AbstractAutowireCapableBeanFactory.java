@@ -547,6 +547,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Allow post-processors to modify the merged bean definition.
+		// 允许后处理器修改合并的 Bean 定义
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
@@ -1146,6 +1147,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return bean;
 	}
 
+	/*
+	 * 将 InstantiationAwareBeanPostProcessors 应用于指定的 Bean 定义（按类和名称），
+	 * 并调用其 postProcessBeforeInstantiation 方法。
+	 * 任何返回的对象都将用作 Bean，而不是实际实例化目标 Bean。
+	 * 来自后处理器的 null 返回值将导致目标 Bean 被实例化。
+	 */
 	/**
 	 * Apply InstantiationAwareBeanPostProcessors to the specified bean definition
 	 * (by class and name), invoking their {@code postProcessBeforeInstantiation} methods.
@@ -1407,7 +1414,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	/*
 	 * 使用 bean definition 中的属性值填充给定 BeanWrapper 中的 Bean 实例
 	 */
-
 	/**
 	 * Populate the bean instance in the given BeanWrapper with the property values
 	 * from the bean definition.

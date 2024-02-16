@@ -45,6 +45,11 @@ public class ProxyConfig implements Serializable {
 	private boolean frozen = false;
 
 
+	/*
+	 * 设置是否直接代理目标类，而不仅仅是代理特定接口。默认值为“false”。
+	 * 将此设置为“true”以强制代理 TargetSource 公开的目标类。如果该目标类是接口，则将为给定接口创建 JDK 代理。如果该目标类是任何其他类，则将为给定类创建一个 CGLIB 代理。
+	 * 注意：根据具体代理工厂的配置，如果未指定接口（并且未激活接口自动检测），也将应用代理目标类行为
+	 */
 	/**
 	 * Set whether to proxy the target class directly, instead of just proxying
 	 * specific interfaces. Default is "false".
@@ -130,6 +135,10 @@ public class ProxyConfig implements Serializable {
 		return this.exposeProxy;
 	}
 
+	/*
+	 * 设置是否应冻结此配置。
+	 * 当配置被冻结时，无法进行任何建议更改。这对于优化很有用，当我们不希望调用方在强制转换为 Advise 后能够操作配置时也很有用。
+	 */
 	/**
 	 * Set whether this config should be frozen.
 	 * <p>When a config is frozen, no advice changes can be made. This is

@@ -16,6 +16,22 @@
 
 package org.aopalliance.intercept;
 
+/*
+截获新对象的构造。
+用户应实现 construct(ConstructorInvocation) 修改原始行为的方法。 例如，以下类实现一个单例拦截器（只允许截获类的一个唯一实例）：
+  class DebuggingInterceptor implements ConstructorInterceptor {
+    Object instance=null;
+
+    Object construct(ConstructorInvocation i) throws Throwable {
+      if(instance==null) {
+        return instance=i.proceed();
+      } else {
+        throw new Exception("singleton does not allow multiple instance");
+      }
+    }
+  }
+ */
+
 /**
  * Intercepts the construction of a new object.
  *
