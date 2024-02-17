@@ -1,21 +1,20 @@
 package org.example.factorybean;
 
-import org.example.bean.ServiceC;
+import org.example.bean.ServiceA;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.stereotype.Component;
 
-@Component
-public class ServiceCFactoryBean implements FactoryBean<ServiceC> {
+//@Component
+public class ServiceCFactoryBean implements FactoryBean<ServiceA> {
 
 	@Override
-	public ServiceC getObject() {
+	public ServiceA getObject() {
 		System.out.println("调用 ServiceCFactoryBean 创建 ServiceC 实例");
-		return new ServiceC();
+		return new ServiceA();
 	}
 
 	@Override
 	public Class<?> getObjectType() {
-		return ServiceC.class;
+		return ServiceA.class;
 	}
 
 }

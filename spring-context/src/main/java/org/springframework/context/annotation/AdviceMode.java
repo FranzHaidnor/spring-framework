@@ -16,6 +16,8 @@
 
 package org.springframework.context.annotation;
 
+// 切面增强模式
+// 用于确定是否应应用基于 JDK 代理或基于 AspectJ 编织的建议的枚举。
 /**
  * Enumeration used to determine whether JDK proxy-based or
  * AspectJ weaving-based advice should be applied.

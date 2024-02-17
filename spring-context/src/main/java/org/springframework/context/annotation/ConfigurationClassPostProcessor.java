@@ -239,7 +239,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		processConfigBeanDefinitions(registry);
 	}
 
-	// 顶级接口 BeanFactoryPostProcessor.postProcessBeanFactory
+	// 顶级接口 BeanFactoryPostProcessor.postProcessBeanFactory  (重点方法)
 	/**
 	 * Prepare the Configuration classes for servicing bean requests at runtime
 	 * by replacing them with CGLIB-enhanced subclasses.

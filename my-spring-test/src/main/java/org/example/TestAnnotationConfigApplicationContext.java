@@ -1,8 +1,7 @@
 package org.example;
 
 import org.example.bean.*;
-import org.example.config.SpringConfiguration;
-import org.example.factorybean.ServiceCFactoryBean;
+import config.AppConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -15,9 +14,9 @@ public class TestAnnotationConfigApplicationContext {
 	}
 
 	public static void test1() {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("config");
 
-		IServiceA serviceA = (IServiceA) context.getBean("serviceA");
+		ServiceA serviceA = (ServiceA) context.getBean("serviceA");
 		serviceA.method();
 
 		// 销毁Spring上下文
@@ -27,41 +26,11 @@ public class TestAnnotationConfigApplicationContext {
 	public static void test2() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		// context.addBeanFactoryPostProcessor(); // 提前手动添加一些自定义的 BeanFactoryPostProcessor
-		context.register(SpringConfiguration.class);
+		context.register(AppConfiguration.class);
 		context.refresh();
 
-		ServiceC serviceC = context.getBean("serviceC", ServiceC.class);
-		System.out.println(serviceC);
-
-		ServiceCFactoryBean serviceCFactoryBean = context.getBean("&serviceC", ServiceCFactoryBean.class);
-		System.out.println(serviceCFactoryBean);
-
+		ServiceA serviceA = (ServiceA) context.getBean("serviceA");
+		serviceA.method();
 	}
 
-	public static void test3() {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
-		ServiceD serviceD = (ServiceD) context.getBean("serviceD");
-		System.out.println(serviceD);
-	}
-
-	public static void test4() {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
-		// 根据类型获取
-		ServiceC serviceC = context.getBean(ServiceC.class);
-		// 根据名称获取,报错
-		// ServiceC serviceC = context.getBean("serviceC", ServiceC.class);
-		System.out.println(serviceC);
-	}
-
-	public static void test5() {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
-		IServiceE serviceE = context.getBean("serviceEImpl_01", IServiceE.class);
-		serviceE.method();
-	}
-
-	public static void test6() {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.example");
-		ServiceF serviceF = context.getBean(ServiceF.class);
-		System.out.println(serviceF);
-	}
 }

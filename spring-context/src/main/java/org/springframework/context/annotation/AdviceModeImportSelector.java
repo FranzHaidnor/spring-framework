@@ -24,6 +24,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+// 方便的基类，用于 ImportSelector 根据 AdviceMode 注释中的值（如 @Enable* 注释）选择导入的实现
 /**
  * Convenient base class for {@link ImportSelector} implementations that select imports
  * based on an {@link AdviceMode} value from an annotation (such as the {@code @Enable*}
@@ -73,7 +74,7 @@ public abstract class AdviceModeImportSelector<A extends Annotation> implements 
 					"@%s is not present on importing class '%s' as expected",
 					annType.getSimpleName(), importingClassMetadata.getClassName()));
 		}
-
+		// 从属性中获取 AdviceMode
 		AdviceMode adviceMode = attributes.getEnum(getAdviceModeAttributeName());
 		String[] imports = selectImports(adviceMode);
 		if (imports == null) {
@@ -82,6 +83,10 @@ public abstract class AdviceModeImportSelector<A extends Annotation> implements 
 		return imports;
 	}
 
+	/*
+	 * 根据给定 AdviceMode的 .
+	 * 从此方法返回null表示无法处理或未知，AdviceMode应抛出 。IllegalArgumentException
+	 */
 	/**
 	 * Determine which classes should be imported based on the given {@code AdviceMode}.
 	 * <p>Returning {@code null} from this method indicates that the {@code AdviceMode}
