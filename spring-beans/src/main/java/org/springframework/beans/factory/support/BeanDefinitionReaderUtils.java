@@ -104,29 +104,38 @@ public abstract class BeanDefinitionReaderUtils {
 			BeanDefinition definition, BeanDefinitionRegistry registry, boolean isInnerBean)
 			throws BeanDefinitionStoreException {
 
+		// 生成 bean 名称前缀
 		String generatedBeanName = definition.getBeanClassName();
 		if (generatedBeanName == null) {
+			// 父 bean 名称前缀
 			if (definition.getParentName() != null) {
 				generatedBeanName = definition.getParentName() + "$child";
 			}
+			// 工厂 bean 名称前缀
 			else if (definition.getFactoryBeanName() != null) {
 				generatedBeanName = definition.getFactoryBeanName() + "$created";
 			}
 		}
+		// 如果前缀无法生成则抛出异常
 		if (!StringUtils.hasText(generatedBeanName)) {
 			throw new BeanDefinitionStoreException("Unnamed bean definition specifies neither " +
 					"'class' nor 'parent' nor 'factory-bean' - can't generate bean name");
 		}
 
+		// 如果是内部 bean, 则使用 hashCode 后缀
 		if (isInnerBean) {
 			// Inner bean: generate identity hashcode suffix.
 			return generatedBeanName + GENERATED_BEAN_NAME_SEPARATOR + ObjectUtils.getIdentityHexString(definition);
 		}
 
+		// 顶级bean: 如有必要，使用具有唯一后缀的普通类名
 		// Top-level bean: use plain class name with unique suffix if necessary.
 		return uniqueBeanName(generatedBeanName, registry);
 	}
 
+	/*
+		将给定的bean名称转换为给定bean工厂的唯一bean名称，并在必要时附加唯一计数器作为后缀。
+	 */
 	/**
 	 * Turn the given bean name into a unique bean name for the given bean factory,
 	 * appending a unique counter as suffix if necessary.

@@ -21,10 +21,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
 /*
- * GenericBeanDefinition 是用于标准 Bean 定义目的的一站式商店。与任何 Bean 定义一样，它允许指定类以及可选的构造函数参数值和属性值。
- * 此外，从父 Bean 定义派生可以通过“parentName”属性灵活配置。
- * 通常，使用此类 GenericBeanDefinition 来注册用户可见的 Bean 定义（后处理器可能会对其进行操作，甚至可能重新配置父名称）。
- * 在父/子关系恰好是预先确定的情况下使用 RootBeanDefinition / ChildBeanDefinition 。
+	通用 Bean 定义
+
+	GenericBeanDefinition 是用于标准 Bean 定义目的的一站式商店。与任何 Bean 定义一样，它允许指定类以及可选的构造函数参数值和属性值。
+ 	此外，从父 Bean 定义派生可以通过“parentName”属性灵活配置。
+ 	通常，使用此类 GenericBeanDefinition 来注册用户可见的 Bean 定义（后处理器可能会对其进行操作，甚至可能重新配置父名称）。
+ 	在父/子关系恰好是预先确定的情况下使用 RootBeanDefinition / ChildBeanDefinition 。
  */
 /**
  * GenericBeanDefinition is a one-stop shop for standard bean definition purposes.

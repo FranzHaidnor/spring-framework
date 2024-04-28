@@ -26,6 +26,78 @@ import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 
+/*
+ * 启用 Spring 的注解驱动的事务管理功能，类似于 Spring 的 <tx:*> XML 命名空间中的支持。用于 @Configuration 类，以配置传统的命令式事务管理或反应式事务管理。
+ * 以下示例演示了使用 PlatformTransactionManager.对于反应式事务管理，请改为配置 ReactiveTransactionManager 。
+ *   @Configuration
+ *   @EnableTransactionManagement
+ *   public class AppConfig {
+ *
+ *       @Bean
+ *       public FooRepository fooRepository() {
+ *           // configure and return a class having @Transactional methods
+ *           return new JdbcFooRepository(dataSource());
+ *       }
+ *
+ *       @Bean
+ *       public DataSource dataSource() {
+ *           // configure and return the necessary JDBC DataSource
+ *       }
+ *
+ *       @Bean
+ *       public PlatformTransactionManager txManager() {
+ *           return new DataSourceTransactionManager(dataSource());
+ *       }
+ *   }
+ * 作为参考，上面的示例可以与以下 Spring XML 配置进行比较：
+ *   <beans>
+ *
+ *       <tx:annotation-driven/>
+ *
+ *       <bean id="fooRepository" class="com.foo.JdbcFooRepository">
+ *           <constructor-arg ref="dataSource"/>
+ *       </bean>
+ *
+ *       <bean id="dataSource" class="com.vendor.VendorDataSource"/>
+ *
+ *       <bean id="transactionManager" class="org.sfwk...DataSourceTransactionManager">
+ *           <constructor-arg ref="dataSource"/>
+ *       </bean>
+ *
+ *   </beans>
+ *
+ * 在上面的两种情况下，@EnableTransactionManagement并<tx:annotation-driven/>负责注册必要的 Spring 组件，这些组件支持注解驱动的事务管理，例如 TransactionInterceptor 和基于代理或 AspectJ 的建议，这些建议在调用 的方法@Transactional时JdbcFooRepository将拦截器编织到调用堆栈中。
+ * 这两个示例之间的细微区别在于 Bean 的 TransactionManager 命名：在本 @Bean 例中，名称为 “txManager” （根据方法的名称）;在 XML 中，名称为 “transactionManager”。默认情况下，它是 <tx:annotation-driven/> 硬连线的，可以查找名为“transactionManager”的 bean，但 @EnableTransactionManagement 更灵活;它将回退到容器中任何 TransactionManager bean 的按类型查找。因此，名称可以是“txManager”、“transactionManager”或“tm”：这无关紧要。
+ * 对于那些希望在要使用的确切事务管理器 Bean 之间 @EnableTransactionManagement 建立更直接关系的人， TransactionManagementConfigurer 可以实现回调接口 - 请注意 implements 下面的子句和 @Override-annotated 方法：
+ *   @Configuration
+ *   @EnableTransactionManagement
+ *   public class AppConfig implements TransactionManagementConfigurer {
+ *
+ *       @Bean
+ *       public FooRepository fooRepository() {
+ *           // configure and return a class having @Transactional methods
+ *           return new JdbcFooRepository(dataSource());
+ *       }
+ *
+ *       @Bean
+ *       public DataSource dataSource() {
+ *           // configure and return the necessary JDBC DataSource
+ *       }
+ *
+ *       @Bean
+ *       public PlatformTransactionManager txManager() {
+ *           return new DataSourceTransactionManager(dataSource());
+ *       }
+ *
+ *       @Override
+ *       public PlatformTransactionManager annotationDrivenTransactionManager() {
+ *           return txManager();
+ *       }
+ *   }
+ * 这种方法可能是可取的，因为它更明确，或者为了区分同一容器中存在的两种 TransactionManager 豆子可能是必要的。顾名思义， annotationDrivenTransactionManager() 将是用于处理 @Transactional 方法的方法。有关详细信息，请参见 TransactionManagementConfigurer Javadoc。
+ * 该 mode 属性控制如何应用建议：如果模式为 AdviceMode.PROXY （默认值），则其他属性控制代理的行为。请注意，代理模式仅允许通过代理拦截呼叫;同一类中的本地调用不能以这种方式被截获。
+ * 请注意，如果 mode 设置为 AdviceMode.ASPECTJ，则该属性的 proxyTargetClass 值将被忽略。另请注意，在这种情况下， spring-aspects 模块 JAR 必须存在于类路径上，编译时编织或加载时编织将方面应用于受影响的类。这种情况不涉及代理;本地电话也将被拦截。
+ */
 /**
  * Enables Spring's annotation-driven transaction management capability, similar to
  * the support found in Spring's {@code <tx:*>} XML namespace. To be used on

@@ -21,6 +21,15 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.lang.Nullable;
 
+/*
+	注解 BeanDefinition
+	相比于BeanDefinition， 仅仅多提供了两个方法
+
+	1. getMetadata(),主要用于获取注解元素据。从接口的命名上我们也能看出，这类主要用于保存通过注解方式定义的bean所对应的BeanDefinition。所以它
+		多提供了一个关于获取注解信息的方法
+	2. getFactoryMethodMetadata(),这个方法跟我们的@Bean注解相关。当我们在一个配置类中使用了@Bean注解时，被@Bean注解标记的方法，就被解析成了
+		FactoryMethodMetadata。
+ */
 /**
  * Extended {@link org.springframework.beans.factory.config.BeanDefinition}
  * interface that exposes {@link org.springframework.core.type.AnnotationMetadata}

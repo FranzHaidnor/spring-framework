@@ -19,6 +19,10 @@ package org.springframework.context.annotation;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.util.Assert;
 
+/*
+	全类名 bean 名称生成器
+	直接返回全类型,例如 org.springframework.context.annotation.FullyQualifiedAnnotationBeanNameGenerator
+ */
 /**
  * An extension of {@code AnnotationBeanNameGenerator} that uses the fully qualified
  * class name as the default bean name if an explicit bean name is not supplied via
@@ -48,10 +52,12 @@ public class FullyQualifiedAnnotationBeanNameGenerator extends AnnotationBeanNam
 	 * instance, as used for configuration-level import purposes.
 	 * @since 5.2.11
 	 */
-	public static final FullyQualifiedAnnotationBeanNameGenerator INSTANCE =
-			new FullyQualifiedAnnotationBeanNameGenerator();
+	public static final FullyQualifiedAnnotationBeanNameGenerator INSTANCE = new FullyQualifiedAnnotationBeanNameGenerator();
 
 
+	/*
+		返回全类名
+	 */
 	@Override
 	protected String buildDefaultBeanName(BeanDefinition definition) {
 		String beanClassName = definition.getBeanClassName();

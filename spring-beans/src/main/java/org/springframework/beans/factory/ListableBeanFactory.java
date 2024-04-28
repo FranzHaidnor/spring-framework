@@ -28,15 +28,10 @@ import java.util.Map;
  * ListableBeanFactory的主要作用是允许应用程序以编程方式获取和遍历应用程序上下文中的所有bean实例。它提供了以下功能：
  *
  * 1. 列举所有bean实例：ListableBeanFactory定义了getBeanDefinitionCount()和getBeanDefinitionNames()方法，用于获取应用程序上下文中所有bean定义的数量和名称。通过这些方法可以遍历并获取所有bean实例的信息。
- *
  * 2. 按类型获取bean实例：ListableBeanFactory提供了getBeansOfType()和getBeanNamesForType()方法，用于按照指定的类型获取bean实例或bean名称。这样可以方便地根据类型查找和获取需要的bean实例。
- *
  * 3. 获取所有bean的名称：ListableBeanFactory定义了getBeanNamesIterator()方法，用于获取所有bean的名称的迭代器。通过这个方法可以逐个获取所有bean的名称。
- *
  * 4. 判断是否包含指定名称的bean：ListableBeanFactory提供了containsBean()方法，用于判断是否包含指定名称的bean。这样可以方便地检查某个bean是否存在。
- *
  * 需要注意的是，除了getBeanDefinitionCount()和containsBeanDefinition()方法外，ListableBeanFactory的其他方法不适合频繁调用。具体实现可能会比较慢。
- *
  * 总之，ListableBeanFactory是一个扩展了BeanFactory功能的接口，提供了便利的方法来获取和遍历应用程序上下文中的所有bean实例。它可以方便地进行类型查找、获取所有bean的名称等操作，对于需要对bean进行全面管理和操作的场景非常有用。
  */
 

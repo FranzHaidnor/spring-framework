@@ -53,67 +53,99 @@ import org.springframework.util.StringUtils;
  *
  * @author Juergen Hoeller
  * @author Mark Fisher
- * @since 2.5
  * @see org.springframework.stereotype.Component#value()
  * @see org.springframework.stereotype.Repository#value()
  * @see org.springframework.stereotype.Service#value()
  * @see org.springframework.stereotype.Controller#value()
  * @see javax.inject.Named#value()
  * @see FullyQualifiedAnnotationBeanNameGenerator
+ * @since 2.5
  */
 public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 
 	/**
 	 * A convenient constant for a default {@code AnnotationBeanNameGenerator} instance,
 	 * as used for component scanning purposes.
+	 *
 	 * @since 5.2
 	 */
 	public static final AnnotationBeanNameGenerator INSTANCE = new AnnotationBeanNameGenerator();
 
 	private static final String COMPONENT_ANNOTATION_CLASSNAME = "org.springframework.stereotype.Component";
 
-	private final Map<String, Set<String>> metaAnnotationTypesCache = new ConcurrentHashMap<>();
+	/*
+		元注解类型缓存
+	 */
+	private final Map<String/*注解类型的全类名*/, Set<String>> metaAnnotationTypesCache = new ConcurrentHashMap<>();
 
 
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+		// 如果 BeanDefinition 是 AnnotatedBeanDefinition 类型的
 		if (definition instanceof AnnotatedBeanDefinition) {
+			// 从注解中确定 Bean 的名称
 			String beanName = determineBeanNameFromAnnotation((AnnotatedBeanDefinition) definition);
 			if (StringUtils.hasText(beanName)) {
 				// Explicit bean name found.
 				return beanName;
 			}
 		}
+		// 构建默认的 bean 名称
 		// Fallback: generate a unique default bean name.
 		return buildDefaultBeanName(definition, registry);
 	}
-	// 从类的某个注释中派生 Bean 名称。
+
+	/*
+		从注解中确定 Bean 的名称
+		如果这个 bean 上的注解以及里面的子注解是  @Component @ManagedBean @Named 类型
+		则取里面 value 的属性值
+	 */
+
 	/**
 	 * Derive a bean name from one of the annotations on the class.
+	 *
 	 * @param annotatedDef the annotation-aware bean definition
 	 * @return the bean name, or {@code null} if none is found
 	 */
 	@Nullable
 	protected String determineBeanNameFromAnnotation(AnnotatedBeanDefinition annotatedDef) {
+		// 获取注解元数据
 		AnnotationMetadata amd = annotatedDef.getMetadata();
+		// 获取此类所有的注解类型
 		Set<String> types = amd.getAnnotationTypes();
+
+		// 临时变量, 用于存放从注解中获取的 bean 名称
 		String beanName = null;
+
+		// 循环此类上所有的注解类型
 		for (String type : types) {
-			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type); // 获取注解中的属性值
+
+			// 获取注解中的属性值
+			AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(amd, type);
+			// 如果注解中的属性不为空
 			if (attributes != null) {
+
+				// 从缓存中获取这个注解中包含所有注解全类名
 				Set<String> metaTypes = this.metaAnnotationTypesCache.computeIfAbsent(type, key -> {
+					// 获取所有的子注解类型
 					Set<String> result = amd.getMetaAnnotationTypes(key);
 					return (result.isEmpty() ? Collections.emptySet() : result);
 				});
+
+				// 1.判断注释是否包含 @Component @ManagedBean @Named 子注解
+				// 2.判断注解是否有 value 属性
 				if (isStereotypeWithNameValue(type, metaTypes, attributes)) {
+
+					// 获取属性的值
 					Object value = attributes.get("value");
 					if (value instanceof String) {
 						String strVal = (String) value;
 						if (StringUtils.hasLength(strVal)) {
+							// 比较 bean 的名称是否与之前名称一致,否则抛出非法状态异常
 							if (beanName != null && !strVal.equals(beanName)) {
-								throw new IllegalStateException("Stereotype annotations suggest inconsistent " +
-										"component names: '" + beanName + "' versus '" + strVal + "'");
+								throw new IllegalStateException("Stereotype annotations suggest inconsistent component names: '" + beanName + "' versus '" + strVal + "'");
 							}
+							// 给 beanName 赋值
 							beanName = strVal;
 						}
 					}
@@ -123,16 +155,23 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 		return beanName;
 	}
 
+	/*
+	 	判断注解是否为以下三种类型
+		org.springframework.stereotype.Component
+		javax.annotation.ManagedBean
+		javax.inject.Named
+	 */
 	/**
 	 * Check whether the given annotation is a stereotype that is allowed
 	 * to suggest a component name through its annotation {@code value()}.
-	 * @param annotationType the name of the annotation class to check
+	 *
+	 * @param annotationType      the name of the annotation class to check
 	 * @param metaAnnotationTypes the names of meta-annotations on the given annotation
-	 * @param attributes the map of attributes for the given annotation
+	 * @param attributes          the map of attributes for the given annotation
 	 * @return whether the annotation qualifies as a stereotype with component name
 	 */
 	protected boolean isStereotypeWithNameValue(String annotationType,
-			Set<String> metaAnnotationTypes, @Nullable Map<String, Object> attributes) {
+												Set<String> metaAnnotationTypes, @Nullable Map<String, Object> attributes) {
 
 		boolean isStereotype = annotationType.equals(COMPONENT_ANNOTATION_CLASSNAME) ||
 				metaAnnotationTypes.contains(COMPONENT_ANNOTATION_CLASSNAME) ||
@@ -145,13 +184,19 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	/**
 	 * Derive a default bean name from the given bean definition.
 	 * <p>The default implementation delegates to {@link #buildDefaultBeanName(BeanDefinition)}.
+	 *
 	 * @param definition the bean definition to build a bean name for
-	 * @param registry the registry that the given bean definition is being registered with
+	 * @param registry   the registry that the given bean definition is being registered with
 	 * @return the default bean name (never {@code null})
 	 */
 	protected String buildDefaultBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		return buildDefaultBeanName(definition);
 	}
+
+	/*
+		构建默认的 Bean 的名称
+		例如: "com.MyJdbcDao" -> "myJdbcDao"
+	 */
 
 	/**
 	 * Derive a default bean name from the given bean definition.
@@ -160,6 +205,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * <p>Note that inner classes will thus have names of the form
 	 * "outerClassName.InnerClassName", which because of the period in the
 	 * name may be an issue if you are autowiring by name.
+	 *
 	 * @param definition the bean definition to build a bean name for
 	 * @return the default bean name (never {@code null})
 	 */

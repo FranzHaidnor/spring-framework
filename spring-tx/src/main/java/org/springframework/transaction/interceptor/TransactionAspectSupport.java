@@ -358,6 +358,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 		if (txAttr == null || !(ptm instanceof CallbackPreferringPlatformTransactionManager)) {
 			// Standard transaction demarcation with getTransaction and commit/rollback calls.
+
+			// k2 创建事务（重要！！！！重要！！！！）
 			TransactionInfo txInfo = createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);
 
 			Object retVal;
@@ -542,6 +544,14 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		return null;
 	}
 
+	/*
+	 * 如有必要，基于给定的 TransactionAttribute 创建事务。
+	 * 允许调用方通过 TransactionAttributeSource 执行自定义 TransactionAttribute 查找。
+	 * 形参:
+	 * txAttr – TransactionAttribute（可能是 null） joinpointIdentification – 完全限定的方法名称（用于监视和日志记录目的）
+	 * 返回值:
+	 * 一个 TransactionInfo 对象，无论是否创建了事务。 hasTransaction() TransactionInfo 上的方法可用于判断是否创建了事务。
+	 */
 	/**
 	 * Create a transaction if necessary based on the given TransactionAttribute.
 	 * <p>Allows callers to perform custom TransactionAttribute lookups through
@@ -580,6 +590,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 		}
+		// prepareTransactionInfo()把事务信息TransactionInfo绑定到线程上下文
 		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
 	}
 

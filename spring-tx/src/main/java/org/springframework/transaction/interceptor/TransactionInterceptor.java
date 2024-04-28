@@ -105,7 +105,7 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 		setTransactionAttributes(attributes);
 	}
 
-
+	// k1 事务拦截器方法
 	@Override
 	@Nullable
 	public Object invoke(MethodInvocation invocation) throws Throwable {

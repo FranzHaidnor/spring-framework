@@ -25,6 +25,34 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.lang.Nullable;
 
+/*
+ * {@ link org.springframework.beans.factory.BeanFactory} 的扩展名
+* 由bean工厂实现的接口，这些bean工厂能够
+* 自动布线，前提是他们要公开此功能
+* 现有的bean实例。
+*
+* <p> BeanFactory的这个子接口并不意味着在正常情况下使用
+* 应用代码: 坚持 {@ link org.springframework.beans.factory.BeanFactory}
+* 或 {@ link org.springframework.beans.factory.ListableBeanFactory}
+* 典型用例。
+*
+* <p> 其他框架的集成代码可以利用此接口
+* 连线和填充Spring不控制的现有bean实例
+* 的生命周期。这对于WebWork操作和
+* Tapestry页面对象，例如。
+*
+* <p> 请注意，此接口不是由
+* {@ link org.springframework.context.ApplicationContext} 外观，
+* 因为它几乎没有被应用程序代码使用。也就是说，它是可用的
+* 来自应用程序上下文，可通过ApplicationContext的
+* {@ link org.springframework.context.ApplicationContext # getAutowireCapableBeanFactory()}
+* 方法。
+*
+* <p> 您还可以实现 {@ link org.springframework.beans.factory.BeanFactoryAware}
+* 接口，它暴露了内部BeanFactory，即使在运行
+* ApplicationContext，以访问AutowireCapableBeanFactory:
+* 简单地将传入的BeanFactory转换为AutowireCapableBeanFactory。
+*/
 /**
  * Extension of the {@link org.springframework.beans.factory.BeanFactory}
  * interface to be implemented by bean factories that are capable of

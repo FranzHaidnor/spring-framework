@@ -34,8 +34,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /*
+   注解 Bean 定义读取器
+
  * 用于以编程方式注册 bean 类的便捷适配器。
- *
  * <p>这是 {@link ClassPathBeanDefinitionScanner} 的替代方案，
  * 应用相同的注释解析，但仅适用于显式注册的类。
  */
@@ -54,7 +55,6 @@ import org.springframework.util.Assert;
  */
 public class AnnotatedBeanDefinitionReader {
 
-	// bean 定义注册器
 	private final BeanDefinitionRegistry registry;
 
 	private BeanNameGenerator beanNameGenerator = AnnotationBeanNameGenerator.INSTANCE;
