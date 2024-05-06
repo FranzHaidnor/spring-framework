@@ -19,7 +19,7 @@ package org.springframework.core.env;
 import org.springframework.lang.Nullable;
 
 /*
- * 用于针对任何基础源解析属性的接口
+	属性解析器
  */
 /**
  * Interface for resolving properties against any underlying source.
@@ -32,18 +32,14 @@ import org.springframework.lang.Nullable;
  */
 public interface PropertyResolver {
 
-	/*
-	 * 返回给定的属性键是否可用于解析，即给定键的值是否 null为 。
-	 */
+	// 返回给定的属性键是否可用于解析，即给定键的值是否 null为
 	/**
 	 * Return whether the given property key is available for resolution,
 	 * i.e. if the value for the given key is not {@code null}.
 	 */
 	boolean containsProperty(String key);
 
-	/**
-	 * 返回给定 key 相关联的属性
-	 */
+	// 返回给定 key 相关联的属性
 	/**
 	 * Return the property value associated with the given key,
 	 * or {@code null} if the key cannot be resolved.

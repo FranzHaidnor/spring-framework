@@ -150,6 +150,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private String scope = SCOPE_DEFAULT;
 
+	// 判断这个 Bean 是否为抽象的标识
 	private boolean abstractFlag = false;
 
 	/**

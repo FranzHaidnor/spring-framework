@@ -61,6 +61,9 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Conditional {
 
+	/*
+		设置条件类 Condition
+	 */
 	/**
 	 * All {@link Condition} classes that must {@linkplain Condition#matches match}
 	 * in order for the component to be registered.

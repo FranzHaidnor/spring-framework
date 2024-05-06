@@ -16,6 +16,9 @@
 
 package org.springframework.core.env;
 
+/*
+	此接口表示可以返回 Environment 对象
+ */
 /**
  * Interface indicating a component that contains and exposes an {@link Environment} reference.
  *
@@ -40,6 +43,7 @@ package org.springframework.core.env;
  */
 public interface EnvironmentCapable {
 
+	// 返回与该组件关联的 Environment
 	/**
 	 * Return the {@link Environment} associated with this component.
 	 */

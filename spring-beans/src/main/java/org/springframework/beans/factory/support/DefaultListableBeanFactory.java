@@ -86,15 +86,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 // 此类是整个 Bean 加载的核心部分, 是 Spring 注册及加载 bean 的模式实现
-/*
- * Spring 的 and BeanDefinitionRegistry 接口的默认实现ConfigurableListableBeanFactory：一个基于 Bean 定义元数据的成熟 Bean 工厂，可通过后处理器进行扩展。
- *
- * 典型的用法是先注册所有 Bean 定义（可能从 Bean 定义文件中读取），然后再访问 Bean。因此，在本地 Bean 定义表中，按名称查找 Bean 是一种成本低廉的操作，它对预先解析的 Bean 定义元数据对象进行操作。
- *
- * 请注意，特定 Bean 定义格式的读取器通常是单独实现的，而不是作为 Bean 工厂子类实现的：例如，请参见 org.springframework.beans.factory.xml.XmlBeanDefinitionReader。
- *
- * 有关接口的 org.springframework.beans.factory.ListableBeanFactory 替代实现，请查看 StaticListableBeanFactory，它管理现有的 Bean 实例，而不是基于 Bean 定义创建新的实例。
- */
 /**
  * Spring's default implementation of the {@link ConfigurableListableBeanFactory}
  * and {@link BeanDefinitionRegistry} interfaces: a full-fledged bean factory
@@ -146,6 +137,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 
+	// 从序列化id映射到工厂实例
 	/** Map from serialized id to factory instance. */
 	private static final Map<String, Reference<DefaultListableBeanFactory>> serializableFactories =
 			new ConcurrentHashMap<>(8);
@@ -154,12 +146,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Nullable
 	private String serializationId;
 
+	// 是否允许重新注册具有相同名称的不同定义
 	/** Whether to allow re-registration of a different definition with the same name. */
 	private boolean allowBeanDefinitionOverriding = true;
 
+	// 是否允许甚至对lazy-init bean进行急切的类加载
 	/** Whether to allow eager class loading even for lazy-init beans. */
 	private boolean allowEagerClassLoading = true;
 
+	// 依赖项列表和数组的可选 OrderComparator。
 	/** Optional OrderComparator for dependency Lists and arrays. */
 	@Nullable
 	private Comparator<Object> dependencyComparator;
@@ -170,9 +165,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** Map from dependency type to corresponding autowired value. */
 	private final Map<Class<?>, Object> resolvableDependencies = new ConcurrentHashMap<>(16);
 
+	// 存放 BeanDefinition 的 Map
 	/** Map of bean definition objects, keyed by bean name. */
 	private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
+	// 存放 BeanDefinitionHolder 的 Map
 	/** Map from bean name to merged BeanDefinitionHolder. */
 	private final Map<String, BeanDefinitionHolder> mergedBeanDefinitionHolders = new ConcurrentHashMap<>(256);
 
@@ -180,6 +177,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** Map of singleton and non-singleton bean names, keyed by dependency type. */
 	private final Map<Class<?>/*Bean 的类型*/, String[]> allBeanNamesByType = new ConcurrentHashMap<>(64);
 
+	// 单例 bean 类型和名称映射
 	/** Map of singleton-only bean names, keyed by dependency type. */
 	private final Map<Class<?>, String[]> singletonBeanNamesByType = new ConcurrentHashMap<>(64);
 
@@ -187,6 +185,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/** List of bean definition names, in registration order. */
 	private volatile List<String> beanDefinitionNames = new ArrayList<>(256);
 
+	// 手动注册的单例 bean 的名称列表，按注册顺序排列
 	/** List of names of manually registered singletons, in registration order. */
 	private volatile Set<String> manualSingletonNames = new LinkedHashSet<>(16);
 

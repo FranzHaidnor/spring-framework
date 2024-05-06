@@ -16,6 +16,9 @@
 
 package org.springframework.context.annotation;
 
+/*
+	与 @Configuration 一起使用时提供更细粒度控制的条件
+ */
 /**
  * A {@link Condition} that offers more fine-grained control when used with
  * {@code @Configuration}. Allows certain conditions to adapt when they match
@@ -35,6 +38,7 @@ public interface ConfigurationCondition extends Condition {
 	ConfigurationPhase getConfigurationPhase();
 
 
+	// 可以评估条件的各种配置阶段
 	/**
 	 * The various configuration phases where the condition could be evaluated.
 	 */

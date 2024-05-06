@@ -18,6 +18,7 @@ package org.springframework.beans.factory;
 
 import org.springframework.lang.Nullable;
 
+// 实现 FactoryBean 接口的 Bean 是一个特殊的 Bean, 它用于创建其它类型的 Bean
 /**
  * Interface to be implemented by objects used within a {@link BeanFactory} which
  * are themselves factories for individual objects. If a bean implements this
@@ -64,6 +65,7 @@ import org.springframework.lang.Nullable;
  */
 public interface FactoryBean<T> {
 
+	// 可以在  BeanDefinition上设置的属性的名称，以便当无法从工厂bean类推导时，FactoryBean 可以用信号通知其对象类型。
 	/**
 	 * The name of an attribute that can be
 	 * {@link org.springframework.core.AttributeAccessor#setAttribute set} on a
@@ -75,6 +77,7 @@ public interface FactoryBean<T> {
 	String OBJECT_TYPE_ATTRIBUTE = "factoryBeanObjectType";
 
 
+	// 创建一个对象
 	/**
 	 * Return an instance (possibly shared or independent) of the object
 	 * managed by this factory.
@@ -95,6 +98,7 @@ public interface FactoryBean<T> {
 	@Nullable
 	T getObject() throws Exception;
 
+	// 返回创建的类型
 	/**
 	 * Return the type of object that this FactoryBean creates,
 	 * or {@code null} if not known in advance.
@@ -117,6 +121,7 @@ public interface FactoryBean<T> {
 	@Nullable
 	Class<?> getObjectType();
 
+	// 返回创建的 Bean 是否为单例
 	/**
 	 * Is the object managed by this factory a singleton? That is,
 	 * will {@link #getObject()} always return the same object

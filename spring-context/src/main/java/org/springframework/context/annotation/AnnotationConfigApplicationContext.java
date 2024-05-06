@@ -227,8 +227,10 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	@Override
 	public void scan(String... basePackages) {
-		Assert.notEmpty(basePackages, "At least one base package must be specified");  // 校验包路径不能为空
-		this.scanner.scan(basePackages); // 使用扫描器 ClassPathBeanDefinitionScanner 扫描包路径
+		// 校验包路径不能为空
+		Assert.notEmpty(basePackages, "At least one base package must be specified");
+		// 使用扫描器 ClassPathBeanDefinitionScanner 扫描包路径
+		this.scanner.scan(basePackages);
 	}
 
 

@@ -34,12 +34,7 @@ import org.springframework.lang.Nullable;
  */
 public interface SingletonBeanRegistry {
 
-	/*
-	 * 在 Bean 注册表中，在给定的 Bean 名称下，将给定的现有对象注册为单例。
-	 * 给定的实例应该被完全初始化;注册表不会执行任何初始化回调（特别是，它不会调用 InitializingBean afterPropertiesSet 的方法）。给定的实例也不会收到任何销毁回调（如 DisposableBean destroy 的方法）。
-	 * 在完整的 BeanFactory 中运行时：如果 Bean 应该接收初始化和/或销毁回调，请注册 Bean 定义而不是现有实例。
-	 * 通常在注册表配置期间调用，但也可用于单例的运行时注册。因此，注册表实现应同步单例访问;如果它支持 BeanFactory 的单例延迟初始化，它无论如何都必须这样做。
-	 */
+	//在容器内注册一个单例类
 	/**
 	 * Register the given existing object as singleton in the bean registry,
 	 * under the given bean name.
@@ -63,6 +58,7 @@ public interface SingletonBeanRegistry {
 	 */
 	void registerSingleton(String beanName, Object singletonObject);
 
+	// 返回给定名称对应的单例 Bean
 	/**
 	 * Return the (raw) singleton object registered under the given name.
 	 * <p>Only checks already instantiated singletons; does not return an Object
@@ -79,6 +75,7 @@ public interface SingletonBeanRegistry {
 	@Nullable
 	Object getSingleton(String beanName);
 
+	// 给定名称是否对应单例类
 	/**
 	 * Check if this registry contains a singleton instance with the given name.
 	 * <p>Only checks already instantiated singletons; does not return {@code true}
@@ -103,6 +100,7 @@ public interface SingletonBeanRegistry {
 	 */
 	boolean containsSingleton(String beanName);
 
+	// 返回容器内所有单例类的名字
 	/**
 	 * Return the names of singleton beans registered in this registry.
 	 * <p>Only checks already instantiated singletons; does not return names
@@ -117,6 +115,7 @@ public interface SingletonBeanRegistry {
 	 */
 	String[] getSingletonNames();
 
+	// 返回容器内注册的单例类数量
 	/**
 	 * Return the number of singleton beans registered in this registry.
 	 * <p>Only checks already instantiated singletons; does not count
@@ -131,6 +130,7 @@ public interface SingletonBeanRegistry {
 	 */
 	int getSingletonCount();
 
+	// 返回此注册表使用的单例互斥锁（对于外部协作者）
 	/**
 	 * Return the singleton mutex used by this registry (for external collaborators).
 	 * @return the mutex object (never {@code null})

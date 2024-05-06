@@ -456,9 +456,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #doCreateBean
 	 */
 	@Override
-	protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
-			throws BeanCreationException {
-
+	protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) throws BeanCreationException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Creating instance of bean '" + beanName + "'");
 		}
@@ -494,7 +492,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			// 创建 Bean 实例, 并为 Bean 实例的属性赋值
+			// 创建 Bean 的实例
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
@@ -510,6 +508,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 	}
 
+	// 创建 Bean 的实例,并为 Bean 实例的属性赋值
 	/**
 	 * Actually create the specified bean. Pre-creation processing has already happened
 	 * at this point, e.g. checking {@code postProcessBeforeInstantiation} callbacks.
@@ -538,6 +537,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 此时这个 Bean 没有被填充任何属性. 也不会做任何增强,或者代理处理
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
+
 		// 从 Bean 包装器中获取 Bean 实例
 		Object bean = instanceWrapper.getWrappedInstance();
 		// 从包装器中获取 Bean 的 Class 类型
@@ -546,15 +546,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			mbd.resolvedTargetType = beanType;
 		}
 
-		// Allow post-processors to modify the merged bean definition.
-		// 允许后处理器修改合并的 Bean 定义
+		// 允许后处理器修改合并的 Bean 定义 Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				} catch (Throwable ex) {
-					throw new BeanCreationException(mbd.getResourceDescription(), beanName,
-							"Post-processing of merged bean definition failed", ex);
+					throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Post-processing of merged bean definition failed", ex);
 				}
 				mbd.postProcessed = true;
 			}
@@ -564,20 +562,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
 		// 这个变量标识是否允许早期单例暴露
-		boolean earlySingletonExposure = (mbd.isSingleton()
-				&& this.allowCircularReferences
-				&& isSingletonCurrentlyInCreation(beanName));
+		boolean earlySingletonExposure = (mbd.isSingleton()			// 是否为单例 Bean
+				&& this.allowCircularReferences						// 是否允许循环引用
+				&& isSingletonCurrentlyInCreation(beanName));		// Bean 是否正在创建中
 		if (earlySingletonExposure) {
 			if (logger.isTraceEnabled()) {
-				logger.trace("Eagerly caching bean '" + beanName +
-						"' to allow for resolving potential circular references");
+				logger.trace("Eagerly caching bean '" + beanName + "' to allow for resolving potential circular references");
 			}
 			// 将创建好的 Bean 实例存放进入 3 级缓存，已便解决循环依赖
-			// 三级缓存 存放的实是一个对象工厂 ObjectFactory, 它可以在被其它
 			addSingletonFactory(beanName, new ObjectFactory<Object>() {
 				@Override
 				public Object getObject() throws BeansException {
-					// 获取早期 Bean 的引用
+					// 获取早期 Bean 的引用, (此方法调用了 BeanPostProcessor 可以获取此 Bean 最后的代理对象)
 					return getEarlyBeanReference(beanName, mbd, bean);
 				}
 			});
@@ -956,16 +952,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return getTypeForFactoryBean(beanName, mbd, true).resolve();
 	}
 
-	/*
-	 * 获取用于早期访问指定 Bean 的引用，通常用于解析循环引用。
-	 * 形参:
-	 * beanName – Bean 的名称（用于错误处理目的）
-	 * mbd – Bean 的合并 Bean 定义
-	 * bean – 原始 Bean 实例
-	 *
-	 * 返回值:
-	 * 要作为 Bean 引用公开的对象
-	 */
+	// 获取用于早期访问指定 Bean 的引用，通常用于解析循环引用
+	// 此方法调用了 BeanPostProcessor 后置处理器链, 可以返回最终代理的 Bean
 	/**
 	 * Obtain a reference for early access to the specified bean,
 	 * typically for the purpose of resolving a circular reference.

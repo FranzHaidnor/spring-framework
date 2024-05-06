@@ -38,6 +38,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MultiValueMap;
 
+/*
+	用于评估 @Conditional 注解
+ */
 /**
  * Internal class used to evaluate {@link Conditional} annotations.
  *
@@ -64,8 +67,7 @@ class ConditionEvaluator {
 
 
 	/*
-	 * 根据 @Conditional 批注确定是否应跳过某个项目。将从 ConfigurationCondition.ConfigurationPhase 项目的类型中推导出来
-	 * （即一个 @Configuration 类将是 ConfigurationCondition.ConfigurationPhase.PARSE_CONFIGURATION）
+		根据 @Conditional 批注确定是否应跳过某个项目
 	 */
 	/**
 	 * Determine if an item should be skipped based on {@code @Conditional} annotations.

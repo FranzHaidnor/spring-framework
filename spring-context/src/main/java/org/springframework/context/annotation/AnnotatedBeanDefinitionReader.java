@@ -106,8 +106,10 @@ public class AnnotatedBeanDefinitionReader {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		Assert.notNull(environment, "Environment must not be null");
 		this.registry = registry;
-		// 条件评估器
+
+		// 创建条件评估器
 		this.conditionEvaluator = new ConditionEvaluator(registry, environment, null);
+
 		// k1 注册注解配置处理器
 		// 注册 BeanFactoryPostProcessor 和 BeanPostProcessor 后置处理器
 		AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
@@ -286,7 +288,9 @@ public class AnnotatedBeanDefinitionReader {
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
+		// 创建 BeanDefinition
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
+		// 判断是否应该跳过注册
 		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
 			return;
 		}

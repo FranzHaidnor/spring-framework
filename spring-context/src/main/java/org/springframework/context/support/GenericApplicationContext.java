@@ -329,6 +329,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 	//---------------------------------------------------------------------
 	// Implementation of BeanDefinitionRegistry
+	// 实现 BeanDefinition 注册功能
 	//---------------------------------------------------------------------
 
 	@Override

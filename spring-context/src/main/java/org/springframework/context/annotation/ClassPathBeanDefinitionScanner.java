@@ -276,14 +276,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		this.includeAnnotationConfig = includeAnnotationConfig;
 	}
 
-
-	/*
-	 * 在指定的基本包中执行扫描。
-	 * 形参:
-	 * basePackages -检查带注释的类的包
-	 * 返回值: 注册 bean 的数量
-	 */
-
+	// 在指定的基本包中执行扫描
 	/**
 	 * Perform a scan within the specified base packages.
 	 *
@@ -292,7 +285,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 */
 	public int scan(String... basePackages) {
 		// 获取bean注册器的数量
-		int beanCountAtScanStart = this.registry.getBeanDefinitionCount();  // 获取 Bean 定义计数器
+		int beanCountAtScanStart = this.registry.getBeanDefinitionCount();
 
 		// 扫描包
 		doScan(basePackages);
@@ -328,10 +321,11 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 */
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
-		// 存储 BeanDefinitionHolder 的集合
+
+		// 创建用于存储 BeanDefinitionHolder 的集合
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 
-		// 玄幻遍历配置的包路径
+		// 循环遍历配置的包路径
 		for (String basePackage : basePackages) {
 			// 扫描类路径以查找候选组件 查找候选组件 BeanDefinition
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);

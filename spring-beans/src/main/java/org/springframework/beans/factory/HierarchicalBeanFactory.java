@@ -18,11 +18,8 @@ package org.springframework.beans.factory;
 
 import org.springframework.lang.Nullable;
 
+// 分层的 Bean 工厂
 /*
- * 由 Bean 工厂实现的子接口，可以是层次结构的一部分。
- * 允许以可配置方式设置父级的 Bean 工厂的相应 setParentBeanFactory 方法可以在 ConfigurableBeanFactory 接口中找到。
- *
- * HierarchicalBeanFactory 是 Spring 框架中的一个接口，它继承了 BeanFactory 接口，并添加了一些额外的方法。它的作用是提供了一种层次结构的 BeanFactory 实现方式，用于管理和访问 Spring 容器中的 Bean。
  * 具体来说，HierarchicalBeanFactory 的作用包括：
  * 1. 提供了父子容器的支持：HierarchicalBeanFactory 允许创建一个包含多个子容器的层次结构，每个子容器可以访问父容器中定义的 Bean。这样可以实现不同层次之间的 Bean 继承和共享。
  * 2. 实现 Bean 的查找和访问：HierarchicalBeanFactory 定义了一些方法，如 `getBean()`、`containsBean()`、`containsLocalBean()` 等，用于在容器中查找和访问 Bean。它可以根据父子容器的关系，递归地查找 Bean，直到找到或者整个层次结构遍历完。
@@ -44,17 +41,14 @@ import org.springframework.lang.Nullable;
  */
 public interface HierarchicalBeanFactory extends BeanFactory {
 
-	// 返回父 Bean 工厂，或者 null 如果没有。
+	// 第一个方法返回本Bean工厂的父工厂。这个方法实现了工厂的分层
 	/**
 	 * Return the parent bean factory, or {@code null} if there is none.
 	 */
 	@Nullable
 	BeanFactory getParentBeanFactory();
 
-	/*
-	 * 返回本地 Bean 工厂是否包含给定名称的 Bean，忽略在祖先上下文中定义的 Bean。
-	 * 这是 的替代方法 containsBean，忽略来自祖先 Bean 工厂的给定名称的 bean。
-	 */
+	// 第二个方法判断本地工厂是否包含这个Bean（忽略其他所有父工厂）。这也是分层思想的体现
 	/**
 	 * Return whether the local bean factory contains a bean of the given name,
 	 * ignoring beans defined in ancestor contexts.

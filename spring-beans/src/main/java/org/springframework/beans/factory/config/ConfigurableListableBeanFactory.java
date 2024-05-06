@@ -23,12 +23,19 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.lang.Nullable;
 
+// ConfigurableListableBeanFactory 提供 BeanDefinition 的解析,注册功能,再对单例来个预加载(解决循环依赖问题).
+// 貌似我们一般开发就会直接定义这么个接口了事.而不是像Spring这样先根据使用情况细分那么多,到这边再合并
 /*
- * 配置接口，由大多数可列出的bean工厂实现。除了…之外 ConfigurableBeanFactory，它提供了分析和修改bean定义以及预实例化单例的工具。
- * 的子接口 org.springframework.beans.factory.BeanFactory 并不意味着在正常的应用程序代码中使用:坚持 org.springframework.beans.factory.BeanFactory 或 ListableBeanFactory 对于典型的用例。
- * 这个接口只是为了允许框架内部即插即用，即使在需要访问bean工厂配置方法时也是如此。
- * 请参阅:
- * org.springframework.context.support.AbstractApplicationContext.getBeanFactory ()
+ConfigurableListableBeanFactory具体：
+　　2个忽略自动装配的的方法。
+　　1个注册一个可分解依赖的方法。
+　　1个判断指定的Bean是否有资格作为自动装配的候选者的方法。
+　　1个根据指定bean名，返回注册的Bean定义的方法。
+　　2个冻结所有的Bean配置相关的方法。
+　　1个使所有的非延迟加载的单例类都实例化的方法。
+
+总结：工厂接口ConfigurableListableBeanFactory同时继承了3个接口，ListableBeanFactory、AutowireCapableBeanFactory 和 ConfigurableBeanFactory，扩展之后，
+加上自有的这8个方法，这个工厂接口总共有83个方法，实在是巨大到不行了。这个工厂接口的自有方法总体上只是对父类接口功能的补充，包含了BeanFactory体系目前的所有方法，可以说是接口的集大成者。
  */
 /**
  * Configuration interface to be implemented by most listable bean factories.
@@ -49,11 +56,7 @@ import org.springframework.lang.Nullable;
 public interface ConfigurableListableBeanFactory
 		extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
 
-	/**
-	 *忽略给定的自动装配依赖类型:例如，String。默认为none。
-	 * 形参:
-	 * 类型 -要忽略的依赖类型
-	 */
+	// 忽略给定的自动装配依赖类型:例如，String。默认为none。
 	/**
 	 * Ignore the given dependency type for autowiring:
 	 * for example, String. Default is none.
@@ -61,6 +64,7 @@ public interface ConfigurableListableBeanFactory
 	 */
 	void ignoreDependencyType(Class<?> type);
 
+	// 忽略自动装配的接口
 	/**
 	 * Ignore the given dependency interface for autowiring.
 	 * <p>This will typically be used by application contexts to register
@@ -74,6 +78,7 @@ public interface ConfigurableListableBeanFactory
 	 */
 	void ignoreDependencyInterface(Class<?> ifc);
 
+	// 注册一个可分解的依赖
 	/**
 	 * Register a special dependency type with corresponding autowired value.
 	 * <p>This is intended for factory/context references that are supposed
@@ -92,6 +97,7 @@ public interface ConfigurableListableBeanFactory
 	 */
 	void registerResolvableDependency(Class<?> dependencyType, @Nullable Object autowiredValue);
 
+	// 判断指定的Bean是否有资格作为自动装配的候选者
 	/**
 	 * Determine whether the specified bean qualifies as an autowire candidate,
 	 * to be injected into other beans which declare a dependency of matching type.
@@ -104,6 +110,7 @@ public interface ConfigurableListableBeanFactory
 	boolean isAutowireCandidate(String beanName, DependencyDescriptor descriptor)
 			throws NoSuchBeanDefinitionException;
 
+	// 返回注册的Bean定义
 	/**
 	 * Return the registered BeanDefinition for the specified bean, allowing access
 	 * to its property values and constructor argument value (which can be
@@ -120,6 +127,7 @@ public interface ConfigurableListableBeanFactory
 	 */
 	BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
+	// 返回 Bean 名称迭代器
 	/**
 	 * Return a unified view over all bean names managed by this factory.
 	 * <p>Includes bean definition names as well as names of manually registered
@@ -134,6 +142,7 @@ public interface ConfigurableListableBeanFactory
 	 */
 	Iterator<String> getBeanNamesIterator();
 
+	// 清楚元数据缓存
 	/**
 	 * Clear the merged bean definition cache, removing entries for beans
 	 * which are not considered eligible for full metadata caching yet.
@@ -146,6 +155,7 @@ public interface ConfigurableListableBeanFactory
 	 */
 	void clearMetadataCache();
 
+	// 暂时冻结所有的Bean配置
 	/**
 	 * Freeze all bean definitions, signalling that the registered bean definitions
 	 * will not be modified or post-processed any further.
@@ -153,6 +163,7 @@ public interface ConfigurableListableBeanFactory
 	 */
 	void freezeConfiguration();
 
+	// 判断本工厂配置是否被冻结
 	/**
 	 * Return whether this factory's bean definitions are frozen,
 	 * i.e. are not supposed to be modified or post-processed any further.
@@ -160,9 +171,11 @@ public interface ConfigurableListableBeanFactory
 	 */
 	boolean isConfigurationFrozen();
 
-	/*
-	 * 确保所有非惰性初始化单例都已实例化，同时考虑 FactoryBeans.如果需要，通常在出厂设置结束时调用。
-	 */
+	//-------------------------------------------------------------------------
+	// 预加载不是懒加载的单例.用于解决循环依赖问题
+	//-------------------------------------------------------------------------
+
+	// 使所有的非延迟加载的单例类都实例化
 	/**
 	 * Ensure that all non-lazy-init singletons are instantiated, also considering
 	 * {@link org.springframework.beans.factory.FactoryBean FactoryBeans}.
