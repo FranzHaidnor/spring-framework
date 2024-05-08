@@ -19,6 +19,8 @@ package org.springframework.beans;
 import org.springframework.core.AttributeAccessorSupport;
 import org.springframework.lang.Nullable;
 
+// Bean 元数据属性访问器
+// AttributeAccessorSupport 的扩展，将属性保存为 BeanMetadataAttribute 对象，以便跟踪定义源
 /**
  * Extension of {@link org.springframework.core.AttributeAccessorSupport},
  * holding attributes as {@link BeanMetadataAttribute} objects in order
@@ -30,13 +32,12 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport implements BeanMetadataElement {
 
+	// 元对象
 	@Nullable
 	private Object source;
 
 
-	/*
-	 * 设置此元数据元素的配置源 Object。对象的确切类型将取决于所使用的配置机制。
-	 */
+	// 设置此元数据元素的配置源 Object。对象的确切类型将取决于所使用的配置机制
 	/**
 	 * Set the configuration source {@code Object} for this metadata element.
 	 * <p>The exact type of the object will depend on the configuration mechanism used.
@@ -51,7 +52,7 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport impl
 		return this.source;
 	}
 
-
+	// 添加属性
 	/**
 	 * Add the given BeanMetadataAttribute to this accessor's set of attributes.
 	 * @param attribute the BeanMetadataAttribute object to register
@@ -60,6 +61,7 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport impl
 		super.setAttribute(attribute.getName(), attribute);
 	}
 
+	// 获取属性
 	/**
 	 * Look up the given BeanMetadataAttribute in this accessor's set of attributes.
 	 * @param name the name of the attribute
@@ -71,11 +73,13 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport impl
 		return (BeanMetadataAttribute) super.getAttribute(name);
 	}
 
+	// 设置属性
 	@Override
 	public void setAttribute(String name, @Nullable Object value) {
 		super.setAttribute(name, new BeanMetadataAttribute(name, value));
 	}
 
+	// 获取属性
 	@Override
 	@Nullable
 	public Object getAttribute(String name) {
@@ -83,6 +87,7 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport impl
 		return (attribute != null ? attribute.getValue() : null);
 	}
 
+	// 移除属性
 	@Override
 	@Nullable
 	public Object removeAttribute(String name) {

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 /**
  * 使用注解注册bean
  */
-public class TestAnnotationConfigApplicationContext {
+public class AnnotationConfigApplicationContextTest {
 
 	public static void main(String[] args) {
 		test1();

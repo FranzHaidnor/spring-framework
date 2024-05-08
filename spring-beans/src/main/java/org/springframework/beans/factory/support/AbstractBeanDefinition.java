@@ -59,41 +59,43 @@ import org.springframework.util.StringUtils;
 public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccessor
 		implements BeanDefinition, Cloneable {
 
+	// 默认的 Bean 的范围
 	/**
 	 * Constant for the default scope name: {@code ""}, equivalent to singleton
 	 * status unless overridden from a parent bean definition (if applicable).
 	 */
 	public static final String SCOPE_DEFAULT = "";
 
+	// 自动注入标识 (表示完全没有外部自动注入的常量)
 	/**
 	 * Constant that indicates no external autowiring at all.
 	 * @see #setAutowireMode
 	 */
 	public static final int AUTOWIRE_NO = AutowireCapableBeanFactory.AUTOWIRE_NO;
 
+	// 根据 Bean 名称自动注入
 	/**
 	 * Constant that indicates autowiring bean properties by name.
 	 * @see #setAutowireMode
 	 */
 	public static final int AUTOWIRE_BY_NAME = AutowireCapableBeanFactory.AUTOWIRE_BY_NAME;
 
+	// 根据 Bean 类型自动注入
 	/**
 	 * Constant that indicates autowiring bean properties by type.
 	 * @see #setAutowireMode
 	 */
 	public static final int AUTOWIRE_BY_TYPE = AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE;
 
+	// 推断构造方法自动注入
 	/**
 	 * Constant that indicates autowiring a constructor.
 	 * @see #setAutowireMode
 	 */
 	public static final int AUTOWIRE_CONSTRUCTOR = AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR;
 
-	/*
-	 * 指示通过对 Bean 类的内省来确定适当的自动连线策略的常量。
-	 * 已弃用
-	 * 从 Spring 3.0 开始：如果您使用的是混合自动布线策略，请使用基于注释的自动布线，以便更清楚地划分自动布线需求。
-	 */
+	// 此字段已弃用
+	// 通过Bean的class推断适当的自动装配策略（autowired=autodetect），如果Bean定义有有参构造函数，则通过自动装配构造函数形参，完成对应属性的自动装配（AUTOWIRE_CONSTRUCTOR），否则，使用setter函数（AUTOWIRE_BY_TYPE）
 	/**
 	 * Constant that indicates determining an appropriate autowire strategy
 	 * through introspection of the bean class.
@@ -104,6 +106,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Deprecated
 	public static final int AUTOWIRE_AUTODETECT = AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT;
 
+	// 不进行依赖检查
 	/**
 	 * 表示完全没有依赖项检查的常量。
 	 * Constant that indicates no dependency check at all.
@@ -111,12 +114,14 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	public static final int DEPENDENCY_CHECK_NONE = 0;
 
+	// 如果依赖类型为对象引用，则需要检查
 	/**
 	 * Constant that indicates dependency checking for object references.
 	 * @see #setDependencyCheck
 	 */
 	public static final int DEPENDENCY_CHECK_OBJECTS = 1;
 
+	// 对简单属性的依赖进行检查
 	/**
 	 * Constant that indicates dependency checking for "simple" properties.
 	 * @see #setDependencyCheck
@@ -124,6 +129,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	public static final int DEPENDENCY_CHECK_SIMPLE = 2;
 
+	// 对所有属性的依赖进行检查
 	/**
 	 * Constant that indicates dependency checking for all properties
 	 * (object references as well as "simple" properties).
@@ -131,6 +137,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	public static final int DEPENDENCY_CHECK_ALL = 3;
 
+	// 若Bean未指定销毁方法，容器应该尝试推断Bean的销毁方法的名字，目前来说，推断的销毁方法的名字一般为close或是shutdown
+	// （即未指定Bean的销毁方法，但是内部定义了名为close或是shutdown的方法，则容器推断其为销毁方法）
 	/**
 	 * Constant that indicates the container should attempt to infer the
 	 * {@link #setDestroyMethodName destroy method name} for a bean as opposed to
@@ -144,81 +152,115 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	public static final String INFER_METHOD = "(inferred)";
 
 
+	// Bean的class对象或是类的全限定名
 	@Nullable
 	private volatile Object beanClass;
 
+	// Bean 的范围 单例\原型
 	@Nullable
 	private String scope = SCOPE_DEFAULT;
 
 	// 判断这个 Bean 是否为抽象的标识
 	private boolean abstractFlag = false;
 
+	// 是否为懒加载的标识
 	/**
 	 * 是否懒加载
 	 */
 	@Nullable
 	private Boolean lazyInit;
 
+	// 自动注入的模式
 	/**
 	 * 自动注入模式
 	 */
 	private int autowireMode = AUTOWIRE_NO;
 
+	// 依赖检查 spring3.0 后启用此属性
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
 
+	// 此bean所依赖的被初始化的bean的名称
+	// 表示一个 bean 的实例化依靠另外一个 bean 先实例化
 	@Nullable
 	private String[] dependsOn;
 
+	// 是否为自动注入候选者
+	// 如果设置为 false ,其它Bean将不会注入该Bean.  但是该Bean还是可以注入其它 Bean
 	private boolean autowireCandidate = true;
 
+	// 自动装配时出现多个 Bean 候选者时, 将作为首选者, 对应 bean 属性 primary
 	private boolean primary = false;
 
+	// 用于记录 Qualifier
 	private final Map<String, AutowireCandidateQualifier> qualifiers = new LinkedHashMap<>();
 
 	@Nullable
 	private Supplier<?> instanceSupplier;
 
+	// 允许访问非公开的构造器和方法, 程序设置
 	private boolean nonPublicAccessAllowed = true;
 
+	/*
+		是否易一种宽松的模式解析构造函数, 默认为 true
+		如果为 false,则存在以下情况
+
+		interface IService {}
+
+		class ServiceImpl implements IService {}
+
+		class Main {
+			Main(IService service) {}
+			Main(ServiceImpl service) {}
+		}
+
+		程序会抛出异常, 因为 Spring 无法准确定位哪个构造函数
+	 */
 	private boolean lenientConstructorResolution = true;
 
+	// 工厂Bean的名称
 	@Nullable
 	private String factoryBeanName;
 
+	// 工厂方法名（注意是String类型，不是Method类型）
 	@Nullable
 	private String factoryMethodName;
 
+	// 记录构造函数注入的属性值
 	@Nullable
 	private ConstructorArgumentValues constructorArgumentValues;
 
+	// 普通属性集合
 	@Nullable
 	private MutablePropertyValues propertyValues;
 
+	// 方法重写的持有者, 记录 lookup-method. replaced-method 元素
 	private MethodOverrides methodOverrides = new MethodOverrides();
 
+	// 初始化方法名称
 	@Nullable
 	private String initMethodName;
 
+	// 销毁方法名称
 	@Nullable
 	private String destroyMethodName;
 
-	/**
-	 * 是否强制执行初始化方法
-	 */
+	// 是否强制执行初始化方法
 	private boolean enforceInitMethod = true;
 
-	/**
-	 * 是否强制执行销毁方法
-	 */
+	// 是否强制执行销毁方法
 	private boolean enforceDestroyMethod = true;
 
+	// 是否是用户定义的,而不是应用程序本身定义的. 创建AOP时候为 true, 程序设施
 	private boolean synthetic = false;
 
+	// 这个Bean的应用级别
 	private int role = BeanDefinition.ROLE_APPLICATION;
 
+	// Bean 的描述信息
 	@Nullable
 	private String description;
 
+	// 这个 Bean 定义的资源
 	@Nullable
 	private Resource resource;
 
@@ -239,6 +281,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.propertyValues = pvs;
 	}
 
+	// 创建一个新的AbstractBeanDefinition作为给定bean定义的深层副本
 	/**
 	 * Create a new AbstractBeanDefinition as a deep copy of the given
 	 * bean definition.
@@ -405,6 +448,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 
+	// 设置Bean的类名
 	/**
 	 * Specify the bean class name of this bean definition.
 	 */
@@ -413,6 +457,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.beanClass = beanClassName;
 	}
 
+	// 使用反射获取 Bean 的类名
 	/**
 	 * Return the current bean class name of this bean definition.
 	 */
@@ -498,6 +543,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return resolvedClass;
 	}
 
+	// 获取泛型解析器
 	/**
 	 * Return a resolvable type for this bean definition.
 	 * <p>This implementation delegates to {@link #getBeanClass()}.
@@ -508,6 +554,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return (hasBeanClass() ? ResolvableType.forClass(getBeanClass()) : ResolvableType.NONE);
 	}
 
+	// 设置 Bean 的作用域 (单例/原型)
 	/**
 	 * Set the name of the target scope for the bean.
 	 * <p>The default is singleton status, although this is only applied once
@@ -523,6 +570,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.scope = scope;
 	}
 
+	// 获取 Bean 的作用域 (单例/原型)
 	/**
 	 * Return the name of the target scope for the bean.
 	 */
@@ -552,6 +600,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return SCOPE_PROTOTYPE.equals(this.scope);
 	}
 
+	// 设置是否为抽象类
 	/**
 	 * Set if this bean is "abstract", i.e. not meant to be instantiated itself but
 	 * rather just serving as parent for concrete child bean definitions.
@@ -562,6 +611,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.abstractFlag = abstractFlag;
 	}
 
+	// 是否为抽象类
 	/**
 	 * Return whether this bean is "abstract", i.e. not meant to be instantiated
 	 * itself but rather just serving as parent for concrete child bean definitions.
@@ -571,6 +621,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.abstractFlag;
 	}
 
+	// 设置 Bean 是否懒加载
 	/**
 	 * Set whether this bean should be lazily initialized.
 	 * <p>If {@code false}, the bean will get instantiated on startup by bean
@@ -581,6 +632,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.lazyInit = lazyInit;
 	}
 
+	// 是否为懒加载
 	/**
 	 * Return whether this bean should be lazily initialized, i.e. not
 	 * eagerly instantiated on startup. Only applicable to a singleton bean.
@@ -676,6 +728,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.dependencyCheck;
 	}
 
+	// 设置此bean所依赖的被初始化的bean的名称
 	/**
 	 * Set the names of the beans that this bean depends on being initialized.
 	 * The bean factory will guarantee that these beans get initialized first.
@@ -688,6 +741,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.dependsOn = dependsOn;
 	}
 
+	// 获取此bean所依赖的被初始化的bean的名称
 	/**
 	 * Return the bean names that this bean depends on.
 	 */
@@ -716,6 +770,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.autowireCandidate = autowireCandidate;
 	}
 
+	// 此 Bean 是否是自动注入到其他 Bean 的候选者
 	/**
 	 * Return whether this bean is a candidate for getting autowired into some other bean.
 	 */
@@ -724,6 +779,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.autowireCandidate;
 	}
 
+	// 设置此bean是否为主 autowire 候选项
 	/**
 	 * Set whether this bean is a primary autowire candidate.
 	 * <p>If this value is {@code true} for exactly one bean among multiple
@@ -734,6 +790,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.primary = primary;
 	}
 
+	// 此bean是否为主 autowire 候选项
 	/**
 	 * Return whether this bean is a primary autowire candidate.
 	 */
@@ -742,6 +799,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.primary;
 	}
 
+	// 注册要用于 autowire 候选解析的限定符，以限定符的类型名称为键
 	/**
 	 * Register a qualifier to be used for autowire candidate resolution,
 	 * keyed by the qualifier's type name.
@@ -845,6 +903,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.lenientConstructorResolution;
 	}
 
+	// 设置工厂Bean的名称
 	/**
 	 * Specify the factory bean to use, if any.
 	 * This the name of the bean to call the specified factory method on.
@@ -855,6 +914,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.factoryBeanName = factoryBeanName;
 	}
 
+	// 返回工厂Bean的名称
 	/**
 	 * Return the factory bean name, if any.
 	 */
@@ -864,6 +924,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.factoryBeanName;
 	}
 
+	// 指定工厂方法 (如果有)
 	/**
 	 * Specify a factory method, if any. This method will be invoked with
 	 * constructor arguments, or with no arguments if none are specified.
@@ -877,6 +938,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.factoryMethodName = factoryMethodName;
 	}
 
+	// 返回工厂方法（如果有）
 	/**
 	 * Return a factory method, if any.
 	 */
@@ -886,6 +948,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return this.factoryMethodName;
 	}
 
+	// 设置构造方法参数值
 	/**
 	 * Specify constructor argument values for this bean.
 	 */
@@ -893,6 +956,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.constructorArgumentValues = constructorArgumentValues;
 	}
 
+	// 获取构造方法参数值
 	/**
 	 * Return constructor argument values for this bean (never {@code null}).
 	 */
@@ -919,6 +983,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.propertyValues = propertyValues;
 	}
 
+	// 获取Bean的属性值
 	/**
 	 * Return property values for this bean (never {@code null}).
 	 */
@@ -1062,9 +1127,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.synthetic = synthetic;
 	}
 
-	/*
-	 * 返回此 Bean 定义是否为“合成”，即不是由应用程序本身定义的。
-	 */
+	// 是否是用户定义的,而不是应用程序本身定义的. 创建AOP时候为 true, 程序设施
 	/**
 	 * Return whether this bean definition is 'synthetic', that is,
 	 * not defined by the application itself.

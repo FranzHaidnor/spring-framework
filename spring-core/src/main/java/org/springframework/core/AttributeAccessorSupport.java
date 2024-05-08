@@ -24,6 +24,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+// 属性访问器接口的实现类
+// 这个类其实就是对 Map 进行了一下封装
 /**
  * Support class for {@link AttributeAccessor AttributeAccessors}, providing
  * a base implementation of all methods. To be extended by subclasses.
@@ -78,6 +80,7 @@ public abstract class AttributeAccessorSupport implements AttributeAccessor, Ser
 	}
 
 
+	// 传入一个属性访问器,把它的属性全部拷贝过来
 	/**
 	 * Copy the attributes from the supplied AttributeAccessor to this accessor.
 	 * @param source the AttributeAccessor to copy from
@@ -91,6 +94,7 @@ public abstract class AttributeAccessorSupport implements AttributeAccessor, Ser
 	}
 
 
+	// 比较两个属性器是否一样
 	@Override
 	public boolean equals(@Nullable Object other) {
 		return (this == other || (other instanceof AttributeAccessorSupport &&

@@ -108,6 +108,7 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 		return !getAnnotatedMethods(annotationName).isEmpty();
 	}
 
+	// 获取被注解标记的所有方法的元数据
 	/**
 	 * Retrieve the method metadata for all methods that are annotated
 	 * (or meta-annotated) with the given annotation type.

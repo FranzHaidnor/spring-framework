@@ -69,6 +69,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	@Nullable
 	private BeanDefinitionHolder decoratedDefinition;
 
+	// https://www.jianshu.com/p/953e26463fbc
+	// 这里代表了一个可以被反射的元素
 	@Nullable
 	private AnnotatedElement qualifiedElement;
 
@@ -76,29 +78,37 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	/** Determines if the definition needs to be re-merged. */
 	volatile boolean stale;
 
+	// 是否循序被缓存
 	boolean allowCaching = true;
 
+	// 从字面上理解：工厂方法是否唯一
 	boolean isFactoryMethodUnique;
 
+	// 泛型解析器
 	@Nullable
 	volatile ResolvableType targetType;
 
+	// 缓存class，表明RootBeanDefinition存储哪个类的信息
 	/** Package-visible field for caching the determined Class of a given bean definition. */
 	@Nullable
 	volatile Class<?> resolvedTargetType;
 
+	// 是否为一个工厂 Bean
 	/** Package-visible field for caching if the bean is a factory bean. */
 	@Nullable
 	volatile Boolean isFactoryBean;
 
+	// 工厂方法的返回类型
 	/** Package-visible field for caching the return type of a generically typed factory method. */
 	@Nullable
 	volatile ResolvableType factoryMethodReturnType;
 
+	// 缓存工厂方法
 	/** Package-visible field for caching a unique factory method candidate for introspection. */
 	@Nullable
 	volatile Method factoryMethodToIntrospect;
 
+	// 缓存销毁方法
 	/** Package-visible field for caching a resolved destroy method name (also for inferred). */
 	@Nullable
 	volatile String resolvedDestroyMethodName;
@@ -113,34 +123,43 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	Executable resolvedConstructorOrFactoryMethod;
 
 	// 将构造函数参数标记为已解析的包可见字段。
+
+	// 表明构造函数参数是否解析完毕
 	/** Package-visible field that marks the constructor arguments as resolved. */
 	boolean constructorArgumentsResolved = false;
 
-	// 用于缓存完全解析的构造函数参数的 Package-visible 字段。
+	// 缓存完全解析的构造函数参数
 	/** Package-visible field for caching fully resolved constructor arguments. */
 	@Nullable
 	Object[] resolvedConstructorArguments;
 
+	// 缓存待解析的构造函数参数，即还没有找到对应的实例，可以理解为还没有注入依赖的形参
 	/** Package-visible field for caching partly prepared constructor arguments. */
 	@Nullable
 	Object[] preparedConstructorArguments;
 
+	// 以下两个变量的锁
 	/** Common lock for the two post-processing fields below. */
 	final Object postProcessingLock = new Object();
 
+	// 表明是否被MergedBeanDefinitionPostProcessor处理过
 	/** Package-visible field that indicates MergedBeanDefinitionPostProcessor having been applied. */
 	boolean postProcessed = false;
 
+	// 在生成代理的时候会使用，表明是否已经生成代理
 	/** Package-visible field that indicates a before-instantiation post-processor having kicked in. */
 	@Nullable
 	volatile Boolean beforeInstantiationResolved;
 
+	// 实际缓存的类型是Constructor、Field、Method类型
 	@Nullable
 	private Set<Member> externallyManagedConfigMembers;
 
+	//  InitializingBean中的init回调函数名——afterPropertiesSet会在这里记录，以便进行生命周期回调
 	@Nullable
 	private Set<String> externallyManagedInitMethods;
 
+	// DisposableBean的destroy回调函数名——destroy会在这里记录，以便进行生命周期回调
 	@Nullable
 	private Set<String> externallyManagedDestroyMethods;
 

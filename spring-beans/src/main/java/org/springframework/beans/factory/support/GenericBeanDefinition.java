@@ -48,6 +48,7 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 public class GenericBeanDefinition extends AbstractBeanDefinition {
 
+	// 合并 Bean 定义的时候用的，简单说就是比如 User 继承了 SuperUser
 	@Nullable
 	private String parentName;
 
@@ -64,6 +65,7 @@ public class GenericBeanDefinition extends AbstractBeanDefinition {
 		super();
 	}
 
+	// 给定一个BeanDefinition,创建GenericBeanDefinition
 	/**
 	 * Create a new GenericBeanDefinition as deep copy of the given
 	 * bean definition.

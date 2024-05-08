@@ -20,6 +20,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
+// 作为 beanDefinition 一部分的键值样式属性的持有者。跟踪定义源以及键值对
+// 将元对象和一个键值对进行了绑定
 /**
  * Holder for a key-value style attribute that is part of a bean definition.
  * Keeps track of the definition source in addition to the key-value pair.
@@ -65,6 +67,7 @@ public class BeanMetadataAttribute implements BeanMetadataElement {
 		return this.value;
 	}
 
+	// 设置源对象
 	/**
 	 * Set the configuration source {@code Object} for this metadata element.
 	 * <p>The exact type of the object will depend on the configuration mechanism used.

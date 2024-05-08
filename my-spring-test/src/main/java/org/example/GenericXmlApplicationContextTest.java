@@ -8,7 +8,7 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 /**
  * 从 XML 配置文件中注册 bean
  */
-public class TestGenericXmlApplicationContext {
+public class GenericXmlApplicationContextTest {
 	public static void main(String[] args) {
 		GenericXmlApplicationContext context = new GenericXmlApplicationContext("beans.xml");
 //		Student obj2 = (Student) context.getBean("student");

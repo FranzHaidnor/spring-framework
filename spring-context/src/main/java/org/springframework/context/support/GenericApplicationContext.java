@@ -95,7 +95,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 	/**
 	 * 这是一个非常重要的对象, 它有注册 BeanDefinition 和单例 Bean 的能力
-	 * 它在构造方法中创建 org.springframework.context.support.GenericApplicationContext#GenericApplicationContext()
+	 * 它在构造方法中创建 {@link GenericApplicationContext#GenericApplicationContext()}
 	 */
 	private final DefaultListableBeanFactory beanFactory;
 

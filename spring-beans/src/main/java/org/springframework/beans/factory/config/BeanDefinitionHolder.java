@@ -25,8 +25,6 @@ import org.springframework.util.StringUtils;
 
 /*
  * 具有名称和别名的 BeanDefinition 的 Holder。可以注册为内部 Bean 的占位符。
- * 还可用于内部 Bean 定义的编程注册。
- * 如果您不关心 BeanNameAware 等，注册 RootBeanDefinition 或 ChildBeanDefinition 就足够了。
  */
 /**
  * Holder for a BeanDefinition with name and aliases.
@@ -70,6 +68,7 @@ public class BeanDefinitionHolder implements BeanMetadataElement {
 		this(beanDefinition, beanName, null);
 	}
 
+	// 设施 Bean 的别名构造方法
 	/**
 	 * Create a new BeanDefinitionHolder.
 	 * @param beanDefinition the BeanDefinition to wrap
@@ -129,9 +128,11 @@ public class BeanDefinitionHolder implements BeanMetadataElement {
 	@Override
 	@Nullable
 	public Object getSource() {
+		// 获取元对象
 		return this.beanDefinition.getSource();
 	}
 
+	// 判断和这个 Bean 的名称是否相同
 	/**
 	 * Determine whether the given candidate name matches the bean name
 	 * or the aliases stored in this bean definition.
@@ -143,6 +144,7 @@ public class BeanDefinitionHolder implements BeanMetadataElement {
 	}
 
 
+	// 获取简要的关于此 Bean 定义的描述
 	/**
 	 * Return a friendly, short description for the bean, stating name and aliases.
 	 * @see #getBeanName()
@@ -155,6 +157,7 @@ public class BeanDefinitionHolder implements BeanMetadataElement {
 		return "Bean definition with name '" + this.beanName + "' and aliases [" + StringUtils.arrayToCommaDelimitedString(this.aliases) + ']';
 	}
 
+	// 获取完整的关于此 Bean 定义的描述
 	/**
 	 * Return a long description for the bean, including name and aliases
 	 * as well as a description of the contained {@link BeanDefinition}.

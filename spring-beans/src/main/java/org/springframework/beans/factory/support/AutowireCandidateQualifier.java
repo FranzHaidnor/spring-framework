@@ -19,6 +19,8 @@ package org.springframework.beans.factory.support;
 import org.springframework.beans.BeanMetadataAttributeAccessor;
 import org.springframework.util.Assert;
 
+// 用于解析autowire候选项的限定符。包含一个或多个此类限定符的bean定义允许针对要自动连线的字段或参数上的注释进行细粒度匹配。
+// @Qualifier 注解标记的内容,最终会被此类封装
 /**
  * Qualifier for resolving autowire candidates. A bean definition that
  * includes one or more such qualifiers enables fine-grained matching
@@ -37,6 +39,7 @@ public class AutowireCandidateQualifier extends BeanMetadataAttributeAccessor {
 	 */
 	public static final String VALUE_KEY = "value";
 
+	// 类型名称
 	private final String typeName;
 
 

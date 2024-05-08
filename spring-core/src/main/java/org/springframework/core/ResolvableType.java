@@ -42,6 +42,8 @@ import org.springframework.util.ConcurrentReferenceHashMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+// 获取泛型类型的成员变量的泛型相关信息
+// 这是一个工具类
 /**
  * Encapsulates a Java {@link java.lang.reflect.Type}, providing access to
  * {@link #getSuperType() supertypes}, {@link #getInterfaces() interfaces}, and

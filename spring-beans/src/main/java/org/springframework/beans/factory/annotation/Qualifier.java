@@ -22,7 +22,13 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+// 限定自动注入时候选 Bean 的名称.它还可以用于注释其他自定义注释，然后这些注释又可以用作限定符
+/*
+在使用 Spring 框架中进行自动注人时，Spring 容器中匹配的候选 Bean 数目必须有且仅有一个。
+当找不到一个匹配的 Bean 时，Spring 容器将抛出 BeanCreationException 异常。
+Spring 允许我们通过 Qualifier 指定注入 Bean 的名称，这样歧义就消除了
 
+ */
 /**
  * This annotation may be used on a field or parameter as a qualifier for
  * candidate beans when autowiring. It may also be used to annotate other
@@ -38,6 +44,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Documented
 public @interface Qualifier {
+
 
 	String value() default "";
 
