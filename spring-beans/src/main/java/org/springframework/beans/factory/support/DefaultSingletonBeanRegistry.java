@@ -121,10 +121,12 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	private final Map<String, Set<String>> containedBeanMap = new ConcurrentHashMap<>(16);
 
 	// Bean名称 < 被依赖的 Bean 名称 (哪些人引用了自己)
+	// 记录一个bean 被哪些 bean依赖；（该bean被多少bean当做成员变量用@Resource、@Autowired修饰）
 	/** Map between dependent bean names: bean name to Set of dependent bean names. */
 	private final Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
 
 	// Bean名称 > 所依赖的Bean名称	(自己引用了哪些人)
+	// 记录一个bean依赖了多少bean；（通俗点：一个bean里面有多少个@Atuwowired、@Resource）
 	/** Map between depending bean names: bean name to Set of bean names for the bean's dependencies. */
 	private final Map<String, Set<String>> dependenciesForBeanMap = new ConcurrentHashMap<>(64);
 
@@ -524,6 +526,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		if (alreadySeen != null && alreadySeen.contains(beanName)) {
 			return false;
 		}
+		// bean 的规范名称
 		String canonicalName = canonicalName(beanName);
 		Set<String> dependentBeans = this.dependentBeanMap.get(canonicalName);
 		if (dependentBeans == null) {

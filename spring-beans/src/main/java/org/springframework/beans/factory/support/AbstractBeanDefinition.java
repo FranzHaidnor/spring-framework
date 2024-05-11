@@ -741,7 +741,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		this.dependsOn = dependsOn;
 	}
 
-	// 获取此bean所依赖的被初始化的bean的名称
+	// 获取此 bean 所依赖的 bean 的名称
+	// @DependsOn 标记的 bean
 	/**
 	 * Return the bean names that this bean depends on.
 	 */

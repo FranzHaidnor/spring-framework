@@ -79,11 +79,13 @@ import java.util.function.Supplier;
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
 
+	// bean的生成策略，默认CGLIB
 	/**
 	 * Strategy for creating bean instances.
 	 */
 	private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
+	// 解析策略的方法参数
 	/**
 	 * Resolver strategy for method parameter names.
 	 */
@@ -107,34 +109,40 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	private boolean allowRawInjectionDespiteWrapping = false;
 
+	// 依赖项检查和自动装配时忽略的依赖项类型
 	/**
 	 * Dependency types to ignore on dependency check and autowire, as Set of
 	 * Class objects: for example, String. Default is none.
 	 */
 	private final Set<Class<?>> ignoredDependencyTypes = new HashSet<>();
 
+	// 依赖项检查和自动装配时忽略的依赖项接口
 	/**
 	 * Dependency interfaces to ignore on dependency check and autowire, as Set of
 	 * Class objects. By default, only the BeanFactory interface is ignored.
 	 */
 	private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
+	// 当前正在创建的bean
 	/**
 	 * The name of the currently created bean, for implicit dependency registration
 	 * on getBean etc invocations triggered from a user-specified Supplier callback.
 	 */
 	private final NamedThreadLocal<String> currentlyCreatedBean = new NamedThreadLocal<>("Currently created bean");
 
+	// FactoryBean名称 > FactoryBean 关系映射
 	/**
 	 * Cache of unfinished FactoryBean instances: FactoryBean name to BeanWrapper.
 	 */
 	private final ConcurrentMap<String, BeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<>();
 
+	// 类和候选方法映射
 	/**
 	 * Cache of candidate factory methods per factory class.
 	 */
 	private final ConcurrentMap<Class<?>, Method[]> factoryMethodCandidateCache = new ConcurrentHashMap<>();
 
+	// 类和PropertyDescriptor的映射
 	/**
 	 * Cache of filtered PropertyDescriptors: bean Class to PropertyDescriptor array.
 	 */
@@ -142,6 +150,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			new ConcurrentHashMap<>();
 
 
+	// 忽略BeanNameAware、BeanFactoryAware、BeanClassLoaderAware的依赖。
 	/**
 	 * Create a new AbstractAutowireCapableBeanFactory.
 	 */
@@ -257,6 +266,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		this.ignoredDependencyInterfaces.add(ifc);
 	}
 
+	// 复制父类的几种配置
 	@Override
 	public void copyConfigurationFrom(ConfigurableBeanFactory otherFactory) {
 		super.copyConfigurationFrom(otherFactory);
@@ -492,7 +502,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			// 创建 Bean 的实例
+			// k1 创建 Bean 的实例
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
@@ -530,11 +540,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Instantiate the bean.
 		BeanWrapper instanceWrapper = null;
 		if (mbd.isSingleton()) {
+			// 如果是单例 Bean 则解除 FactoryBean名称到FactoryBean 关系映射
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
-			// K1 创建 Bean 的实例
-			// 此时这个 Bean 没有被填充任何属性. 也不会做任何增强,或者代理处理
+			// 创建 Bean 实例 (此时没有被填充任何属性. 也不会做任何代理处理)
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 
@@ -546,10 +556,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			mbd.resolvedTargetType = beanType;
 		}
 
-		// 允许后处理器修改合并的 Bean 定义 Allow post-processors to modify the merged bean definition.
+		// 允许后置处理器修改 BeanDefinition
+		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
+					// 使用 MergedBeanDefinitionPostProcessor 处理 RootBeanDefinition
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				} catch (Throwable ex) {
 					throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Post-processing of merged bean definition failed", ex);
@@ -558,13 +570,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
-		// 急切地缓存单例，以便能够解析循环引用，即使由 BeanFactoryAware 等生命周期接口触发也是如此。
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
-		// 这个变量标识是否允许早期单例暴露
-		boolean earlySingletonExposure = (mbd.isSingleton()			// 是否为单例 Bean
-				&& this.allowCircularReferences						// 是否允许循环引用
-				&& isSingletonCurrentlyInCreation(beanName));		// Bean 是否正在创建中
+
+		// 此变量表示是否允许早期单例暴露
+		// 条件为 (是否为单例Bean) & (是否允许循环引用) & (Bean是否正在创建中)
+		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences && isSingletonCurrentlyInCreation(beanName));
+
 		if (earlySingletonExposure) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Eagerly caching bean '" + beanName + "' to allow for resolving potential circular references");
@@ -579,24 +591,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			});
 		}
 
-		// 初始化 Bean 实例。 exposedObject 是最早使用反射创建出来的Bean
-		// Initialize the bean instance.
-		Object exposedObject = bean; // 暴露对象
+		// k1 初始化 Bean 实例 (填充属性,后置处理,代理)
+		Object exposedObject = bean;
 		try {
-			// k1 填充 Bean 的属性
+			// 填充属性
 			populateBean(beanName, mbd, instanceWrapper);
-			// k1 初始化 Bean 对象
+			// 初始化 Bean 对象
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		} catch (Throwable ex) {
 			if (ex instanceof BeanCreationException && beanName.equals(((BeanCreationException) ex).getBeanName())) {
 				throw (BeanCreationException) ex;
 			} else {
-				throw new BeanCreationException(
-						mbd.getResourceDescription(), beanName, "Initialization of bean failed", ex);
+				throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Initialization of bean failed", ex);
 			}
 		}
 
-		// 是否允许早期单例暴露
+		/*
+			循环依赖校验: 将最初暴露的 Bean 与后置处理后的 Bean 进行对比
+			1.如果是相同的一个对象则表示一切正常
+			2.如果不是同一个对象,并且有其它已经创建好了的 Bean 引用自己了 (这就说明其它Bean引用的这个Bean不是最终的代理对象), 则抛出循环依赖异常
+		 */
 		if (earlySingletonExposure) {
 			// 从一级缓存和二级缓存中获取 Bean
 			Object earlySingletonReference = getSingleton(beanName, false);
@@ -609,9 +623,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				else if (!this.allowRawInjectionDespiteWrapping/*这里如果不配置,则始终满足条件*/
 						&& hasDependentBean(beanName)) {
 
-					// 获取依赖此Bean的Bean名称数组
+					// 获取依赖此 Bean 的其它 Bean 名称数组 (这些 Bean 不一定已经都创建好了)
 					String[] dependentBeans = getDependentBeans(beanName);
-					// 实际依赖 Bean
+					// 此集合存放所有已经产生实际依赖关系了 Bean
 					Set<String> actualDependentBeans = new LinkedHashSet<>(dependentBeans.length);
 
 					// 遍历实际依赖 Bean
@@ -620,7 +634,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 							actualDependentBeans.add(dependentBean);
 						}
 					}
-					// 如果有依赖的bean尚未被创建，那么会抛出一个异常，指示发生了循环引用
+
+					// 如果有其它Bean引用了自己，抛出循环引用异常
 					if (!actualDependentBeans.isEmpty()) {
 						// 名称为 XXXX 的 Bean 已注入到其他 Bean 中。
 						// 在其原始版本中作为循环引用的一部分，但最终已被包装。这意味着所述其他 Bean 不使用该 Bean 的最终版本。这通常是过度急切类型匹配的结果
@@ -641,8 +656,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		} catch (BeanDefinitionValidationException ex) {
-			throw new BeanCreationException(
-					mbd.getResourceDescription(), beanName, "Invalid destruction signature", ex);
+			throw new BeanCreationException(mbd.getResourceDescription(), beanName, "Invalid destruction signature", ex);
 		}
 
 		return exposedObject;
@@ -1855,9 +1869,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 执行初始化方法
 			invokeInitMethods(beanName, wrappedBean, mbd);                                         // 执行初始化方法
 		} catch (Throwable ex) {
-			throw new BeanCreationException(
-					(mbd != null ? mbd.getResourceDescription() : null),
-					beanName, "Invocation of init method failed", ex);
+			throw new BeanCreationException((mbd != null ? mbd.getResourceDescription() : null), beanName, "Invocation of init method failed", ex);
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
 			// k1 拓展点: bean 初始化后置处理

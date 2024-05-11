@@ -262,6 +262,7 @@ public interface BeanFactory {
 	 */
 	<T> ObjectProvider<T> getBeanProvider(Class<T> requiredType);
 
+	// 获取 Bean 的提供者
 	/**
 	 * Return a provider for the specified bean, allowing for lazy on-demand retrieval
 	 * of instances, including availability and uniqueness options.
