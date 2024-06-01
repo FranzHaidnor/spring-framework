@@ -21,6 +21,12 @@ import java.io.IOException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+/*
+	ResourcePatternResolver是Spring框架中的一个接口，扩展自ResourceLoader，用于解析资源模式，支持通过模式匹配检索多个资源。
+	其中，常见的实现类是PathMatchingResourcePatternResolver，它通过类路径、文件系统或URL等多种资源位置，能够根据给定的资源模式获取匹配的资源。
+    通过调用getResources(String locationPattern)方法，您可以使用包含通配符的资源模式，例如classpath*:com/example/**.xml
+    来获取满足条件的资源数组。这提供了一种灵活的机制，使得在应用程序中能够方便地加载和处理符合特定模式的资源文件，如配置文件、模板文件等
+*/
 /**
  * Strategy interface for resolving a location pattern (for example,
  * an Ant-style path pattern) into Resource objects.
@@ -53,6 +59,12 @@ import org.springframework.core.io.ResourceLoader;
  */
 public interface ResourcePatternResolver extends ResourceLoader {
 
+	/*
+	 * 类路径匹配所有资源的伪 URL 前缀："classpath*:"
+	 * 这与 ResourceLoader 的类路径 URL 前缀不同，它检索给定名称（例如 "/beans.xml"）的
+	 * 所有匹配资源，例如在所有部署的 JAR 文件的根目录中。
+	 * 详见 org.springframework.core.io.ResourceLoader#CLASSPATH_URL_PREFIX
+	 */
 	/**
 	 * Pseudo URL prefix for all matching resources from the class path: "classpath*:"
 	 * This differs from ResourceLoader's classpath URL prefix in that it
@@ -62,6 +74,13 @@ public interface ResourcePatternResolver extends ResourceLoader {
 	 */
 	String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
 
+	/*
+	 * 将给定的位置模式解析为 Resource 对象。
+	 * 应尽可能避免指向相同物理资源的重叠资源条目。结果应具有集合语义。
+	 * @param locationPattern 要解析的位置模式
+	 * @return 相应的 Resource 对象数组
+	 * @throws IOException 如果发生 I/O 错误
+	 */
 	/**
 	 * Resolve the given location pattern into Resource objects.
 	 * <p>Overlapping resource entries that point to the same physical

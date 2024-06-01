@@ -1805,10 +1805,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	}
 
 	/*
-	 * 删除给定 Bean 名称的单例实例（如果有），但前提是它尚未用于类型检查以外的其他目的。
-	 * 形参:
-	 * beanName – Bean 的名字
-	 * 返回值: true 如果实际删除， false 否则
+		如果Bean已经被创建了,返回 false
+		如果没有被创建,则从单例池和缓存中移除, 返回 true
 	 */
 	/**
 	 * Remove the singleton instance (if any) for the given bean name,

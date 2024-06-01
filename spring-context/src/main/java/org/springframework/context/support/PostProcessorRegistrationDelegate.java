@@ -41,6 +41,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.lang.Nullable;
 
+// 用于AbstractApplicationContext的后处理器处理的委托 (静态方法工具类)
 /**
  * Delegate for AbstractApplicationContext's post-processor handling.
  *
@@ -54,11 +55,10 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 
-	// 静态方法
-	public static void invokeBeanFactoryPostProcessors(
-			ConfigurableListableBeanFactory beanFactory,
-			List<BeanFactoryPostProcessor> beanFactoryPostProcessors
-	) {
+	/*
+	 	执行Bean工厂后置处理器方法 BeanFactoryPostProcessors
+	 */
+	public static void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
 		// 如果有，请先调用 BeanDefinitionRegistryPostProcessors。
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
@@ -234,6 +234,7 @@ final class PostProcessorRegistrationDelegate {
 		beanFactory.clearMetadataCache();
 	}
 
+	// 注册 BeanPostProcessor
 	public static void registerBeanPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
 

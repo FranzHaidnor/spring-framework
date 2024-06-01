@@ -19,6 +19,10 @@ package org.springframework.core.io;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ResourceUtils;
 
+/*
+	定义了如何获取资源（例如类路径资源、文件系统资源或网页资源）的策略。
+	这个接口是 Spring 资源加载抽象的核心，使得应用程序可以从不同的资源位置以统一的方式加载资源
+ */
 /**
  * Strategy interface for loading resources (e.. class path or file system
  * resources). An {@link org.springframework.context.ApplicationContext}
@@ -41,6 +45,7 @@ import org.springframework.util.ResourceUtils;
  */
 public interface ResourceLoader {
 
+	// 用于从类路径加载的伪 URL 前缀："classpath:"
 	/** Pseudo URL prefix for loading from the class path: "classpath:". */
 	String CLASSPATH_URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
 
@@ -75,6 +80,12 @@ public interface ResourceLoader {
 	 */
 	Resource getResource(String location);
 
+	/*
+	 * 公开此 ResourceLoader 使用的 ClassLoader。
+	 * 需要直接访问 ClassLoader 的客户端可以与 ResourceLoader 以统一的方式这样做，而不是依赖线程上下文 ClassLoader。
+	 *
+	 * @return ClassLoader（仅当连系统 ClassLoader 都不可访问时为 null）
+	 */
 	/**
 	 * Expose the ClassLoader used by this ResourceLoader.
 	 * <p>Clients which need to access the ClassLoader directly can do so

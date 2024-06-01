@@ -539,7 +539,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory); // 后处理 Bean 工厂
 
-				// k1 扩展点：执行bean工厂后置处理器 （BeanFactoryPostProcessor）
+				// 执行 BeanFactoryPostProcessor
 				// 调用在上下文中注册为 bean 的工厂处理器。例如 @Configuration 就是在这里被扫描处理的
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);

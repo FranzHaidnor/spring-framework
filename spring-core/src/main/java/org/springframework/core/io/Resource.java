@@ -25,10 +25,23 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+/*
+   从底层资源的实际类型（例如文件或类路径资源）抽象出来的资源描述符的接口。
+   如果每个资源以物理形式存在，则可以为每个资源打开一个InputStream，但对于某些资源只能返回一个URL 或文件句柄。实际行为是特定于实现的。
 
+ 	主要实现
+	ClassPathResource
+		用于加载 classpath 下的资源。
+	FileSystemResource
+		用于访问文件系统中的资源。
+	UrlResource
+		用于基于 URL 的资源。
+	ServletContextResource
+		用于 Web 应用中的资源。
+	ByteArrayResource & InputStreamResource
+		基于内存和流的资源表示。
+ */
 /**
- * 从底层资源的实际类型（例如文件或类路径资源）抽象出来的资源描述符的接口。
- * 如果每个资源以物理形式存在，则可以为每个资源打开一个InputStream，但对于某些资源只能返回一个URL 或文件句柄。实际行为是特定于实现的。
  * <p>
  * Interface for a resource descriptor that abstracts from the actual
  * type of underlying resource, such as a file or class path resource.
@@ -54,12 +67,7 @@ import java.nio.channels.ReadableByteChannel;
  */
 public interface Resource extends InputStreamSource {
 
-	/*
-	 * 确定该资源是否实际以物理形式存在。
-	 * <p>此方法执行明确的存在检查，而
-	 * {@code Resource} 句柄的存在仅保证有效
-	 * 描述符句柄。
-	 */
+	// 判断此资源是否在物理形式上真正存在
 	/**
 	 * Determine whether this resource actually exists in physical form.
 	 * <p>This method performs a definitive existence check, whereas the
@@ -68,18 +76,8 @@ public interface Resource extends InputStreamSource {
 	 */
 	boolean exists();
 
-	/*
-	 * 指示是否可以通过读取该资源的非空内容
-	 * {@link #getInputStream()}。
-	 * <p>对于现有的典型资源描述符将为{@code true}
-	 * 因为从 5.1 开始它严格暗示了 {@link #exists()} 语义。
-	 * 请注意，尝试实际内容读取时仍可能失败。
-	 * 然而，值 {@code false} 是明确的指示
-	 * 无法读取资源内容。
-	 *
-	 * @参见#exists()
-	 * @see #getInputStream()
-	 */
+	// 指示是否可以通过 {@link #getInputStream()} 读取此资源的非空内容
+	// 实际的内容读取可能仍然失败
 	/**
 	 * Indicate whether non-empty contents of this resource can be read via
 	 * {@link #getInputStream()}.
@@ -95,12 +93,9 @@ public interface Resource extends InputStreamSource {
 	default boolean isReadable() {
 		return exists();
 	}
-	/*
-	 * 指示该资源是否代表具有开放流的句柄。
-	 * 如果{@code true}，则InputStream不能被多次读取，
-	 * 并且必须读取并关闭以避免资源泄漏。
-	 * <p>对于典型的资源描述符来说将为{@code false}。
-	 */
+
+	// 检查资源是否表示一个已经打开的流，这有助于避免重复读取流资源
+	// 如果为 true，则输入流不能被多次读取，并且在读取后必须被关闭，以避免资源泄露
 	/**
 	 * Indicate whether this resource represents a handle with an open stream.
 	 * If {@code true}, the InputStream cannot be read multiple times,
@@ -111,14 +106,7 @@ public interface Resource extends InputStreamSource {
 		return false;
 	}
 
-	/*
-	 * 确定该资源是否代表文件系统中的文件。
-	 * {@code true} 值强烈建议（但不保证）
-	 * {@link #getFile()} 调用将会成功。
-	 * <p>默认情况下，这是保守的{@code false}。
-	 *
-	 * @参见#getFile()
-	 */
+	//  判断此资源是否代表文件系统中的文件
 	/**
 	 * Determine whether this resource represents a file in a file system.
 	 * A value of {@code true} strongly suggests (but does not guarantee)
@@ -132,12 +120,7 @@ public interface Resource extends InputStreamSource {
 		return false;
 	}
 
-	/*
-	 * 返回该资源的 URL 句柄。
-	 *
-	 * 如果资源无法解析为 URL，则抛出 IOException，
-	 * 即如果资源不可用作描述符
-	 */
+	// 返回此资源的 URL 句柄
 	/**
 	 * Return a URL handle for this resource.
 	 *
@@ -146,6 +129,7 @@ public interface Resource extends InputStreamSource {
 	 */
 	URL getURL() throws IOException;
 
+	// 返回此资源的 URI 句柄
 	/**
 	 * Return a URI handle for this resource.
 	 *
@@ -155,6 +139,7 @@ public interface Resource extends InputStreamSource {
 	 */
 	URI getURI() throws IOException;
 
+	// 返回此资源的文件句柄
 	/**
 	 * Return a File handle for this resource.
 	 *
@@ -165,6 +150,7 @@ public interface Resource extends InputStreamSource {
 	 */
 	File getFile() throws IOException;
 
+	// 返回一个 {@link ReadableByteChannel}
 	/**
 	 * Return a {@link ReadableByteChannel}.
 	 * <p>It is expected that each call creates a <i>fresh</i> channel.
@@ -181,6 +167,7 @@ public interface Resource extends InputStreamSource {
 		return Channels.newChannel(getInputStream());
 	}
 
+	// 确定此资源的内容长度
 	/**
 	 * Determine the content length for this resource.
 	 *
@@ -189,6 +176,7 @@ public interface Resource extends InputStreamSource {
 	 */
 	long contentLength() throws IOException;
 
+	// 确定此资源的最后修改时间戳
 	/**
 	 * Determine the last-modified timestamp for this resource.
 	 *
@@ -197,6 +185,7 @@ public interface Resource extends InputStreamSource {
 	 */
 	long lastModified() throws IOException;
 
+	// 创建相对于此资源的资源
 	/**
 	 * Create a resource relative to this resource.
 	 *
@@ -206,6 +195,7 @@ public interface Resource extends InputStreamSource {
 	 */
 	Resource createRelative(String relativePath) throws IOException;
 
+	// 返回此资源的文件名
 	/**
 	 * Determine a filename for this resource, i.e. typically the last
 	 * part of the path: for example, "myfile.txt".
@@ -215,6 +205,7 @@ public interface Resource extends InputStreamSource {
 	@Nullable
 	String getFilename();
 
+	// 返回此资源的描述，用于在处理资源时的错误输出
 	/**
 	 * Return a description for this resource,
 	 * to be used for error output when working with the resource.
