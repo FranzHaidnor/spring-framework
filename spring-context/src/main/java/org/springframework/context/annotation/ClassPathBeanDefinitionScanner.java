@@ -191,7 +191,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 		// 判断是否使用默认的过滤器
 		if (useDefaultFilters) {
-			// 注册默认的过滤器
+			// 注册默认的组件扫描过滤器
 			registerDefaultFilters();
 		}
 		setEnvironment(environment);
@@ -288,7 +288,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		int beanCountAtScanStart = this.registry.getBeanDefinitionCount();
 
 		// 扫描包
-		doScan(basePackages);
+		this.doScan(basePackages);
 
 		// 如有必要，注册注释配置处理器。
 		// Register annotation config processors, if necessary.
@@ -309,7 +309,6 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * 返回值:
 	 * 为工具注册目的而注册的一组 bean（如果有）（从不 null）
 	 */
-
 	/**
 	 * Perform a scan within the specified base packages,
 	 * returning the registered bean definitions.
@@ -332,6 +331,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 			// 循环遍历候选的 BeanDefinition
 			for (BeanDefinition candidate : candidates) {
+				//
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
 				// 生成 Bean 的名称

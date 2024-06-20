@@ -33,6 +33,7 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 @FunctionalInterface
 public interface TypeFilter {
 
+	// 确定此筛选器是否与给定元数据描述的类匹配
 	/**
 	 * Determine whether this filter matches for the class described by
 	 * the given metadata.

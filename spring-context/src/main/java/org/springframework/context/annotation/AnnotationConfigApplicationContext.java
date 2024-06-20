@@ -65,11 +65,15 @@ import java.util.function.Supplier;
  */
 public class AnnotationConfigApplicationContext extends GenericApplicationContext implements AnnotationConfigRegistry {
 
+	// 用于传入 Class 扫描注册 BeanDefinition
+	// Class<?>... componentClasses
 	/**
 	 * 带有注解的 bean定义读取器
 	 */
 	private final AnnotatedBeanDefinitionReader reader;
 
+	// 用于传入类路径扫描注册 BeanDefinition
+	// String... basePackages
 	/**
 	 * 类路径 bean定义读取器
 	 */
@@ -84,6 +88,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		super();
 		// 创建注解 bean 定义读取器， 参数 BeanDefinitionRegistry (bean 定义注册器)  参数是自己
 		// 注册 BeanDefinitionRegistryPostProcessor
 		this.reader = new AnnotatedBeanDefinitionReader(this);
@@ -120,9 +125,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		// 执行其无参构造方法
 		this();
 		// 注册 BeanDefinition
-		register(componentClasses);
+		this.register(componentClasses);
 		// 刷新
-		refresh();
+		super.refresh();
 	}
 
 	/**
@@ -139,9 +144,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		// 执行默认构造方法 初始化属性 AnnotatedBeanDefinitionReader ClassPathBeanDefinitionScanner
 		this();
 		// 扫描包 注册 BeanDefinition
-		scan(basePackages);
+		this.scan(basePackages);
 		// 执行父抽象类 AbstractApplicationContext 的 refresh() 方法
-		refresh();
+		super.refresh();
 	}
 
 

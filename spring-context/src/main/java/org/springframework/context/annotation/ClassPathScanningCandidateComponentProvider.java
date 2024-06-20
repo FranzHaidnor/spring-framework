@@ -103,8 +103,19 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 
 	private String resourcePattern = DEFAULT_RESOURCE_PATTERN;
 
+	/**
+	 * 组件扫描包含过滤器
+	 * <p>
+	 * 过滤器初始化的地方
+	 * {@link ClassPathScanningCandidateComponentProvider#registerDefaultFilters()}
+	 */
 	private final List<TypeFilter> includeFilters = new ArrayList<>();
-
+	/**
+	 * 组件扫描排除过滤器
+	 * <p>
+	 * 过滤器初始化的地方
+	 * {@link ClassPathScanningCandidateComponentProvider#registerDefaultFilters()}
+	 */
 	private final List<TypeFilter> excludeFilters = new ArrayList<>();
 
 	@Nullable
@@ -116,6 +127,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	@Nullable
 	private ResourcePatternResolver resourcePatternResolver;
 
+	// 元数据读取器工厂, 用于获取元数据读取器
 	@Nullable
 	private MetadataReaderFactory metadataReaderFactory;
 
@@ -343,11 +355,11 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	public Set<BeanDefinition> findCandidateComponents(String basePackage) {
 		if (this.componentsIndex != null && indexSupportsIncludeFilters()) {
 			// 从索引添加候选组件
-			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
+			return this.addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
 		}
 		else {
 			// 扫描候选的组件
-			return scanCandidateComponents(basePackage);
+			return this.scanCandidateComponents(basePackage);
 		}
 	}
 
@@ -464,6 +476,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				try {
 					// 获取资源的元数据读取器
 					MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
+					// 使用过滤器过滤
 					if (isCandidateComponent(metadataReader)) {
 						// k1 创建 BeanDefinition 对象
 						// 每一个 BeanDefinition 最开始都是以 ScannedGenericBeanDefinition 类型创建的
@@ -561,6 +574,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		return !this.conditionEvaluator.shouldSkip(metadataReader.getAnnotationMetadata());
 	}
 
+	// 判断给定的 BeanDefinition 是否有资格作为候选 Bean
+	// 默认实现检查该类是否不是接口并且不依赖于封闭类
+	// 此方法可以在子类中重写。
 	/**
 	 * Determine whether the given bean definition qualifies as candidate.
 	 * <p>The default implementation checks whether the class is not an interface
@@ -573,6 +589,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		// 获取注解元信息
 		AnnotationMetadata metadata = beanDefinition.getMetadata();
 		// 判断条件
+		// 1.独立类,也可以是静态内部类 2.非接口或抽象类 3.是抽象类-但是有@Lookup标记的方法
 		return (metadata.isIndependent() && (metadata.isConcrete() || (metadata.isAbstract() && metadata.hasAnnotatedMethods(Lookup.class.getName()))));
 	}
 

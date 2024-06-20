@@ -19,6 +19,7 @@ package org.springframework.core.type.filter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
+// 按照 Class 类型过滤
 /**
  * A simple filter which matches classes that are assignable to a given type.
  *

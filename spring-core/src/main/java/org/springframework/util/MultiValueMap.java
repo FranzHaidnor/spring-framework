@@ -20,10 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.lang.Nullable;
-
-/**
- * 拓展 map 结构存储多个值的接口。
- */
+/*
+	拓展 map 结构存储多个值的接口. 等同于 Map<K, List<V>> 结构
+*/
 /**
  * Extension of the {@code Map} interface that stores multiple values.
  *

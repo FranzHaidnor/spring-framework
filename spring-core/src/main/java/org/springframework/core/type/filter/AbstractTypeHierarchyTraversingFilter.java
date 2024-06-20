@@ -26,6 +26,8 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.lang.Nullable;
 
+// 历层次结构的类型筛选器
+
 /**
  * Type filter that is aware of traversing over hierarchy.
  *
@@ -42,8 +44,10 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	// 是否考虑继承
 	private final boolean considerInherited;
 
+	// 是否考虑接口
 	private final boolean considerInterfaces;
 
 
@@ -67,9 +71,11 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 			return true;
 		}
 
+		// 考虑继承的情况
 		if (this.considerInherited) {
 			String superClassName = metadata.getSuperClassName();
 			if (superClassName != null) {
+				// 优化以避免为超级类创建 ClassReader. 这里先直接调用实现类的方法判断超类是否匹配.创建 ClassReader 是一个非常重的操作
 				// Optimization to avoid creating ClassReader for super class.
 				Boolean superClassMatch = matchSuperClass(superClassName);
 				if (superClassMatch != null) {
@@ -80,6 +86,7 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 				else {
 					// Need to read super class to determine a match...
 					try {
+						// 递归
 						if (match(metadata.getSuperClassName(), metadataReaderFactory)) {
 							return true;
 						}
@@ -93,7 +100,7 @@ public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilte
 				}
 			}
 		}
-
+		// 是否考虑接口的情况
 		if (this.considerInterfaces) {
 			for (String ifc : metadata.getInterfaceNames()) {
 				// Optimization to avoid creating ClassReader for super class

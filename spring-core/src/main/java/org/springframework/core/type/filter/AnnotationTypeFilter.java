@@ -25,6 +25,13 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
+
+/*
+	一个简单的TypeFilter ，它将类与给定的注释匹配，同时检查继承的注释。
+	默认情况下，匹配逻辑镜像AnnotationUtils.getAnnotation(java.lang.reflect.AnnotatedElement，Class) 的逻辑，
+	支持present或单一级元注释的元存在的注释。元注释的搜索我被禁用。类似地，可以可选地启用对接口上的注释的搜索。
+	有关详细信息，请参阅此类中的各种构造函数。
+*/
 /**
  * A simple {@link TypeFilter} which matches classes with a given annotation,
  * checking inherited annotations as well.
@@ -44,6 +51,7 @@ import org.springframework.util.ClassUtils;
  */
 public class AnnotationTypeFilter extends AbstractTypeHierarchyTraversingFilter {
 
+	// 设置匹配的目标注解类型
 	private final Class<? extends Annotation> annotationType;
 
 	private final boolean considerMetaAnnotations;

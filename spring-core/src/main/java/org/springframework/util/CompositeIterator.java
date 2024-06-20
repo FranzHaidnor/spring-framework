@@ -21,6 +21,9 @@ import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+/*
+	组合迭代器
+*/
 /**
  * Composite iterator that combines multiple other iterators,
  * as registered via {@link #add(Iterator)}.

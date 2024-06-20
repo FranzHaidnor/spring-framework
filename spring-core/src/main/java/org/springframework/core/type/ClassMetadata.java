@@ -46,6 +46,7 @@ public interface ClassMetadata {
 	 */
 	boolean isAnnotation();
 
+	// 是否为抽象类
 	/**
 	 * Return whether the underlying class is marked as abstract.
 	 */

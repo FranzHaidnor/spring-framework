@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.bean.*;
 import config.AppConfiguration;
+import org.example.bean.ServiceA;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -10,9 +10,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class AnnotationConfigApplicationContextTest {
 
 	public static void main(String[] args) {
-		test1();
+		test2();
 	}
 
+	/**
+	 * 从包路径扫描
+	 */
 	public static void test1() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("config");
 
@@ -23,9 +26,13 @@ public class AnnotationConfigApplicationContextTest {
 		context.close();
 	}
 
+	/**
+	 * 使用配置类扫描
+	 */
 	public static void test2() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		// context.addBeanFactoryPostProcessor(); // 提前手动添加一些自定义的 BeanFactoryPostProcessor
+		// 提前手动添加一些自定义的 BeanFactoryPostProcessor
+//		 context.addBeanFactoryPostProcessor();
 		context.register(AppConfiguration.class);
 		context.refresh();
 
