@@ -262,12 +262,6 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 
 	/*
 	 * 什么都不做:我们持有一个内部BeanFactory，并依靠调用者通过我们的公共方法(或BeanFactory的)注册bean。
-	 * 指定的:
-	 * refreshBeanFactory在类AbstractApplicationContext里边
-	 * 抛出:
-	 * IllegalStateException
-	 * 请参阅:
-	 * registerBeanDefinition
 	 */
 	/**
 	 * Do nothing: We hold a single internal BeanFactory and rely on callers

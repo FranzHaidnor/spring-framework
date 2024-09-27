@@ -58,34 +58,36 @@ final class PostProcessorRegistrationDelegate {
 	/*
 	 	执行所有的 BeanFactoryPostProcessors (Bean工厂后置处理器)
 		--------------------------------------------------------------------------------------------------------------
-
 		一、执行实现 PriorityOrdered 接口的 BeanDefinitionRegistryPostProcessor 类型的Bean工厂后置处理器
-			1.创建 ConfigurationClassPostProcessor Bean工厂后置处理器实例，以用于处理 @Configuration 配置类
-			2.对ConfigurationClassPostProcessor 集合进行排序
-			3.执行 ConfigurationClassPostProcessor 后置处理器
+			1.创建后置处理器实例	(创建 ConfigurationClassPostProcessor Bean工厂后置处理器实例，以用于处理 @Configuration 配置类)
+			2.对后置处理器集合排序
+			3.执行后置处理器
 
 		二、执行实现 Ordered 接口的 BeanDefinitionRegistryPostProcessor 类型的Bean工厂后置处理器
-			1.对后置处理器集合排序
-			2.执行后置处理器
+			1.创建后置处理器实例
+			2.对后置处理器集合排序
+			3.执行后置处理器
 
 		三、执行其它 BeanDefinitionRegistryPostProcessor Bean工厂后置处理器
-			1.对后置处理器集合排序
-			2.执行后置处理器
+			1.创建后置处理器实例
+			2.对后置处理器集合排序
+			3.执行后置处理器
 
 		--------------------------------------------------------------------------------------------------------------
-
 		一、执行实现 PriorityOrdered 接口的 BeanFactoryPostProcessor 类型的Bean工厂后置处理器
-			1.对后置处理器集合排序
-			2.执行后置处理器
+			1.创建后置处理器实例
+			2.对后置处理器集合排序
+			3.执行后置处理器
 
 		二、执行实现 Ordered 接口的 BeanFactoryPostProcessor类型的Bean工厂后置处理器
-			1.对后置处理器集合排序
-			2.执行后置处理器
+			1.创建后置处理器实例
+			2.对后置处理器集合排序
+			3.执行后置处理器
 
 		三、执行其它 BeanFactoryPostProcessorBean工厂后置处理器
-			1.对后置处理器集合排序
-			2.执行后置处理器
-
+			1.创建后置处理器实例
+			2.对后置处理器集合排序
+			3.执行后置处理器
 	 */
 	public static void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
@@ -320,7 +322,7 @@ final class PostProcessorRegistrationDelegate {
 		sortPostProcessors(orderedPostProcessors, beanFactory);
 		registerBeanPostProcessors(beanFactory, orderedPostProcessors);
 
-		// K2 注册所有常规的 BeanPostProcessors。
+		// K2 注册所有常规的 BeanPostProcessors
 		// Now, register all regular BeanPostProcessors.
 		List<BeanPostProcessor> nonOrderedPostProcessors = new ArrayList<>(nonOrderedPostProcessorNames.size());
 		for (String ppName : nonOrderedPostProcessorNames) {

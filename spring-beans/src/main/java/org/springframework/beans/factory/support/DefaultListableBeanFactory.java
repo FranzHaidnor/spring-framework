@@ -893,41 +893,41 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		// While this may not be part of the regular factory bootstrap, it does otherwise work fine.
 		List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
 
-		// 触发所有非懒加载单例 Bean 的初始化
-		// Trigger initialization of all non-lazy singleton beans...
+		// 创建所有非懒加载单例 bean
+		// Trigger initialization of all non-lazy singleton beans
 		for (String beanName : beanNames) {
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-			// 不是抽象类 && 单例 && 非懒加载
+
+			// 对Bean定义校验 1.不是允是抽象类 2.必须为单例bean 3.不允许为懒加载
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
-				// 如果是工厂 Bean
+
+				// 创建 FactoryBean 类型的 bean 实例
 				if (isFactoryBean(beanName)) {
-					// 创建 Bean 对象实例
 					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
-					// 如果是一个工厂 Bean 对象
 					if (bean instanceof FactoryBean) {
 						FactoryBean<?> factory = (FactoryBean<?>) bean;
 						boolean isEagerInit;
 						if (System.getSecurityManager() != null && factory instanceof SmartFactoryBean) {
-							isEagerInit = AccessController.doPrivileged(
-									(PrivilegedAction<Boolean>) ((SmartFactoryBean<?>) factory)::isEagerInit,
-									getAccessControlContext());
-						}
-						else {
+							isEagerInit = AccessController.doPrivileged((PrivilegedAction<Boolean>) ((SmartFactoryBean<?>) factory)::isEagerInit, getAccessControlContext());
+						} else {
 							isEagerInit = (factory instanceof SmartFactoryBean && ((SmartFactoryBean<?>) factory).isEagerInit());
 						}
 						if (isEagerInit) {
 							getBean(beanName);
 						}
 					}
-				} else {
-					// 创建 Bean 对象实例
+				}
+
+				// 创建普通 bean 实例
+				else {
 					getBean(beanName);
 				}
+
 			}
 		}
 
-		// 触发所有适用 Bean 的初始化后回调
-		// Trigger post-initialization callback for all applicable beans...
+		// 拓展点: 对实现 SmartInitializingSingleton 接口的 bean 进行回调做后置处理
+		// Trigger post-initialization callback for all applicable beans
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName);
 			if (singletonInstance instanceof SmartInitializingSingleton) {
@@ -937,8 +937,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						smartSingleton.afterSingletonsInstantiated();
 						return null;
 					}, getAccessControlContext());
-				}
-				else {
+				} else {
 					smartSingleton.afterSingletonsInstantiated();
 				}
 			}

@@ -458,7 +458,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	/*
 	 * 此类的中心方法：创建一个 Bean 实例、填充 Bean 实例、应用后处理器等。
 	 */
-
 	/**
 	 * Central method of this class: creates a bean instance,
 	 * populates the bean instance, applies post-processors, etc.
@@ -472,37 +471,34 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		RootBeanDefinition mbdToUse = mbd;
 
-		// 确保此时 Bean 类实际上已解析，并在动态解析的类无法存储在共享合并的 Bean 定义中的情况下克隆 Bean 定义。
 		// Make sure bean class is actually resolved at this point, and clone the bean definition in case of a dynamically resolved Class which cannot be stored in the shared merged bean definition.
+		// (确保此时 Bean 类实际上已解析，并在动态解析的类无法存储在共享合并的 Bean 定义中的情况下克隆 Bean 定义)
 		Class<?> resolvedClass = resolveBeanClass(mbd, beanName);
 		if (resolvedClass != null && !mbd.hasBeanClass() && mbd.getBeanClassName() != null) {
 			mbdToUse = new RootBeanDefinition(mbd);
 			mbdToUse.setBeanClass(resolvedClass);
 		}
 
-		// Prepare 方法重写
-		// Prepare method overrides.
+		// Prepare method overrides.(Prepare 方法重写)
 		try {
 			mbdToUse.prepareMethodOverrides();
 		} catch (BeanDefinitionValidationException ex) {
-			throw new BeanDefinitionStoreException(mbdToUse.getResourceDescription(),
-					beanName, "Validation of method overrides failed", ex);
+			throw new BeanDefinitionStoreException(mbdToUse.getResourceDescription(), beanName, "Validation of method overrides failed", ex);
 		}
 
 		try {
-			// 让 BeanPostProcessors 有机会返回代理而不是目标 Bean 实例。
 			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			// [让 BeanPostProcessors 有机会返回代理而不是目标 Bean 实例]
 			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
 			if (bean != null) {
 				return bean;
 			}
 		} catch (Throwable ex) {
-			throw new BeanCreationException(mbdToUse.getResourceDescription(), beanName,
-					"BeanPostProcessor before instantiation of bean failed", ex);
+			throw new BeanCreationException(mbdToUse.getResourceDescription(), beanName, "BeanPostProcessor before instantiation of bean failed", ex);
 		}
 
 		try {
-			// k1 创建 Bean 的实例
+			// 创建 Bean 的实例
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
@@ -513,8 +509,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// or illegal singleton state to be communicated up to DefaultSingletonBeanRegistry.
 			throw ex;
 		} catch (Throwable ex) {
-			throw new BeanCreationException(
-					mbdToUse.getResourceDescription(), beanName, "Unexpected exception during bean creation", ex);
+			throw new BeanCreationException(mbdToUse.getResourceDescription(), beanName, "Unexpected exception during bean creation", ex);
 		}
 	}
 
@@ -581,7 +576,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (logger.isTraceEnabled()) {
 				logger.trace("Eagerly caching bean '" + beanName + "' to allow for resolving potential circular references");
 			}
-			// 将创建好的 Bean 实例存放进入 3 级缓存，已便解决循环依赖
+			// k1 将bean放入第3级缓存
 			addSingletonFactory(beanName, new ObjectFactory<Object>() {
 				@Override
 				public Object getObject() throws BeansException {
@@ -1428,8 +1423,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected void populateBean(String beanName, RootBeanDefinition beanDefinition, @Nullable BeanWrapper beanWrapper) {
 		if (beanWrapper == null) {
 			if (beanDefinition.hasPropertyValues()) {
-				throw new BeanCreationException(
-						beanDefinition.getResourceDescription(), beanName, "Cannot apply property values to null instance");
+				throw new BeanCreationException(beanDefinition.getResourceDescription(), beanName, "Cannot apply property values to null instance");
 			} else {
 				// Skip property population phase for null instance.
 				return;
