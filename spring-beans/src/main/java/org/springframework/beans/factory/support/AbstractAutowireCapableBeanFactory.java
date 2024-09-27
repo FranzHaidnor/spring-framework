@@ -1492,8 +1492,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					// 类型强制转换
 					InstantiationAwareBeanPostProcessor processor = (InstantiationAwareBeanPostProcessor) beanPostProcessor;
 					// 后置处理所有的属性字段
-					// k1 为 Bean 的属性字段赋值
-					/** 注解注入其它属性 {@link AutowiredAnnotationBeanPostProcessor#postProcessProperties(PropertyValues, Object, String)}*/
+					// k1 为 Bean 的属性字段赋值 AutowiredAnnotationBeanPostProcessor#postProcessProperties
 					PropertyValues pvsToUse = processor.postProcessProperties(propertyValues, beanWrapper.getWrappedInstance(), beanName);
 					if (pvsToUse == null) {
 						if (filteredPds == null) {

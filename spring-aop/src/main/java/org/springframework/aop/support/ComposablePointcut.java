@@ -24,6 +24,9 @@ import org.springframework.aop.Pointcut;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+/*
+可组合的切入点，允许将多个切入点组合起来使用，支持与、或、非等逻辑操作。
+ */
 /**
  * Convenient class for building up pointcuts.
  *

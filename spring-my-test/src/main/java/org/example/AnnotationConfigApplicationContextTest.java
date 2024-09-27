@@ -10,7 +10,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class AnnotationConfigApplicationContextTest {
 
 	public static void main(String[] args) {
-		test2();
+		test1();
+//		test2();
 	}
 
 	/**
@@ -31,8 +32,12 @@ public class AnnotationConfigApplicationContextTest {
 	 */
 	public static void test2() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		// 提前手动添加一些自定义的 BeanFactoryPostProcessor
-//		 context.addBeanFactoryPostProcessor();
+
+		{
+			// 提前手动添加一些自定义的 BeanFactoryPostProcessor
+			// context.addBeanFactoryPostProcessor();
+		}
+
 		context.register(AppConfiguration.class);
 		context.refresh();
 

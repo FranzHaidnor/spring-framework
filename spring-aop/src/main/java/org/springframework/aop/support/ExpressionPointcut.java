@@ -19,6 +19,7 @@ package org.springframework.aop.support;
 import org.springframework.aop.Pointcut;
 import org.springframework.lang.Nullable;
 
+// 表达式切入点
 /**
  * Interface to be implemented by pointcuts that use String expressions.
  *

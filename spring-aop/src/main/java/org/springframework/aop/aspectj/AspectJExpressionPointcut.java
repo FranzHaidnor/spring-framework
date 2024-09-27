@@ -63,7 +63,9 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-// AspectJExpression 表达式切入点
+/*
+主要用于基于 AspectJ 表达式匹配目标类。
+ */
 /**
  * Spring {@link org.springframework.aop.Pointcut} implementation
  * that uses the AspectJ weaver to evaluate a pointcut expression.

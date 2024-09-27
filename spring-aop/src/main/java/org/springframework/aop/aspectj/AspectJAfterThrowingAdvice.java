@@ -24,6 +24,9 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import org.springframework.aop.AfterAdvice;
 
+/*
+实现了异常抛出后通知（After Throwing Advice），在目标方法抛出异常后执行额外逻辑，允许处理异常或执行一些清理操作。
+ */
 /**
  * Spring AOP advice wrapping an AspectJ after-throwing advice method.
  *

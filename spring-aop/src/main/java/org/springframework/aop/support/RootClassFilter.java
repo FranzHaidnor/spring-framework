@@ -21,6 +21,9 @@ import java.io.Serializable;
 import org.springframework.aop.ClassFilter;
 import org.springframework.util.Assert;
 
+/*
+匹配指定类的根类的过滤器
+ */
 /**
  * Simple ClassFilter implementation that passes classes (and optionally subclasses).
  *

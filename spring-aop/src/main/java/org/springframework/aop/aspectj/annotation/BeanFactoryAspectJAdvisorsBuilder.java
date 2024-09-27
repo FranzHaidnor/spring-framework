@@ -73,9 +73,9 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	}
 
 
-	/**
-	 * 在当前 Bean 工厂中查找 AspectJ 注释的 aspect bean，并返回到代表它们的 Spring AOP Advisors 列表。
-	 * 为每个 AspectJ 建议方法创建一个 Spring Advisor。
+	/*
+	  在当前 Bean 工厂中查找 AspectJ 注释的 aspect bean，并返回到代表它们的 Spring AOP Advisors 列表。
+	  为每个 AspectJ 建议方法创建一个 Spring Advisor。
 	 */
 	/**
 	 * Look for AspectJ-annotated aspect beans in the current bean factory,

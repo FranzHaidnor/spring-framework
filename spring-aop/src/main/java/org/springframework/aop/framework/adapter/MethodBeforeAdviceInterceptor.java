@@ -25,6 +25,9 @@ import org.springframework.aop.BeforeAdvice;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.util.Assert;
 
+/*
+实现了前置通知的拦截器。前置通知在目标方法执行之前执行，允许我们在方法执行前插入额外的逻辑。
+ */
 /**
  * Interceptor to wrap a {@link MethodBeforeAdvice}.
  * <p>Used internally by the AOP framework; application developers should not

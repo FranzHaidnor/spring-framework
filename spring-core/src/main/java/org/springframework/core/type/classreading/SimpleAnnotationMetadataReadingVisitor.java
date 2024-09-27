@@ -40,9 +40,7 @@ import org.springframework.util.StringUtils;
  * @author Phillip Webb
  * @since 5.2
  */
-// 默认没有public 修饰， 方便测试
-// final class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
-public final class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
+ final class SimpleAnnotationMetadataReadingVisitor extends ClassVisitor {
 
 	@Nullable
 	private final ClassLoader classLoader;

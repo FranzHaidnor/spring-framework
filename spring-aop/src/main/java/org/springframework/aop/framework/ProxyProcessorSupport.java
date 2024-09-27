@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 
+// 具有代理处理器通用功能的基类，特别是类加载器管理和 evaluateProxyInterfaces 算法。
 /**
  * Base class with common functionality for proxy processors, in particular
  * ClassLoader management and the {@link #evaluateProxyInterfaces} algorithm.

@@ -56,12 +56,41 @@ final class PostProcessorRegistrationDelegate {
 
 
 	/*
-	 	执行Bean工厂后置处理器方法 BeanFactoryPostProcessors
+	 	执行所有的 BeanFactoryPostProcessors (Bean工厂后置处理器)
+		--------------------------------------------------------------------------------------------------------------
+
+		一、执行实现 PriorityOrdered 接口的 BeanDefinitionRegistryPostProcessor 类型的Bean工厂后置处理器
+			1.创建 ConfigurationClassPostProcessor Bean工厂后置处理器实例，以用于处理 @Configuration 配置类
+			2.对ConfigurationClassPostProcessor 集合进行排序
+			3.执行 ConfigurationClassPostProcessor 后置处理器
+
+		二、执行实现 Ordered 接口的 BeanDefinitionRegistryPostProcessor 类型的Bean工厂后置处理器
+			1.对后置处理器集合排序
+			2.执行后置处理器
+
+		三、执行其它 BeanDefinitionRegistryPostProcessor Bean工厂后置处理器
+			1.对后置处理器集合排序
+			2.执行后置处理器
+
+		--------------------------------------------------------------------------------------------------------------
+
+		一、执行实现 PriorityOrdered 接口的 BeanFactoryPostProcessor 类型的Bean工厂后置处理器
+			1.对后置处理器集合排序
+			2.执行后置处理器
+
+		二、执行实现 Ordered 接口的 BeanFactoryPostProcessor类型的Bean工厂后置处理器
+			1.对后置处理器集合排序
+			2.执行后置处理器
+
+		三、执行其它 BeanFactoryPostProcessorBean工厂后置处理器
+			1.对后置处理器集合排序
+			2.执行后置处理器
+
 	 */
 	public static void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
-		// 如果有，请先调用 BeanDefinitionRegistryPostProcessors。
-		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
+		// 后置处理器实例的名称
+		// Invoke BeanDefinitionRegistryPostProcessors first, if any. (如果有，请先调用 BeanDefinitionRegistryPostProcessors。)
 		Set<String> processedBeans = new HashSet<>();
 
 		// 如果是 Bean定义注册器类型的Bean工厂
@@ -108,6 +137,7 @@ final class PostProcessorRegistrationDelegate {
 			// 当前注册的后置处理器
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
+			// K1 @Configuration配置类后置处理器初始化
 			// 首先，调用实现 PriorityOrdered 的 BeanDefinitionRegistryPostProcessors。
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
 			String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
@@ -234,10 +264,11 @@ final class PostProcessorRegistrationDelegate {
 		beanFactory.clearMetadataCache();
 	}
 
-	// 注册 BeanPostProcessor
+	// 注册Bean后置处理器
 	public static void registerBeanPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) {
 
+		// 获取所有 BeanPostProcessor Bean 的名称
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
 		// Register BeanPostProcessorChecker that logs an info message when
@@ -248,11 +279,14 @@ final class PostProcessorRegistrationDelegate {
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.
+		// 优先级最高的 BeanPostProcessor
 		List<BeanPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
 		List<BeanPostProcessor> internalPostProcessors = new ArrayList<>();
 		List<String> orderedPostProcessorNames = new ArrayList<>();
+		// 没有排序的 BeanPostProcessor
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
 		for (String ppName : postProcessorNames) {
+			// 优先级最高
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
 				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
 				priorityOrderedPostProcessors.add(pp);
@@ -260,9 +294,11 @@ final class PostProcessorRegistrationDelegate {
 					internalPostProcessors.add(pp);
 				}
 			}
+			// 次优先级
 			else if (beanFactory.isTypeMatch(ppName, Ordered.class)) {
 				orderedPostProcessorNames.add(ppName);
 			}
+			// 优先级最低
 			else {
 				nonOrderedPostProcessorNames.add(ppName);
 			}
@@ -284,6 +320,7 @@ final class PostProcessorRegistrationDelegate {
 		sortPostProcessors(orderedPostProcessors, beanFactory);
 		registerBeanPostProcessors(beanFactory, orderedPostProcessors);
 
+		// K2 注册所有常规的 BeanPostProcessors。
 		// Now, register all regular BeanPostProcessors.
 		List<BeanPostProcessor> nonOrderedPostProcessors = new ArrayList<>(nonOrderedPostProcessorNames.size());
 		for (String ppName : nonOrderedPostProcessorNames) {

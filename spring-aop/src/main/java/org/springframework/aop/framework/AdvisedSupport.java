@@ -43,8 +43,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 /*
- * 主要是用于把代理、拦截、匹配的各项属性包装到一个类中，方便在 Proxy 实现类进行使用。
- *
+ 	把代理、拦截、匹配的各项属性包装到一个类中，方便在 Proxy 实现类进行使用。
  */
 /**
  * Base class for AOP proxy configuration managers.

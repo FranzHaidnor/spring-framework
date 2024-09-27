@@ -25,6 +25,9 @@ import java.util.List;
 import org.springframework.lang.Nullable;
 import org.springframework.util.PatternMatchUtils;
 
+/*
+根据方法名称匹配的切入点。可以配置指定的方法名称或通配符，以匹配目标类中的方法。
+ */
 /**
  * Pointcut bean for simple method name matches, as an alternative to regexp patterns.
  *

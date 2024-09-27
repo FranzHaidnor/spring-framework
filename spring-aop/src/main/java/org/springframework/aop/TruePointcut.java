@@ -18,6 +18,9 @@ package org.springframework.aop;
 
 import java.io.Serializable;
 
+/*
+始终匹配的切入点，代表不进行任何匹配，即匹配所有的类和方法。
+ */
 /**
  * Canonical Pointcut instance that always matches.
  *

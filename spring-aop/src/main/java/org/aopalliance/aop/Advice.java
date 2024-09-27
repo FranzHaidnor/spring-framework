@@ -17,7 +17,7 @@
 package org.aopalliance.aop;
 
 /*
- * Advice（通知/增强）
+ * Advice: “通知”，表示 Aspect 在特定的 Join point 采取的操作。包括 “around”, “before” and “after 等
  *
  * Advice有以下几种常见的类型：
  * 1、AspectJMethodBeforeAdvice：前置通知。AspectJ中 before 属性对应的通知（@Before标注的方法会被解析成该通知），在切面方法执行之前执行。

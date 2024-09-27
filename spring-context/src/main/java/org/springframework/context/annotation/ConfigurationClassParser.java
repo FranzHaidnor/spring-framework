@@ -291,14 +291,14 @@ class ConfigurationClassParser {
 			Predicate<String> filter)
 			throws IOException {
 
-		// 如果有 @Component 注解
+		// k2 处理 @Component
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// 首先以递归方式处理任何成员（嵌套）类
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
 		}
 
-		// 处理 @PropertySource 注解
+		// k2 处理 @PropertySource
 		// @PropertySource注解的主要作用是指定外部属性文件的位置，并将其中的键值对配置信息加载到Spring环境中，以便在应用程序中使用。
 		// Process any @PropertySource annotations
 		for (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(
@@ -314,14 +314,15 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 处理 @ComponentScan 注解
+		// k2 处理 @ComponentScan
 		// Process any @ComponentScan annotations
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
-				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
-		if (!componentScans.isEmpty() &&
-				!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
+				sourceClass.getMetadata(),
+				ComponentScans.class,
+				ComponentScan.class);
+		if (!componentScans.isEmpty() && !this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
 			for (AnnotationAttributes componentScan : componentScans) {
-				// 配置类带有注释@ComponentScan -> 立即执行扫描
+				// 处理 @ComponentScan 注解
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
@@ -340,14 +341,14 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// k1 处理 @Import 注解
+		// k2 处理 @Import
 		// Process any @Import annotations
 		processImports(configClass,
 				sourceClass,
 				getImports(sourceClass), // 获取 @Import 注解导入的类集合
 				filter, true);
 
-		// 处理 @ImportResource 注解
+		// k2 处理 @ImportResource
 		// @ImportResource注解的主要作用是将外部的XML配置文件引入到Spring应用程序上下文中，以实现传统的XML配置方式来定义和配置Spring的Bean
 		// Process any @ImportResource annotations
 		AnnotationAttributes importResource =
@@ -361,7 +362,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 处理单个@Bean方法
+		// k2 处理单个 @Bean
 		// Process individual @Bean methods
 		Set<MethodMetadata> beanMethods = retrieveBeanMethodMetadata(sourceClass);
 		for (MethodMetadata methodMetadata : beanMethods) {
@@ -638,6 +639,7 @@ class ConfigurationClassParser {
 			try {
 				// 循环扫描已经导入的类
 				for (SourceClass candidate : importCandidates) {
+					// 1 ------------------------------------------------------------------------------------------------
 					// 判断导入的类是否实现了 ImportSelector 接口
 					if (candidate.isAssignable(ImportSelector.class)) {
 						// 候选类是 ImportSelector ->委托给它以确定导入
@@ -666,6 +668,7 @@ class ConfigurationClassParser {
 							processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false);
 						}
 					}
+					// 2 -----------------------------------------------------------------------------------------------
 					// 判断导入的类是否实现了 ImportBeanDefinitionRegistrar 接口
 					else if (candidate.isAssignable(ImportBeanDefinitionRegistrar.class)) {
 						// 候选类是一个 ImportBeanDefinitionRegistrar ->委托给它以注册其他 Bean 定义
@@ -678,6 +681,7 @@ class ConfigurationClassParser {
 						// 将 ImportBeanDefinitionRegistrar 实例保存到一个Map中, 以便后面一起统一执行接口方法注册 BeanDefinition
 						configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
 					}
+					// 3 -----------------------------------------------------------------------------------------------
 					else {
 						// 候选类不是 ImportSelector 或 ImportBeanDefinitionRegistrar 类型 -> 将其作为 ConfigurationClass 类处理
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar -> process it as an @Configuration class

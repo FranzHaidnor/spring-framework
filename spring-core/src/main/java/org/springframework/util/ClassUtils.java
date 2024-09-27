@@ -83,37 +83,42 @@ public abstract class ClassUtils {
 	/** The ".class" file suffix. */
 	public static final String CLASS_FILE_SUFFIX = ".class";
 
-
+	// 使用原始包装器类型作为键并使用相应的原始类型作为值的映射，例如: Integer.class -> int.class。
 	/**
 	 * Map with primitive wrapper type as key and corresponding primitive
 	 * type as value, for example: Integer.class -> int.class.
 	 */
 	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<>(9);
 
+	// 以基元类型为键，以相应的包装器类型为值的映射，例如: int.class -> Integer.class。
 	/**
 	 * Map with primitive type as key and corresponding wrapper
 	 * type as value, for example: int.class -> Integer.class.
 	 */
 	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<>(9);
 
+	// 以基元类型名称作为键并以相应的基元类型作为值的映射，例如: “int”-> “int.class”。
 	/**
 	 * Map with primitive type name as key and corresponding primitive
 	 * type as value, for example: "int" -> "int.class".
 	 */
 	private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<>(32);
 
+	// 以通用Java语言的类名作为键，对应的类作为值进行映射。主要用于远程调用的高效反序列化。
 	/**
 	 * Map with common Java language class name as key and corresponding Class as value.
 	 * Primarily for efficient deserialization of remote invocations.
 	 */
 	private static final Map<String, Class<?>> commonClassCache = new HashMap<>(64);
 
+	// 在搜索 “primary” 用户级接口时应该忽略的通用Java语言接口。
 	/**
 	 * Common Java language interfaces which are supposed to be ignored
 	 * when searching for 'primary' user-level interfaces.
 	 */
 	private static final Set<Class<?>> javaLanguageInterfaces;
 
+	// 缓存由声明类实现的接口上的等效方法。
 	/**
 	 * Cache for equivalent methods on an interface implemented by the declaring class.
 	 */
@@ -335,6 +340,9 @@ public abstract class ClassUtils {
 		}
 	}
 
+	/*
+	确定由提供的名称标识的类是否存在并且可以加载。如果类或其依赖项之一不存在或无法加载，将返回false。
+	 */
 	/**
 	 * Determine whether the {@link Class} identified by the supplied name is present
 	 * and can be loaded. Will return {@code false} if either the class or

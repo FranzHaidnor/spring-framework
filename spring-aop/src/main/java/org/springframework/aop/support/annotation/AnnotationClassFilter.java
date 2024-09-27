@@ -23,6 +23,9 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+/*
+根据注解匹配类的过滤器，用于选取带有指定注解的类
+ */
 /**
  * Simple ClassFilter that looks for a specific Java 5 annotation
  * being present on a class.
@@ -35,9 +38,11 @@ public class AnnotationClassFilter implements ClassFilter {
 
 	private final Class<? extends Annotation> annotationType;
 
+	// 是否检查继承类
 	private final boolean checkInherited;
 
 
+	// 指定注解
 	/**
 	 * Create a new AnnotationClassFilter for the given annotation type.
 	 * @param annotationType the annotation type to look for

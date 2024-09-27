@@ -39,6 +39,18 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+/*
+框架内部使用的通用工厂加载机制。
+ SpringFactoriesLoader 从 “meta-inf/spring.factories” 文件加载并实例化给定类型的工厂，这些文件可能存在于类路径中的多个JAR文件中。
+
+spring.factories 的文件必须是 Properties 格式，其中键是接口或抽象类的完全限定名，值是实现类名的逗号分隔列表。
+
+例如:
+example.MyService=example.MyServiceImpl1,example.MyServiceImpl2
+
+其中 example.MyService 是接口的名称， MyServiceImpl1 和 MyServiceImpl2 是两个实现。
+
+ */
 /**
  * General purpose factory loading mechanism for internal use within the framework.
  *

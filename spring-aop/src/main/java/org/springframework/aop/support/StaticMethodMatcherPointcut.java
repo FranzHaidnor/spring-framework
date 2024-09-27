@@ -20,6 +20,9 @@ import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 
+/*
+静态方法匹配器切入点，用于直接指定方法匹配规则，不支持动态匹配。
+ */
 /**
  * Convenient superclass when we want to force subclasses to implement the
  * {@link MethodMatcher} interface but subclasses will want to be pointcuts.

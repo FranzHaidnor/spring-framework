@@ -21,6 +21,10 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.core.type.AnnotationMetadata;
 
+/*
+	和 @Configuration @ImportSelector 注解配合使用
+	使用在 @ImportSelector 导入实现了此接口的类, 用于注册更多的 Bean
+ */
 /**
  * Interface to be implemented by types that register additional bean definitions when
  * processing @{@link Configuration} classes. Useful when operating at the bean definition

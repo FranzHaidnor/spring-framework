@@ -214,9 +214,17 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/*
-	 * 注册默认的 @Component 过滤器。
-	 * 这将隐式注册所有具有 @Component 元注释的注释，包括 @Repository、 @Service和 @Controller 构造型注释。
-	 *
+	被以下标记注解标记的类,将会被视为容器组件
+		@Component
+			@Repository
+			@Service
+			@Controller
+				@RestController
+			@Configuration
+		@Named
+		@ManagedBean
+
+	 * 注册默认的 @Component 过滤器。这将隐式注册所有具有 @Component 元注释的注释，包括 @Repository、 @Service和 @Controller 构造型注释。
 	 * 还支持 Java EE 6 javax.annotation.ManagedBean 和 JSR-330 javax.inject.Named 的注解（如果可用）
 	 */
 	/**

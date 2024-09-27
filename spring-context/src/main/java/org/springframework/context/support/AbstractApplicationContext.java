@@ -540,12 +540,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory); // 后处理 Bean 工厂
 
-				// 执行 BeanFactoryPostProcessor
+				// k1 执行 BeanFactoryPostProcessor
 				// 调用在上下文中注册为 bean 的工厂处理器。例如 @Configuration 就是在这里被扫描处理的
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				// k2 注册Bean后置处理器 BeanPostProcessors
+				// k1 注册 BeanPostProcessors
 				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
 
@@ -565,7 +565,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Check for listener beans and register them.
 				registerListeners();
 
-				// 创建 Bean 对象! 实例化所有剩余的（非惰性初始化）单例。
+				// k2 创建 Bean 对象
+				// 实例化所有剩余的（非惰性初始化）单例。
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
 
@@ -777,7 +778,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-		// 遍历Bean工厂后置处理器集合 List<BeanFactoryPostProcessor>
+		// k1 遍历执行Bean工厂后置处理器(BeanFactoryPostProcessor)
 		// 执行 BeanFactoryPostProcessors 后置处理器接口方法
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 

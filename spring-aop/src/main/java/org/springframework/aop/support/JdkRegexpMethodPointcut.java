@@ -20,6 +20,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+/*
+使用正则表达式匹配方法的切入点。可以使用正则表达式指定方法的匹配规则。
+ */
 /**
  * Regular expression pointcut based on the {@code java.util.regex} package.
  * Supports the following JavaBean properties:

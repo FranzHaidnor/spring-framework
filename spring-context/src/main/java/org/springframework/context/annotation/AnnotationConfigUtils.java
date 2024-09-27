@@ -38,6 +38,10 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
+/*
+	实用工具类，允许方便地注册通用 BeanPostProcessor 和 BeanFactoryPostProcessor基于注释的配置的定义。
+	还注册了一个通用的AutowireCandidateResolver。
+ */
 /**
  * Utility class that allows for convenient registration of common
  * {@link org.springframework.beans.factory.config.BeanPostProcessor} and
@@ -172,11 +176,13 @@ public abstract class AnnotationConfigUtils {
 			}
 		}
 
+		// 存放提前准备好的 BeanDefinition
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
 		// 关键后置处理器, 配置类后置处理器
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
-			// ConfigurationClassPostProcessor 后置处理器比较关键. 它负责处理 @Configuration 标记的配置类
+			// k1 创建 ConfigurationClassPostProcessor 后置处理器的 BeanDefinition
+			// 它负责处理 @Configuration 标记的配置类
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class); // BeanFactoryPostProcessor
 			def.setSource(source);
 			beanDefs.add(registerPostProcessor(registry, def, CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME));  // 这里指定了 Bean 的名称
@@ -225,8 +231,8 @@ public abstract class AnnotationConfigUtils {
 		return beanDefs;
 	}
 
+	// 注册 BeanDefinition, 返回一个 BeanDefinitionHolder
 	/**
-	 * 注册后置处理器
 	 * @param registry BeanDefinitionRegistry
 	 * @param definition RootBeanDefinition
 	 * @param beanName Bean名称

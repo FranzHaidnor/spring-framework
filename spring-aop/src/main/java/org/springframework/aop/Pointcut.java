@@ -16,6 +16,12 @@
 
 package org.springframework.aop;
 
+/*
+	Pointcut: “切点”，它是匹配连接点的谓词。可以说"Pointcut"表示的是"Join point"的集合。
+	通过切点表达式来匹配 Join point，Spring 默认使用 AspectJ 切入点表达式语言。
+	切点表达式匹配连接点的概念是 AOP 的核心。
+	Advice 与 Pointcut 关联之后，将在与切点表达式(Pointcut expression)匹配的任意连接点上运行。
+ */
 /**
  * Core Spring pointcut abstraction.
  *

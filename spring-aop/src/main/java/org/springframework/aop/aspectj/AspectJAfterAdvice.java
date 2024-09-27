@@ -24,6 +24,9 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import org.springframework.aop.AfterAdvice;
 
+/*
+实现了后置通知（After Advice），在目标方法执行后执行额外逻辑，不影响目标方法的执行结果。
+ */
 /**
  * Spring AOP advice wrapping an AspectJ after advice method.
  *

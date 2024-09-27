@@ -25,6 +25,9 @@ import org.springframework.aop.AfterAdvice;
 import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.util.Assert;
 
+/*
+实现了返回后通知的拦截器。返回后通知在目标方法成功执行并返回结果后执行，允许我们在方法返回后插入额外的逻辑。
+ */
 /**
  * Interceptor to wrap an {@link org.springframework.aop.AfterReturningAdvice}.
  * Used internally by the AOP framework; application developers should not need

@@ -1,39 +1,28 @@
 package org.example;
 
-import org.springframework.asm.ClassReader;
-import org.springframework.core.NestedIOException;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.type.classreading.SimpleAnnotationMetadata;
-import org.springframework.core.type.classreading.SimpleAnnotationMetadataReadingVisitor;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.core.type.ClassMetadata;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class MetadataTest {
 	public static void main(String[] args) throws IOException {
-
-		PathMatchingResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
-		Resource resource = patternResolver.getResource("classpath:" + "org/example/config/BeanConfiguration.class");
-		ClassReader classReader = getClassReader(resource);
-		SimpleAnnotationMetadataReadingVisitor visitor = new SimpleAnnotationMetadataReadingVisitor(MetadataTest.class.getClassLoader());
-		classReader.accept(visitor, ClassReader.SKIP_DEBUG | ClassReader.SKIP_CODE | ClassReader.SKIP_FRAMES);
-		SimpleAnnotationMetadata metadata = visitor.getMetadata();
-
-		System.out.println(metadata);
 	}
 
+	public void test_() throws Exception {
+		ResourceLoader resourceLoader = new DefaultResourceLoader();
+		MetadataReaderFactory metadataReaderFactory = new CachingMetadataReaderFactory(resourceLoader);
 
-	private static ClassReader getClassReader(Resource resource) throws IOException {
-		try (InputStream is = resource.getInputStream()) {
-			try {
-				// 创建类读取器
-				return new ClassReader(is);
-			} catch (IllegalArgumentException ex) {
-				throw new NestedIOException("ASM ClassReader failed to parse class file - " +
-						"probably due to a new Java class file version that isn't supported yet: " + resource, ex);
-			}
-		}
+		MetadataReader metadataReader = metadataReaderFactory.getMetadataReader("com.test.Demo");
+		// 获取注解元数据
+		AnnotationMetadata annotationMetadata = metadataReader.getAnnotationMetadata();
+		// 获取类元数据
+		ClassMetadata classMetadata = metadataReader.getClassMetadata();
 	}
 
 }

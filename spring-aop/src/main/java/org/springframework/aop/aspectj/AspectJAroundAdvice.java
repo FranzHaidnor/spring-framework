@@ -26,6 +26,9 @@ import org.aspectj.weaver.tools.JoinPointMatch;
 
 import org.springframework.aop.ProxyMethodInvocation;
 
+/*
+实现了环绕通知（Around Advice），是最强大的一种通知类型，允许在目标方法执行前后添加额外逻辑，并完全控制目标方法的执行过程，包括是否执行目标方法和如何处理返回值。
+ */
 /**
  * Spring AOP around advice (MethodInterceptor) that wraps
  * an AspectJ advice method. Exposes ProceedingJoinPoint.

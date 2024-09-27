@@ -336,12 +336,12 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 				candidate.setScope(scopeMetadata.getScopeName());
 				// 生成 Bean 的名称
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
-				// 如果 AbstractBeanDefinition 类型的 BeanDefinition
+				// 如果是 AbstractBeanDefinition 类型的 BeanDefinition
 				if (candidate instanceof AbstractBeanDefinition) { // 因为扫描出来的都是 ScannedGenericBeanDefinition, 所以一定为 true
 					// 后置处理 AbstractBeanDefinition
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
-				// 如果 AnnotatedBeanDefinition 类型的 BeanDefinition
+				// 如果是 AnnotatedBeanDefinition 类型的 BeanDefinition
 				if (candidate instanceof AnnotatedBeanDefinition) { // 因为扫描出来的都是 ScannedGenericBeanDefinition, 所以一定为 true
 					// 后置处理 AnnotatedBeanDefinition
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);

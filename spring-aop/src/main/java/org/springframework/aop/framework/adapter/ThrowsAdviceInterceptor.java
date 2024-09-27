@@ -30,6 +30,9 @@ import org.springframework.aop.AfterAdvice;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+/*
+实现了异常抛出后通知的拦截器。异常抛出后通知在目标方法抛出异常后执行，允许我们在方法抛出异常后插入额外的逻辑。
+ */
 /**
  * Interceptor to wrap an after-throwing advice.
  *

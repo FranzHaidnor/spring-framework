@@ -19,6 +19,10 @@ package org.springframework.aop;
 import java.lang.reflect.Method;
 
 /*
+	MethodMatcher 接口是Spring AOP中的一个关键接口，用于判断一个给定的方法是否匹配指定的切点表达式。
+	它定义了方法匹配的规则和逻辑，我们可以通过实现这个接口来自定义方法匹配的行为，从而实现针对特定方法的切面逻辑的拦截和执行。
+ */
+/*
  * 方法匹配器
  *
  * Pointcut一部分 ：检查目标方法是否符合增强条件。

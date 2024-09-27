@@ -25,6 +25,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+/*
+根据类型模式匹配类的过滤器，用于匹配满足指定类型模式的类。
+ */
 /**
  * Spring AOP {@link ClassFilter} implementation using AspectJ type matching.
  *

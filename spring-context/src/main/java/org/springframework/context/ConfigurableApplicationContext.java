@@ -27,18 +27,13 @@ import org.springframework.core.io.ProtocolResolver;
 import org.springframework.lang.Nullable;
 
 /*
- * Spring框架中的ConfigurableApplicationContext接口是ApplicationContext接口的子接口，它扩展了ApplicationContext的功能，并提供了更多的配置选项和操作方法。
+ * 允许应用程序以编程方式配置和管理Spring应用程序上下文。
  *
- * ConfigurableApplicationContext的主要作用是允许应用程序以编程方式配置和管理Spring应用程序上下文。它提供了以下功能：
- *
+ * 它提供了以下功能：
  * 1. 启动和关闭应用程序上下文：ConfigurableApplicationContext定义了start()和close()方法，用于启动和关闭应用程序上下文。通过调用start()方法，可以启动应用程序上下文并使其准备好处理请求。而调用close()方法则会关闭应用程序上下文，释放资源。
- *
  * 2. 刷新和刷新策略：ConfigurableApplicationContext继承了ApplicationContext接口中的refresh()方法，用于重新加载或刷新应用程序上下文。此外，ConfigurableApplicationContext还提供了设置和获取刷新策略的方法，可以根据需要定制刷新过程的行为。
- *
  * 3. 配置文件加载和切换：ConfigurableApplicationContext定义了setConfigLocations()方法，用于设置应用程序上下文的配置文件位置。这样可以灵活地指定要加载的配置文件，也可以在运行时动态切换不同的配置文件。
- *
  * 4. 环境配置和切换：ConfigurableApplicationContext提供了setEnvironment()方法，用于设置应用程序上下文的环境配置。通过设置不同的环境，可以在不同的运行环境中使用不同的配置。
- *
  * 5. Bean工厂访问：ConfigurableApplicationContext扩展了BeanFactory接口，因此可以通过getBeanFactory()方法获取应用程序上下文的底层Bean工厂，以便进行更底层的操作。
  *
  * 总之，ConfigurableApplicationContext提供了更多的配置和管理选项，使应用程序能够以编程方式控制和定制Spring应用程序上下文的行为。它是一个功能强大的接口，用于灵活地管理Spring应用程序的配置和生命周期。

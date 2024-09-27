@@ -17,6 +17,19 @@
 package org.springframework.aop;
 
 // 定义类匹配类，用于切点找到给定的接口和目标类。
+/*
+ClassFilter 接口是 Spring AOP 框架中的一个关键组件，用于定义切面（Aspect）应该拦截哪些类的规则。
+允许我们根据具体的条件来判断传入的类是否应该被拦截。通过实现该接口，可以灵活地定义过滤器，以匹配特定的类或者类的集合，从而精确地控制切面的作用范围。
+
+1.指定切面拦截的类
+允许我们定义规则，确定哪些类应该被应用切面。通过实现 matches(Class<?> clazz) 方法，可以根据特定的条件来判断传入的类是否应该被拦截。
+
+2.过滤器功能
+作为过滤器模式的一种应用，ClassFilter 接口允许我们定义过滤器，以匹配特定的类或者类的集合。这样可以灵活地控制切面的作用范围，只针对符合条件的类应用切面逻辑。
+
+3.精确定义切面作用范围
+通过 ClassFilter 接口，可以实现非常灵活的切面选择逻辑，例如只拦截某个特定包下的类、只拦截实现了某个接口的类等，从而精确地定义切面的作用范围。
+ */
 /**
  * Filter that restricts matching of a pointcut or introduction to
  * a given set of target classes.

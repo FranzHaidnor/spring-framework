@@ -43,9 +43,8 @@ import org.springframework.lang.Nullable;
  */
 public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationAwareBeanPostProcessor {
 
-	/**
-	 * 预测最终要从此处理器 postProcessBeforeInstantiation 的回调返回的 Bean 类型。
-	 * 默认实现返回 null。
+	/*
+	  预测最终要从此处理器 postProcessBeforeInstantiation 的回调返回的 Bean 类型。默认实现返回 null。
 	 */
 	/**
 	 * Predict the type of the bean to be eventually returned from this
@@ -61,9 +60,8 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 		return null;
 	}
 
-	/**
-	 * 确定要用于给定 Bean 的候选构造函数。
-	 * 默认实现返回 null。
+	/*
+	  确定要用于给定 Bean 的候选构造函数。默认实现返回 null。
 	 */
 	/**
 	 * Determine the candidate constructors to use for the given bean.
